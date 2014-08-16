@@ -48,7 +48,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\DotNetEngine.Engine\DotNetEngine.Engine.csproj">
+    <ProjectReference Include="..\DotNetEngine.Engine\DotNetEngine.Engine.csproj">
       <Project>{8B6FC2C8-311D-4759-9AB3-8ED2189A7B2A}</Project>
       <Name>DotNetEngine.Engine</Name>
     </ProjectReference>
