@@ -1,7 +1,7 @@
 ﻿namespace DotNetEngine.Engine
 {
 	/// <summary>
-	/// Helper functions used when dealing with a move.
+	/// Helper functions used when dealing with a representation of a single move.
 	/// A single move is contained inside a single uint.
 	/// 
 	/// [MoveFrom] [MoveTo] [MovingPiece] [CapturedPiece] [PromotionPiece]

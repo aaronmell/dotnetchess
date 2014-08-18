@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="GameStateUtilityTests.cs" />
     <Compile Include="FenUtlilityTests.cs" />
+    <Compile Include="MoveLookupTests.cs" />
     <Compile Include="MoveUtilityTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

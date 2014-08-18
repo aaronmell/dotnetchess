@@ -3,7 +3,7 @@
 namespace DotNetEngine.Engine
 {
 	/// <summary>
-	/// A utility class used to generate moves
+	/// A utility class used to generate all of the psuedo legal moves a piece can make
 	/// </summary>
 	public class MoveGeneratorUtility
 	{

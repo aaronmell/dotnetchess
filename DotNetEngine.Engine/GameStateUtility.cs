@@ -12,7 +12,6 @@ namespace DotNetEngine.Engine
 		/// Bitboards use Little-Endian File-Rank Mapping a1 is position 0 and h8 is 63 
 		/// </summary>
 		public static ulong[] BitStates = new []
-
 		{
 			1UL, 2UL, 4UL, 8UL, 16UL, 32UL, 64UL, 128UL, 256UL, 512UL, 1024UL, 2048UL, 4096UL, 8192UL, 16384UL, 32768UL, 
 			65536UL, 131072UL, 262144UL, 524288UL, 1048576UL, 2097152UL, 4194304UL, 8388608UL, 16777216UL, 33554432UL, 
@@ -24,6 +23,43 @@ namespace DotNetEngine.Engine
 			72057594037927936UL, 144115188075855872UL, 288230376151711744UL, 576460752303423488UL,
 			1152921504606846976UL, 2305843009213693952UL, 4611686018427387904UL, 9223372036854775808UL
 		};
+
+        /// <summary>
+        /// The rank of each position on the board
+        /// </summary>
+        public static int[] Ranks = new[]
+        {
+            1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 
+            4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 6, 6, 7, 7, 7, 7, 7, 7, 7, 7,
+            8, 8, 8, 8, 8, 8, 8, 8
+        };
+
+        /// <summary>
+        /// The file of each position on the board
+        /// </summary>
+        public static int[] Files = new[]
+        {
+            1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 
+            4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8
+        };
+
+        /// <summary>
+        /// A Translation of rank and file to its index on the board
+        /// </summary>
+        public static int[][] BoardIndex = new int[][]
+        {
+            new [] { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+            new [] { 0, 0, 1, 2, 3, 4, 5, 6, 7, },
+            new [] { 0, 8, 9, 10, 11, 12, 13, 14, 15 },
+            new [] { 0, 16, 17, 18, 19, 20, 21, 22, 23 }, 
+            new [] { 0, 24, 25, 26, 27, 28, 29, 30, 31 }, 
+            new [] { 0, 32, 33, 34, 35, 36, 37, 38, 39 }, 
+            new [] { 0, 40, 41, 42, 43, 44, 45, 46, 47 }, 
+            new [] { 0, 48, 49, 50, 51, 52, 53, 54, 55 }, 
+            new [] { 0, 56, 57, 58, 59, 60, 61, 62, 63 },
+            
+
+        };
 
 		/// <summary>
 		/// Returns a bitboard that contains all of the white pieces

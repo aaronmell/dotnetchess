@@ -44,6 +44,7 @@
     <Compile Include="FenUtility.cs" />
     <Compile Include="GameState.cs" />
     <Compile Include="MoveGeneratorUtility.cs" />
+    <Compile Include="MoveLookups.cs" />
     <Compile Include="MoveUtility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
