@@ -32,7 +32,8 @@ namespace DotNetEngine.Engine
             InitializeArrays();
 
             GenerateKnightAttacks();
-        }
+            GenerateKingAttacks();
+        }        
 
         private void InitializeArrays()
         {
@@ -54,8 +55,72 @@ namespace DotNetEngine.Engine
                 RankAttacks[i] = new ulong[64];
                 FileAttacks[i] = new ulong[64];
                 DiagonalAttacks[i] = new ulong[64];
+            }            
+        }
+
+        private void GenerateKingAttacks()
+        {
+            for (int i = 0; i < 64; i++)
+            {
+                var file = GameStateUtility.Files[i];
+                var rank = GameStateUtility.Ranks[i];
+
+                //Down
+                var targetRank = rank - 1;
+                var targetFile = file;
+
+                if (ValidLocation(targetFile, targetRank))
+                    KingAttacks[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
+
+                //Up
+                targetRank = rank + 1;
+                targetFile = file;
+
+                if (ValidLocation(targetFile, targetRank))
+                    KingAttacks[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
+
+                //Left
+                targetRank = rank;
+                targetFile = file - 1;
+
+                if (ValidLocation(targetFile, targetRank))
+                    KingAttacks[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
+
+                //Right
+                targetRank = rank;
+                targetFile = file + 1;
+
+                if (ValidLocation(targetFile, targetRank))
+                    KingAttacks[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
+
+                //Down Left
+                targetRank = rank - 1;
+                targetFile = file - 1;
+
+                if (ValidLocation(targetFile, targetRank))
+                    KingAttacks[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
+
+                //Down Right
+                targetRank = rank - 1;
+                targetFile = file + 1;
+
+                if (ValidLocation(targetFile, targetRank))
+                    KingAttacks[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
+
+                //Up Left
+                targetRank = rank + 1;
+                targetFile = file - 1;
+
+                if (ValidLocation(targetFile, targetRank))
+                    KingAttacks[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
+
+                //Up Right
+                targetRank = rank + 1;
+                targetFile = file + 1;
+
+                if (ValidLocation(targetFile, targetRank))
+                    KingAttacks[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
             }
-            
         }
 
         private void GenerateKnightAttacks()
@@ -68,56 +133,61 @@ namespace DotNetEngine.Engine
                 //Down 2 Right 1
                 var targetRank = rank - 2;
                 var targetFile = file + 1;
-                                
-                if (targetFile >= 1 && targetFile <= 8 && targetRank >= 1 && targetRank <= 8)
+
+                if (ValidLocation(targetFile, targetRank))
                     KnightAttacks[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
 
                 //Down 2 Left 1
                 targetFile = file - 1;
-                
-                if (targetFile >= 1 && targetFile <= 8 && targetRank >= 1 && targetRank <= 8)
+
+                if (ValidLocation(targetFile, targetRank))
                     KnightAttacks[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
 
                 //Down 1 Right 2
                 targetRank = rank - 1;
                 targetFile = file + 2;
-              
-                if (targetFile >= 1 && targetFile <= 8 && targetRank >= 1 && targetRank <= 8)
+
+                if (ValidLocation(targetFile, targetRank))
                     KnightAttacks[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
 
                 //Down 1 Left 2
                 targetFile = file - 2;
 
-                if (targetFile >= 1 && targetFile <= 8 && targetRank >= 1 && targetRank <= 8)
+                if (ValidLocation(targetFile, targetRank))
                     KnightAttacks[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
 
                 //Up 2 Right 1
                 targetRank = rank + 2;
                 targetFile = file + 1;
 
-                if (targetFile >= 1 && targetFile <= 8 && targetRank >= 1 && targetRank <= 8)
+                if (ValidLocation(targetFile, targetRank))
                     KnightAttacks[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
 
                 //Up 2 Left 1
                 targetFile = file - 1;
 
-                if (targetFile >= 1 && targetFile <= 8 && targetRank >= 1 && targetRank <= 8)
+                if (ValidLocation(targetFile, targetRank))
                     KnightAttacks[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
 
                 //Up 1 Right 2
                 targetRank = rank + 1;
                 targetFile = file + 2;
 
-                if (targetFile >= 1 && targetFile <= 8 && targetRank >= 1 && targetRank <= 8)
+                if (ValidLocation(targetFile, targetRank))
                     KnightAttacks[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
 
                 //Up 1 Left 2
                 targetFile = file - 2;
 
-                if (targetFile >= 1 && targetFile <= 8 && targetRank >= 1 && targetRank <= 8)
+                if (ValidLocation(targetFile, targetRank))
                     KnightAttacks[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
                
             }
+        }
+
+        private bool ValidLocation(int file, int rank)
+        {
+            return file >= 1 && file <= 8 && rank >= 1 && rank <= 8;
         }
     }
 }

@@ -86,7 +86,7 @@ namespace DotNetEngine.Engine
 		/// </summary>
 		/// <param name="state">The Current Game state</param>
 		/// <returns>A formatted chess board</returns>
-		public static string ConvertBitBoardToConsoleOutput(GameState state)
+		public static string ConvertBitBoardsToConsoleOutput(GameState state)
 		{
 			var output = new StringBuilder(" - - - - - - - - ");
 			output.AppendLine();

@@ -106,5 +106,102 @@ namespace DotNetEngine.Test
                     Assert.That(board & GameStateUtility.BitStates[i], Is.EqualTo(0));
             }
         }
+
+        [Test]
+        public void Generates_King_Board_Correctly_Lower_Left()
+        {
+            var board = moveLookups.KingAttacks[0];
+
+            Assert.That(board & GameStateUtility.BitStates[1], Is.EqualTo(GameStateUtility.BitStates[1]));
+            Assert.That(board & GameStateUtility.BitStates[8], Is.EqualTo(GameStateUtility.BitStates[8]));
+            Assert.That(board & GameStateUtility.BitStates[9], Is.EqualTo(GameStateUtility.BitStates[9]));
+
+            //check that nothing else is set
+            for (var i = 0; i < 64; i++)
+            {
+                if (i != 1 && i != 8 && i != 9)
+                    Assert.That(board & GameStateUtility.BitStates[i], Is.EqualTo(0));
+            }
+        }
+
+        [Test]
+        public void Generates_King_Board_Correctly_Lower_Right()
+        {
+            var board = moveLookups.KingAttacks[7];
+
+            Assert.That(board & GameStateUtility.BitStates[6], Is.EqualTo(GameStateUtility.BitStates[6]));
+            Assert.That(board & GameStateUtility.BitStates[15], Is.EqualTo(GameStateUtility.BitStates[15]));
+            Assert.That(board & GameStateUtility.BitStates[14], Is.EqualTo(GameStateUtility.BitStates[14]));
+
+            //check that nothing else is set
+            for (var i = 0; i < 64; i++)
+            {
+                if (i != 6 && i != 15 && i != 14)
+                    Assert.That(board & GameStateUtility.BitStates[i], Is.EqualTo(0));
+            }
+        }
+
+        [Test]
+        public void Generates_King_Board_Correctly_Upper_Left()
+        {
+            var board = moveLookups.KingAttacks[56];
+
+            Assert.That(board & GameStateUtility.BitStates[48], Is.EqualTo(GameStateUtility.BitStates[48]));
+            Assert.That(board & GameStateUtility.BitStates[49], Is.EqualTo(GameStateUtility.BitStates[49]));
+            Assert.That(board & GameStateUtility.BitStates[57], Is.EqualTo(GameStateUtility.BitStates[57]));
+
+            //check that nothing else is set
+            for (var i = 0; i < 64; i++)
+            {
+                if (i != 48 && i != 49 && i != 57)
+                    Assert.That(board & GameStateUtility.BitStates[i], Is.EqualTo(0));
+            }
+        }
+
+        [Test]
+        public void Generates_King_Board_Correctly_Upper_Right()
+        {
+            var board = moveLookups.KingAttacks[63];
+
+            //var output = GameStateUtility.ConvertBitBoardsToConsoleOutput(new GameState { BlackKing = board });
+
+            Assert.That(board & GameStateUtility.BitStates[62], Is.EqualTo(GameStateUtility.BitStates[62]));
+            Assert.That(board & GameStateUtility.BitStates[55], Is.EqualTo(GameStateUtility.BitStates[55]));
+            Assert.That(board & GameStateUtility.BitStates[54], Is.EqualTo(GameStateUtility.BitStates[54]));
+
+            //check that nothing else is set
+            for (var i = 0; i < 64; i++)
+            {
+                if (i != 62 && i != 55 && i != 54)
+                    Assert.That(board & GameStateUtility.BitStates[i], Is.EqualTo(0));
+            }
+        }
+
+        [Test]
+        public void Generates_King_Board_Correctly_Center()
+        {
+            var board = moveLookups.KingAttacks[27];
+
+            var output = GameStateUtility.ConvertBitBoardsToConsoleOutput(new GameState { BlackKing = board });
+
+            Assert.That(board & GameStateUtility.BitStates[26], Is.EqualTo(GameStateUtility.BitStates[26]));
+            Assert.That(board & GameStateUtility.BitStates[28], Is.EqualTo(GameStateUtility.BitStates[28]));
+
+            Assert.That(board & GameStateUtility.BitStates[35], Is.EqualTo(GameStateUtility.BitStates[35]));
+            Assert.That(board & GameStateUtility.BitStates[19], Is.EqualTo(GameStateUtility.BitStates[19]));
+
+            Assert.That(board & GameStateUtility.BitStates[34], Is.EqualTo(GameStateUtility.BitStates[34]));
+            Assert.That(board & GameStateUtility.BitStates[36], Is.EqualTo(GameStateUtility.BitStates[36]));
+
+            Assert.That(board & GameStateUtility.BitStates[18], Is.EqualTo(GameStateUtility.BitStates[18]));
+            Assert.That(board & GameStateUtility.BitStates[20], Is.EqualTo(GameStateUtility.BitStates[20]));
+
+            //check that nothing else is set
+            for (var i = 0; i < 64; i++)
+            {
+                if (i != 26 && i != 28 && i != 35 && i != 19 && i != 34 && i != 36 && i != 18 && i != 20)
+                    Assert.That(board & GameStateUtility.BitStates[i], Is.EqualTo(0));
+            }
+        }
     }
 }
