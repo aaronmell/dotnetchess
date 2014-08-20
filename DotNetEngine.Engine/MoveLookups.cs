@@ -33,7 +33,11 @@ namespace DotNetEngine.Engine
 
             GenerateKnightAttacks();
             GenerateKingAttacks();
-        }        
+            GenerateWhitePawnAttacks();
+            GenerateBlackPawnAttacks();
+            GenerateWhitePawnMoves();
+            GenerateBlackPawnMoves();
+        }
 
         private void InitializeArrays()
         {
@@ -57,6 +61,97 @@ namespace DotNetEngine.Engine
                 DiagonalAttacks[i] = new ulong[64];
             }            
         }
+
+        private void GenerateBlackPawnMoves()
+        {
+            for (int i = 0; i < 64; i++)
+            {
+                var file = GameStateUtility.Files[i];
+                var rank = GameStateUtility.Ranks[i];
+
+                var targetRank = rank - 1;
+                var targetFile = file;
+
+                if (ValidLocation(targetFile, targetRank))
+                    BlackPawnMoves[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
+
+                if (rank == 7)
+                {
+                    targetRank = rank - 2;
+
+                    if (ValidLocation(targetFile, targetRank))
+                        BlackPawnDoubleMoves[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
+                }
+            }
+        }
+
+        private void GenerateWhitePawnMoves()
+        {
+            for (int i = 0; i < 64; i++)
+            {
+                var file = GameStateUtility.Files[i];
+                var rank = GameStateUtility.Ranks[i];
+
+                var targetRank = rank + 1;
+                var targetFile = file;
+
+                if (ValidLocation(targetFile, targetRank))
+                    WhitePawnMoves[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
+
+                if (rank == 2)
+                {
+                    targetRank = rank + 2;
+                    
+                    if (ValidLocation(targetFile, targetRank))
+                        WhitePawnDoubleMoves[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
+                }
+            }
+        }
+
+        private void GenerateBlackPawnAttacks()
+        {
+
+            for (int i = 0; i < 64; i++)
+            {
+                var file = GameStateUtility.Files[i];
+                var rank = GameStateUtility.Ranks[i];
+
+                //Attack Left
+                var targetFile = file - 1;
+                var targetRank = rank - 1;
+
+                if (ValidLocation(targetFile, targetRank))
+                    BlackPawnAttacks[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
+
+                //Attack Right
+                targetFile = file + 1;
+
+                if (ValidLocation(targetFile, targetRank))
+                    BlackPawnAttacks[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
+            }
+        }             
+
+        private void GenerateWhitePawnAttacks()
+        {
+            for (int i = 0; i < 64; i++)
+            {
+                var file = GameStateUtility.Files[i];
+                var rank = GameStateUtility.Ranks[i];
+
+                //Attack Left
+                var targetFile = file - 1;
+                var targetRank = rank + 1;
+
+                if (ValidLocation(targetFile, targetRank))
+                    WhitePawnAttacks[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
+
+                //Attack Right
+                targetFile = file + 1;
+
+                if (ValidLocation(targetFile, targetRank))
+                    WhitePawnAttacks[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
+            }
+        }  
 
         private void GenerateKingAttacks()
         {

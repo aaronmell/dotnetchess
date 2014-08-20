@@ -163,8 +163,6 @@ namespace DotNetEngine.Test
         {
             var board = moveLookups.KingAttacks[63];
 
-            //var output = GameStateUtility.ConvertBitBoardsToConsoleOutput(new GameState { BlackKing = board });
-
             Assert.That(board & GameStateUtility.BitStates[62], Is.EqualTo(GameStateUtility.BitStates[62]));
             Assert.That(board & GameStateUtility.BitStates[55], Is.EqualTo(GameStateUtility.BitStates[55]));
             Assert.That(board & GameStateUtility.BitStates[54], Is.EqualTo(GameStateUtility.BitStates[54]));
@@ -181,9 +179,7 @@ namespace DotNetEngine.Test
         public void Generates_King_Board_Correctly_Center()
         {
             var board = moveLookups.KingAttacks[27];
-
-            var output = GameStateUtility.ConvertBitBoardsToConsoleOutput(new GameState { BlackKing = board });
-
+            
             Assert.That(board & GameStateUtility.BitStates[26], Is.EqualTo(GameStateUtility.BitStates[26]));
             Assert.That(board & GameStateUtility.BitStates[28], Is.EqualTo(GameStateUtility.BitStates[28]));
 
@@ -200,6 +196,102 @@ namespace DotNetEngine.Test
             for (var i = 0; i < 64; i++)
             {
                 if (i != 26 && i != 28 && i != 35 && i != 19 && i != 34 && i != 36 && i != 18 && i != 20)
+                    Assert.That(board & GameStateUtility.BitStates[i], Is.EqualTo(0));
+            }
+        }
+   
+        [Test]
+        public void Generates_White_Pawn_Attack_Board_Correctly()
+        {
+            var board = moveLookups.WhitePawnAttacks[1];
+
+            Assert.That(board & GameStateUtility.BitStates[8], Is.EqualTo(GameStateUtility.BitStates[8]));
+            Assert.That(board & GameStateUtility.BitStates[10], Is.EqualTo(GameStateUtility.BitStates[10]));
+
+            //check that nothing else is set
+            for (var i = 0; i < 64; i++)
+            {
+                if (i != 8 && i != 10)
+                    Assert.That(board & GameStateUtility.BitStates[i], Is.EqualTo(0));
+            }
+        }
+
+        [Test]
+        public void Generates_Black_Pawn_Attack_Board_Correctly()
+        {
+            var board = moveLookups.BlackPawnAttacks[57];
+
+            Assert.That(board & GameStateUtility.BitStates[48], Is.EqualTo(GameStateUtility.BitStates[48]));
+            Assert.That(board & GameStateUtility.BitStates[50], Is.EqualTo(GameStateUtility.BitStates[50]));
+
+            //check that nothing else is set
+            for (var i = 0; i < 64; i++)
+            {
+                if (i != 48 && i != 50)
+                    Assert.That(board & GameStateUtility.BitStates[i], Is.EqualTo(0));
+            }
+        }
+
+        [TestCase(0, 8)]
+        [TestCase(55, 63)]
+        public void Generates_White_Pawn_Single_Move_Correctly(int boardIndex, int targetSquare)
+        {
+            var board = moveLookups.WhitePawnMoves[boardIndex];
+
+            Assert.That(board & GameStateUtility.BitStates[targetSquare], Is.EqualTo(GameStateUtility.BitStates[targetSquare]));
+
+            //check that nothing else is set
+            for (var i = 0; i < 64; i++)
+            {
+                if (i != targetSquare)
+                    Assert.That(board & GameStateUtility.BitStates[i], Is.EqualTo(0));
+            }
+        }
+
+        [TestCase(8, 0)]
+        [TestCase(63, 55)]
+        public void Generates_Black_Pawn_Single_Move_Correctly(int boardIndex, int targetSquare)
+        {
+            var board = moveLookups.BlackPawnMoves[boardIndex];
+
+            Assert.That(board & GameStateUtility.BitStates[targetSquare], Is.EqualTo(GameStateUtility.BitStates[targetSquare]));
+
+            //check that nothing else is set
+            for (var i = 0; i < 64; i++)
+            {
+                if (i != targetSquare)
+                    Assert.That(board & GameStateUtility.BitStates[i], Is.EqualTo(0));
+            }
+        }
+
+        [TestCase(8, 24)]
+        [TestCase(15, 31)]
+        public void Generates_White_Pawn_Double_Move_Correctly(int boardIndex, int targetSquare)
+        {
+            var board = moveLookups.WhitePawnDoubleMoves[boardIndex];
+
+            Assert.That(board & GameStateUtility.BitStates[targetSquare], Is.EqualTo(GameStateUtility.BitStates[targetSquare]));
+
+            //check that nothing else is set
+            for (var i = 0; i < 64; i++)
+            {
+                if (i != targetSquare)
+                    Assert.That(board & GameStateUtility.BitStates[i], Is.EqualTo(0));
+            }
+        }
+
+        [TestCase(48, 32)]
+        [TestCase(55, 39)]
+        public void Generates_Black_Pawn_Double_Move_Correctly(int boardIndex, int targetSquare)
+        {
+            var board = moveLookups.BlackPawnDoubleMoves[boardIndex];
+
+            Assert.That(board & GameStateUtility.BitStates[targetSquare], Is.EqualTo(GameStateUtility.BitStates[targetSquare]));
+
+            //check that nothing else is set
+            for (var i = 0; i < 64; i++)
+            {
+                if (i != targetSquare)
                     Assert.That(board & GameStateUtility.BitStates[i], Is.EqualTo(0));
             }
         }
