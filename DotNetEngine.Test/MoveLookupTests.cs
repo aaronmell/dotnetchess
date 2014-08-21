@@ -295,5 +295,31 @@ namespace DotNetEngine.Test
                     Assert.That(board & GameStateUtility.BitStates[i], Is.EqualTo(0));
             }
         }
+
+        [TestCase(0,0,254)]
+        [TestCase(7, 0, 127)]
+        [TestCase(0,63,2)]
+        [TestCase(7, 63, 64)]
+        [TestCase(5, 63, 80)]
+        [TestCase(5, 0, 223)]
+        public void Generates_Sliding_Attacks_Correctly(int position, int state, int result)
+        {
+            var attack = moveLookups.SlidingAttacks[position][state];
+
+            Assert.That(attack, Is.EqualTo(result));
+        }
+
+        [TestCase(0, 0, 254)]
+        [TestCase(7, 0, 127)]
+        [TestCase(0, 63, 2)]
+        [TestCase(63, 0, 9151314442816847872ul)]
+        [TestCase(56, 0, 18302628885633695744ul)]
+        [TestCase(63, 63, 4611686018427387904ul)]
+        public void Generates_RankAttacks_Correctly(int position, int state, ulong result)
+        {
+            var attack = moveLookups.RankAttacks[position][state];
+
+            Assert.That(attack, Is.EqualTo(result));
+        }
     }
 }

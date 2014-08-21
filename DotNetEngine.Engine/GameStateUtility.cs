@@ -61,6 +61,20 @@ namespace DotNetEngine.Engine
 
         };
 
+        /// <summary>
+        /// The give rank of a row if it was shifted up by a single rank
+        /// </summary>
+        public static int[] ShiftedRank = new int[64] {
+            1, 1, 1, 1, 1, 1, 1, 1,
+            9, 9, 9, 9, 9, 9, 9, 9,
+            17, 17, 17, 17, 17, 17, 17, 17,
+            25, 25, 25, 25, 25, 25, 25, 25,
+            33, 33, 33, 33, 33, 33, 33, 33,
+            41, 41, 41, 41, 41, 41, 41, 41,
+            49, 49, 49, 49, 49, 49, 49, 49,
+            57, 57, 57, 57, 57, 57, 57, 57
+            };
+
 		/// <summary>
 		/// Returns a bitboard that contains all of the white pieces
 		/// </summary>
