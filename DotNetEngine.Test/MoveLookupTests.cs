@@ -309,15 +309,29 @@ namespace DotNetEngine.Test
             Assert.That(attack, Is.EqualTo(result));
         }
 
-        [TestCase(0, 0, 254)]
-        [TestCase(7, 0, 127)]
-        [TestCase(0, 63, 2)]
+        [TestCase(0, 0, 254ul)]
+        [TestCase(7, 0, 127ul)]
+        [TestCase(0, 63, 2ul)]
         [TestCase(63, 0, 9151314442816847872ul)]
         [TestCase(56, 0, 18302628885633695744ul)]
         [TestCase(63, 63, 4611686018427387904ul)]
         public void Generates_RankAttacks_Correctly(int position, int state, ulong result)
         {
             var attack = moveLookups.RankAttacks[position][state];
+
+            Assert.That(attack, Is.EqualTo(result));
+        }
+
+
+        [TestCase(0, 0, 254ul)]
+        [TestCase(7, 0, 18302628885633695744ul)]
+        [TestCase(0, 63, 2ul)]
+        [TestCase(63, 0, 9151314442816847872ul)]
+        [TestCase(56, 0, 127ul)]
+        [TestCase(63, 63, 4611686018427387904ul)]
+        public void Generates_FileAttacks_Correctly(int position, int state, ulong result)
+        {
+            var attack = moveLookups.FileAttacks[position][state];
 
             Assert.That(attack, Is.EqualTo(result));
         }

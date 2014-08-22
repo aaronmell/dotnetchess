@@ -12,6 +12,18 @@ namespace DotNetEngine.Engine
     /// </summary>
     public class MoveLookups
     {
+        private byte[] byteBitStates = new byte[8]
+            {
+                (byte)GameStateUtility.BitStates[0],
+                (byte)GameStateUtility.BitStates[1],
+                (byte)GameStateUtility.BitStates[2],
+                (byte)GameStateUtility.BitStates[3],
+                (byte)GameStateUtility.BitStates[4],
+                (byte)GameStateUtility.BitStates[5],
+                (byte)GameStateUtility.BitStates[6],
+                (byte)GameStateUtility.BitStates[7],
+            };
+
         public ulong[] KnightAttacks { get; private set; }
         public ulong[] KingAttacks { get; private set; }
 
@@ -45,6 +57,7 @@ namespace DotNetEngine.Engine
             GenerateSlidingAttacks();
 
             GenerateRankAttacks();
+            GenerateFileAttacks();
         }
 
         private void InitializeArrays()
@@ -77,6 +90,40 @@ namespace DotNetEngine.Engine
         }
 
         /// <summary>
+        /// Generates the file attacks for rooks and queens.
+        /// The Sliding attack is transformed from top to bottom to left to right.
+        /// 
+        ///                   H8
+        ///     . . . . . A . .         LSB         MSB
+        ///     . . . . . B . .     =>  A B C D E F G H
+        ///     . . . . . C . .
+        ///     . . . . . D . .
+        ///     . . . . . E . .
+        ///     . . . . . F . .
+        ///     . . . . . G . .
+        ///     . . . . . H . .
+        ///     A1
+        /// </summary>
+        private void GenerateFileAttacks()
+        {
+            for (var square = 0; square < 64; square++)
+            {
+                for (var attackState = 0; attackState < 64; attackState++)
+                {
+                    for (var attackbit = 0; attackbit < 8; attackbit++)
+                    {
+                        if ((SlidingAttacks[8 - GameStateUtility.Ranks[square]][attackState] & byteBitStates[attackbit]) == byteBitStates[attackbit])
+                        {
+                            var file = GameStateUtility.Files[square];
+                            var rank = 8 - attackbit;
+                            FileAttacks[square][attackState] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[file][rank]];
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Generates a jagged array of sliding attacks.
         /// Sliding attacks have two Components
         /// The index, which is the position of the attacker on the file rank or diagonal 1-8.
@@ -92,20 +139,7 @@ namespace DotNetEngine.Engine
         /// This is used to generate all of the sliding piece attack bitboards
         /// </summary>
         private void GenerateSlidingAttacks()
-        {
-            var bitStates = new byte[8]
-            {
-                (byte)GameStateUtility.BitStates[0],
-                (byte)GameStateUtility.BitStates[1],
-                (byte)GameStateUtility.BitStates[2],
-                (byte)GameStateUtility.BitStates[3],
-                (byte)GameStateUtility.BitStates[4],
-                (byte)GameStateUtility.BitStates[5],
-                (byte)GameStateUtility.BitStates[6],
-                (byte)GameStateUtility.BitStates[7],
-            };
-
-           
+        { 
             for (int position = 0; position <= 7; position++)
             {
                 for (uint state = 0; state < 64; state++)
@@ -115,15 +149,15 @@ namespace DotNetEngine.Engine
 
                     if (position < 7)
                     {
-                        attackMask |= bitStates[position + 1];
+                        attackMask |= byteBitStates[position + 1];
                     }
 
                     var slide = position + 2;
                     while (slide <= 7)
                     {
-                        if ((~stateMask & bitStates[slide - 1]) == bitStates[slide - 1])
+                        if ((~stateMask & byteBitStates[slide - 1]) == byteBitStates[slide - 1])
                         {
-                            attackMask |= bitStates[slide];
+                            attackMask |= byteBitStates[slide];
                         }
                         else
                         {
@@ -133,14 +167,14 @@ namespace DotNetEngine.Engine
                     }
                     if (position > 0)
                     {
-                        attackMask |= bitStates[position - 1];
+                        attackMask |= byteBitStates[position - 1];
                     }
                     slide = position - 2;
                     while (slide >= 0)
                     {
-                        if ((~stateMask & bitStates[slide + 1]) == bitStates[slide + 1])
+                        if ((~stateMask & byteBitStates[slide + 1]) == byteBitStates[slide + 1])
                         {
-                            attackMask |= bitStates[slide];
+                            attackMask |= byteBitStates[slide];
                         }
                         else
                         {
@@ -158,11 +192,11 @@ namespace DotNetEngine.Engine
         //The sliding attacks array doesn't require a transformation, just a shift for each row on the board. 
         private void GenerateRankAttacks()
         {
-            for (var i = 0; i < 64; i++)
+            for (var square = 0; square < 64; square++)
             {
-                for (var j = 0; j < 64; j++)
+                for (var attackState = 0; attackState < 64; attackState++)
                 {
-                    RankAttacks[i][j] = ((ulong)SlidingAttacks[GameStateUtility.Files[i] - 1][j] << (GameStateUtility.ShiftedRank[i] - 1));
+                    RankAttacks[square][attackState] = ((ulong)SlidingAttacks[GameStateUtility.Files[square] - 1][attackState] << (GameStateUtility.ShiftedRank[square] - 1));
                 }
             }
         }
