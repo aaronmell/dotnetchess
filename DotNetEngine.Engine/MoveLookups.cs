@@ -197,7 +197,7 @@ namespace DotNetEngine.Engine
                         {
                             var file = GameStateUtility.Files[square];
                             var rank = 8 - attackbit;
-                            FileAttacks[square][attackState] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[file][rank]];
+                            FileAttacks[square][attackState] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[rank][file]];
                         }
                     }
                 }

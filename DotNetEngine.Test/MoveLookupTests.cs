@@ -323,12 +323,10 @@ namespace DotNetEngine.Test
         }
 
 
-        [TestCase(0, 0, 254ul)]
-        [TestCase(7, 0, 18302628885633695744ul)]
-        [TestCase(0, 63, 2ul)]
-        [TestCase(63, 0, 9151314442816847872ul)]
-        [TestCase(56, 0, 127ul)]
-        [TestCase(63, 63, 4611686018427387904ul)]
+        [TestCase(0,0, 72340172838076672ul)]
+        [TestCase(0, 63, 256ul)]
+        [TestCase(56, 0, 282578800148737ul)]
+        [TestCase(56, 63, 281474976710656ul)]
         public void Generates_FileAttacks_Correctly(int position, int state, ulong result)
         {
             var attack = moveLookups.FileAttacks[position][state];
