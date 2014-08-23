@@ -335,5 +335,39 @@ namespace DotNetEngine.Test
 
             Assert.That(attack, Is.EqualTo(result));
         }
+
+        [TestCase(6,0, 32768ul)]
+        [TestCase(6, 63,32768ul)]
+        [TestCase(48, 0, 144115188075855872ul)]
+        [TestCase(48, 63, 144115188075855872ul)]
+        [TestCase(56, 0, 0ul)]
+        [TestCase(7, 0, 0ul)]
+        [TestCase(0, 0, 9241421688590303744ul)]
+        [TestCase(0, 63, 512ul)]
+        [TestCase(63, 0, 18049651735527937ul)]
+        [TestCase(63, 63, 18014398509481984ul)]
+        public void Generates_A1H8_DiagonalAttacks_Correctly(int position, int state, ulong result)
+        {
+            var attack = moveLookups.DiagonalA1H8Attacks[position][state];
+
+            Assert.That(attack, Is.EqualTo(result));
+        }
+
+        [TestCase(8, 0, 2ul)]
+        [TestCase(8, 63, 2ul)]
+        [TestCase(0, 0, 0ul)]
+        [TestCase(63, 0, 0ul)]
+        [TestCase(62, 0, 36028797018963968ul)]
+        [TestCase(62, 63, 36028797018963968ul)]
+        [TestCase(56, 0, 567382630219904ul)]
+        [TestCase(56, 63, 562949953421312ul)]
+        [TestCase(7, 0, 72624976668147712ul)]
+        [TestCase(7, 63, 16384ul)]
+        public void Generates_A8H1_DiagonalAttacks_Correctly(int position, int state, ulong result)
+        {
+            var attack = moveLookups.DiagonalA8H1Attacks[position][state];
+
+            Assert.That(attack, Is.EqualTo(result));
+        }
     }
 }

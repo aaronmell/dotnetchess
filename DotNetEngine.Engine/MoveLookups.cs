@@ -37,7 +37,8 @@ namespace DotNetEngine.Engine
 
         public ulong[][] RankAttacks { get; private set; }
         public ulong[][] FileAttacks { get; private set; }
-        public ulong[][] DiagonalAttacks { get; private set; }
+        public ulong[][] DiagonalA1H8Attacks { get; private set; }
+        public ulong[][] DiagonalA8H1Attacks { get; private set; }
 
 
         //This should be private, but I wanted to write tests against it to ensure that it works correctly.
@@ -55,9 +56,11 @@ namespace DotNetEngine.Engine
             GenerateBlackPawnMoves();
 
             GenerateSlidingAttacks();
-
             GenerateRankAttacks();
             GenerateFileAttacks();
+
+            GenerateDiagonalA1H8Attacks();
+            GenerateDiagonalA8H1Attacks();
         }
 
         private void InitializeArrays()
@@ -73,19 +76,97 @@ namespace DotNetEngine.Engine
 
             RankAttacks = new ulong[64][];
             FileAttacks = new ulong[64][];
-            DiagonalAttacks = new ulong[64][];
+            DiagonalA1H8Attacks = new ulong[64][];
+            DiagonalA8H1Attacks = new ulong[64][];
             SlidingAttacks = new byte[8][];
 
             for (int i = 0; i < 64; i++)
             {
                 RankAttacks[i] = new ulong[64];
                 FileAttacks[i] = new ulong[64];
-                DiagonalAttacks[i] = new ulong[64];
+                DiagonalA1H8Attacks[i] = new ulong[64];
+                DiagonalA8H1Attacks[i] = new ulong[64];
             }  
           
             for (int i = 0; i < 8; i++)
             {
                 SlidingAttacks[i] = new byte[64];
+            }
+        }
+
+        private void GenerateDiagonalA8H1Attacks()
+        {
+            for (var square = 0; square < 64; square++)
+            {
+                for (var attackState = 0; attackState < 64; attackState++)
+                {
+                    for (var attackbit = 0; attackbit < 8; attackbit++)
+                    {
+                            
+                        var slidingattackindex = 8 - GameStateUtility.Ranks[square] < GameStateUtility.Files[square] - 1 ? 8 - GameStateUtility.Ranks[square] : GameStateUtility.Files[square] - 1;
+                        if ((SlidingAttacks[slidingattackindex][attackState] & byteBitStates[attackbit]) == byteBitStates[attackbit])
+                        {
+                            var diagonalLength = GameStateUtility.Files[square] + GameStateUtility.Ranks[square];
+                            
+                            var file = 0;
+                            var rank = 0;
+
+                            if (diagonalLength < 10)
+                            {
+                                file = attackbit + 1;
+                                rank = diagonalLength - file;
+                            }
+                            else
+                            {
+                                rank = 8 - attackbit;
+                                file = diagonalLength - rank;
+                            }
+
+                            if ((file > 0) && (file < 9) && (rank > 0) && (rank < 9))
+                            {
+                                DiagonalA8H1Attacks[square][attackState] |=  GameStateUtility.BitStates[GameStateUtility.BoardIndex[rank][file]];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void GenerateDiagonalA1H8Attacks()
+        {
+            for (var square = 0; square < 64; square++)
+            {
+                for (var attackState = 0; attackState < 64; attackState++)
+                {
+                    for (var attackbit = 0; attackbit < 8; attackbit++)
+                    {
+
+                        var slidingattackindex = (GameStateUtility.Ranks[square] - 1) < (GameStateUtility.Files[square] - 1) ? (GameStateUtility.Ranks[square] - 1) : (GameStateUtility.Files[square] - 1);
+                        if ((SlidingAttacks[slidingattackindex][attackState] & byteBitStates[attackbit]) == byteBitStates[attackbit])
+                        {
+                            var diagonalLength = GameStateUtility.Files[square] - GameStateUtility.Ranks[square];
+
+                            var file = 0;
+                            var rank = 0;
+
+                            if (diagonalLength < 0)
+                            {
+                                file = attackbit + 1;
+                                rank = file - diagonalLength;
+                            }
+                            else
+                            {
+                                rank = attackbit + 1;
+                                file = diagonalLength + rank;
+                            }
+
+                            if ((file > 0) && (file < 9) && (rank > 0) && (rank < 9))
+                            {
+                                DiagonalA1H8Attacks[square][attackState] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[rank][file]];
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -122,6 +203,8 @@ namespace DotNetEngine.Engine
                 }
             }
         }
+
+
 
         /// <summary>
         /// Generates a jagged array of sliding attacks.
