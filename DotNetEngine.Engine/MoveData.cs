@@ -12,7 +12,7 @@ namespace DotNetEngine.Engine
     /// </summary>
     internal class MoveData
     {
-        private byte[] byteBitStates = new byte[8]
+        private static byte[] byteBitStates = new byte[8]
             {
                 (byte)MoveUtility.BitStates[0],
                 (byte)MoveUtility.BitStates[1],
@@ -24,6 +24,15 @@ namespace DotNetEngine.Engine
                 (byte)MoveUtility.BitStates[7],
             };
               
+         private ulong[] RankMask = new ulong[64];
+        private ulong[] FileMask = new ulong[64];
+        
+        private ulong[] DiagonalA1H8Mask = new ulong[64];
+        private ulong[] DiagonalA8H1Mask = new ulong[64];
+
+        private ulong[] DiagonalA1H8MagicMultiplication = new ulong[64];
+        private ulong[] DiagonalA8H1MagicMultiplication = new ulong[64];
+
         internal ulong[] KnightAttacks { get; private set; }
         internal ulong[] KingAttacks { get; private set; }
 
@@ -41,10 +50,7 @@ namespace DotNetEngine.Engine
         internal ulong[][] DiagonalA8H1Attacks { get; private set; }        
 
         //This should be private, but I wanted to write tests against it to ensure that it works correctly.
-        internal byte[][] SlidingAttacks {get; private set;}
-
-        private ulong[] RankMask = new ulong[64];
-        private ulong[] FileMask = new ulong[64];        
+        internal byte[][] SlidingAttacks {get; private set;}      
 
         internal MoveData()
         {
@@ -65,11 +71,16 @@ namespace DotNetEngine.Engine
             GenerateDiagonalA8H1Attacks();
 
             GenerateMasks();
-        }       
+        } 
 
         internal ulong GetRookMoves(int fromSquare, ulong occupiedSquares, ulong targetboard)
         {
             return GetRankMoves(fromSquare, occupiedSquares, targetboard) | GetFileMoves(fromSquare, occupiedSquares, targetboard);
+        }
+
+        internal ulong GetBishopMoves(int fromSquare, ulong occupiedSquares, ulong targetboard)
+        {
+            return GetDiagonalA8H1Moves(fromSquare, occupiedSquares, targetboard) | GetDiagonalA1H8Moves(fromSquare, occupiedSquares, targetboard);
         }
 
         private void InitializeArrays()
@@ -113,7 +124,41 @@ namespace DotNetEngine.Engine
                     {
                         RankMask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.BitStates[MoveUtility.BoardIndex[rank][bit]];
                         FileMask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.BitStates[MoveUtility.BoardIndex[bit][file]];
-                    }     
+                    }
+
+                    var diagonalA8H1 = file + rank; // from 2 to 16, longest diagonal = 9
+                   
+                    if (diagonalA8H1 < 10)
+                    {
+                        for (var square = 2; square < diagonalA8H1 - 1; square++)
+                        {
+                            DiagonalA8H1Mask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.BitStates[MoveUtility.BoardIndex[square][diagonalA8H1 - square]];
+                        }
+                    }
+                    else
+                    {
+                        for (var square = 2; square < 17 - diagonalA8H1; square++)
+                        {
+                            DiagonalA8H1Mask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.BitStates[MoveUtility.BoardIndex[diagonalA8H1 + square - 9][9 - square]];
+                        }
+                    }
+                   
+                    var diagonalA1H8 = file - rank; // from -7 to +7, longest diagonal = 0
+
+                    if (diagonalA1H8 > -1) // lower half, diagonals 0 to 7
+                    {
+                        for (var square = 2 ; square < 8 - diagonalA1H8 ; square ++)
+                        {
+                            DiagonalA1H8Mask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.BitStates[MoveUtility.BoardIndex[diagonalA1H8 + square][square]];
+                        }
+                    }
+                    else
+                    {
+                        for (var square = 2 ; square < 8 + diagonalA1H8 ; square ++)
+                        {
+                            DiagonalA1H8Mask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.BitStates[MoveUtility.BoardIndex[square][square - diagonalA1H8]];
+                        }
+                    }
                 }
             }
         }
@@ -542,6 +587,16 @@ namespace DotNetEngine.Engine
         {
 
             return FileAttacks[fromSquare][(occupiedSquares & FileMask[fromSquare]) * MoveUtility.FileMagicMultiplication[fromSquare] >> 57] & targetboard;
+        }
+
+        private ulong GetDiagonalA8H1Moves(int fromSquare, ulong occupiedSquares, ulong targetboard)
+        {
+            return DiagonalA8H1Attacks[fromSquare][(occupiedSquares & DiagonalA8H1Mask[fromSquare]) * MoveUtility.DiagonalA8H1MagicMultiplcation[fromSquare] >> 57] & targetboard;
+        }
+
+        private ulong GetDiagonalA1H8Moves(int fromSquare, ulong occupiedSquares, ulong targetboard)
+        {
+            return DiagonalA1H8Attacks[fromSquare][(occupiedSquares & DiagonalA1H8Mask[fromSquare]) * MoveUtility.DiagonalA1H8MagicMultiplcation[fromSquare] >> 57] & targetboard;
         }
     }
 }

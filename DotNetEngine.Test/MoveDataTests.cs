@@ -384,5 +384,24 @@ namespace DotNetEngine.Test
             var move = moveLookups.GetRookMoves(fromSquare, occupiedSquares, targetboard);
             Assert.That(move, Is.EqualTo(result));
         }
+
+        [TestCase(27, 134217728UL, ulong.MaxValue, 9241705379636978241UL)]
+        [TestCase(27, 134217728UL, ulong.MinValue, 0UL)]
+        [TestCase(27, ulong.MaxValue, ulong.MaxValue, 85900656640UL)]
+        [TestCase(27, ulong.MaxValue, ulong.MinValue, 0UL)]
+        [TestCase(28, 134217728UL, ulong.MaxValue, 108724279602332802UL)]
+        [TestCase(28, 134217728UL, ulong.MinValue, 0UL)]
+        [TestCase(28, ulong.MaxValue, ulong.MaxValue, 171801313280UL)]
+        [TestCase(28, ulong.MaxValue, ulong.MinValue, 0UL)]
+        public void Generates_BishopMoves_Correctly(int fromSquare, ulong occupiedSquares, ulong targetboard, ulong result)
+        {
+            var move = moveLookups.GetBishopMoves(fromSquare, occupiedSquares, targetboard);
+
+            GameStateUtility.ConvertSingleBitBoardsToConsoleOutput(move);
+
+            Assert.That(move, Is.EqualTo(result));
+
+
+        }       
     }
 }
