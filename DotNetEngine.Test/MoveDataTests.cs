@@ -378,7 +378,7 @@ namespace DotNetEngine.Test
         [TestCase(63, 9223372036854775808UL, ulong.MaxValue, 9187484529235886208UL)]
         [TestCase(63, 9223372036854775808UL, ulong.MinValue, 0UL)]
         [TestCase(27, 134217728UL, ulong.MaxValue, 578721386714368008UL)]
-        [TestCase(27, 134217728UL, ulong.MinValue, 0UL)]
+        [TestCase(27, 134217728UL, ulong.MinValue, 0UL)]      
         public void Generates_RookMoves_Correctly(int fromSquare, ulong occupiedSquares, ulong targetboard, ulong result)
         {
             var move = moveLookups.GetRookMoves(fromSquare, occupiedSquares, targetboard);
@@ -402,6 +402,25 @@ namespace DotNetEngine.Test
             Assert.That(move, Is.EqualTo(result));
 
 
-        }       
+        }
+
+        [TestCase(27, 134217728UL, ulong.MaxValue, 9820426766351346249UL)]
+        [TestCase(27, 134217728UL, ulong.MinValue, 0UL)]
+        [TestCase(27, ulong.MaxValue, ulong.MaxValue, 120596463616UL)]
+        [TestCase(27, ulong.MaxValue, ulong.MinValue, 0UL)]
+        [TestCase(28, 268435456UL, ulong.MaxValue, 1266167048752878738UL)]
+        [TestCase(28, 268435456UL, ulong.MinValue, 0UL)]
+        [TestCase(28, ulong.MaxValue, ulong.MaxValue, 241192927232UL)]
+        [TestCase(28, ulong.MaxValue, ulong.MinValue, 0UL)]
+        public void Generates_QueenMoves_Correctly(int fromSquare, ulong occupiedSquares, ulong targetboard, ulong result)
+        {
+            var move = moveLookups.GetQueenMoves(fromSquare, occupiedSquares, targetboard);
+
+            GameStateUtility.ConvertSingleBitBoardsToConsoleOutput(move);
+
+            Assert.That(move, Is.EqualTo(result));
+
+
+        }
     }
 }

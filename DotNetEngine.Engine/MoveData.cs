@@ -24,7 +24,7 @@ namespace DotNetEngine.Engine
                 (byte)MoveUtility.BitStates[7],
             };
               
-         private ulong[] RankMask = new ulong[64];
+        private ulong[] RankMask = new ulong[64];
         private ulong[] FileMask = new ulong[64];
         
         private ulong[] DiagonalA1H8Mask = new ulong[64];
@@ -81,6 +81,11 @@ namespace DotNetEngine.Engine
         internal ulong GetBishopMoves(int fromSquare, ulong occupiedSquares, ulong targetboard)
         {
             return GetDiagonalA8H1Moves(fromSquare, occupiedSquares, targetboard) | GetDiagonalA1H8Moves(fromSquare, occupiedSquares, targetboard);
+        }
+
+        public ulong GetQueenMoves(int fromSquare, ulong occupiedSquares, ulong targetboard)
+        {
+            return GetRookMoves(fromSquare, occupiedSquares, targetboard) | GetBishopMoves(fromSquare, occupiedSquares, targetboard);
         }
 
         private void InitializeArrays()
@@ -158,7 +163,7 @@ namespace DotNetEngine.Engine
                         {
                             DiagonalA1H8Mask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.BitStates[MoveUtility.BoardIndex[square][square - diagonalA1H8]];
                         }
-                    }
+                    }                    
                 }
             }
         }
