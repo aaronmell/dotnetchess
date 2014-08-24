@@ -8,51 +8,6 @@ namespace DotNetEngine.Test
 	public class GameStateUtilityTests
 	{
         [Test]
-        public void BoardIndex_Returns_Correct_Value()
-        {
-            var count = 0;
-            for (var rank = 1; rank < 9; rank++)
-            {
-                for (var file = 1; file < 9; file++)
-                {
-                    Assert.That(GameStateUtility.BoardIndex[rank][file], Is.EqualTo(count));
-                    count++;
-                }                
-            }
-        }
-
-        [Test]
-        public void Ranks_Return_Correct_Value()
-        {
-            var count = 0;
-
-            for (var i =0; i < 64; i++)
-            {
-                if (i % 8 == 0)
-                {
-                    count++;
-                }
-                Assert.That(GameStateUtility.Ranks[i], Is.EqualTo(count));                
-            }
-        }
-
-        [Test]
-        public void Files_Return_Correct_Value()
-        {
-            var count = 0;
-
-            for (var i = 0; i < 64; i++)
-            {
-                if (i % 8 == 0)
-                {
-                    count = 1;
-                }
-                Assert.That(GameStateUtility.Files[i], Is.EqualTo(count));
-                count++;
-            }
-        }
-
-		[Test]
 		public void GetAllWhitePiecesBoard_Returns_Correct_Board_When_Filled()
 		{
 			var gameState = new GameState

@@ -3,39 +3,39 @@
 namespace DotNetEngine.Engine
 {
 	/// <summary>
-	/// An Object that contains the game state.
+	/// An Object that contains the current game state.
 	/// </summary>
-	public class GameState
+	internal class GameState
 	{
 		private readonly ulong[] _allPieceBoards;
 
 		//white bitboards
-		public ulong WhitePawns { get; set; }
-		public ulong WhiteKnights { get; set; }
-		public ulong WhiteBishops { get; set; }
-		public ulong WhiteRooks { get; set; }
-		public ulong WhiteQueen { get; set; }
-		public ulong WhiteKing { get; set; }
+		internal ulong WhitePawns { get; set; }
+		internal ulong WhiteKnights { get; set; }
+		internal ulong WhiteBishops { get; set; }
+		internal ulong WhiteRooks { get; set; }
+		internal ulong WhiteQueen { get; set; }
+		internal ulong WhiteKing { get; set; }
 
 		//black bitboards
-		public ulong BlackPawns { get; set; }
-		public ulong BlackKnights { get; set; }
-		public ulong BlackBishops { get; set; }
-		public ulong BlackRooks { get; set; }
-		public ulong BlackQueen { get; set; }
-		public ulong BlackKing { get; set; }
+		internal ulong BlackPawns { get; set; }
+		internal ulong BlackKnights { get; set; }
+		internal ulong BlackBishops { get; set; }
+		internal ulong BlackRooks { get; set; }
+		internal ulong BlackQueen { get; set; }
+		internal ulong BlackKing { get; set; }
 
 		/// <summary>
 		/// A list of all of the moves played so far.
 		/// </summary>
-		public List<uint> Moves { get; set; }
+		internal List<uint> Moves { get; set; }
 
-		public bool WhiteToMove { get; set; }
+		internal bool WhiteToMove { get; set; }
 
 		/// <summary>
 		/// An array of all the bitboards.
 		/// </summary>
-		public ulong[] AllPieceBoards
+		internal ulong[] AllPieceBoards
 		{
 			get { return _allPieceBoards; }
 		}
@@ -46,28 +46,28 @@ namespace DotNetEngine.Engine
 		/// 2 - Can Castle 000 
 		/// 3 - Can Castle Both 00 and 000
 		/// </summary>
-		public int CurrentWhiteCastleStatus { get; set; }
-		public int CurrentBlackCastleStatus { get; set; }
+		internal int CurrentWhiteCastleStatus { get; set; }
+		internal int CurrentBlackCastleStatus { get; set; }
 		
-		public int EnpassantTargetSquare { get; set; }
+		internal int EnpassantTargetSquare { get; set; }
 
 		/// <summary>
 		/// The number of half moves currently made
 		/// </summary>
-		public int FiftyMoveRuleCount { get; set; }
+		internal int FiftyMoveRuleCount { get; set; }
 
 		/// <summary>
 		/// The total number of full moves currently made
 		/// </summary>
-		public int TotalMoveCount { get; set; }
+		internal int TotalMoveCount { get; set; }
 
 		/// <summary>
 		/// An single dimension array of the board. Each Piece is represented by a unique bit
 		/// This array is little endian encoded. A1 = 0 and H8 = 63
 		/// </summary>
-		public uint[] BoardArray { get; private set; }
+		internal uint[] BoardArray { get; private set; }
 
-		public GameState()
+		internal GameState()
 		{
 			_allPieceBoards = new[]
 			{

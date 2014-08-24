@@ -5,9 +5,9 @@ namespace DotNetEngine.Engine
 	/// <summary>
 	/// A utility class used to generate all of the psuedo legal moves a piece can make
 	/// </summary>
-	public class MoveGeneratorUtility
+	internal class MoveGeneratorUtility
 	{
-		public static List<uint> GenerateMoves(GameState gameState)
+		internal static List<uint> GenerateMoves(GameState gameState)
 		{
 			if (gameState.WhiteToMove)
 			{

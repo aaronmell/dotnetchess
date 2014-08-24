@@ -8,7 +8,7 @@ namespace DotNetEngine.Engine
 	/// <summary>
 	/// Utility class helpers allow loading a FEN (Forsyth-Edwards Notation) <see cref="http://kirill-kryukov.com/chess/doc/fen.html"/>
 	/// </summary>
-	public static class FenUtility
+	internal static class FenUtility
 	{
 		private static readonly char[] Files = new []
 		{
@@ -20,7 +20,7 @@ namespace DotNetEngine.Engine
 		/// </summary>
 		/// <param name="fen"></param>
 		/// <returns></returns>
-		public static GameState LoadStateFromFen(string fen)
+		internal static GameState LoadStateFromFen(string fen)
 		{
 			fen = fen.Trim(' ');
 
@@ -69,7 +69,7 @@ namespace DotNetEngine.Engine
 						break;
 
 					var boardArrayPosition = (rankNumber * 8 + file);
-					var currentPosition = GameStateUtility.BitStates[boardArrayPosition];
+					var currentPosition = MoveUtility.BitStates[boardArrayPosition];
 
 					switch (c)
 					{

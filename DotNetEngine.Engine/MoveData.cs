@@ -8,43 +8,45 @@ namespace DotNetEngine.Engine
 {
      
     /// <summary>
-    /// Contains bitboards of all of the Pre-Computed Valid locations for each piece type on the board based on its starting location.
+    /// Contains all of the move related data.
     /// </summary>
-    public class MoveLookups
+    internal class MoveData
     {
         private byte[] byteBitStates = new byte[8]
             {
-                (byte)GameStateUtility.BitStates[0],
-                (byte)GameStateUtility.BitStates[1],
-                (byte)GameStateUtility.BitStates[2],
-                (byte)GameStateUtility.BitStates[3],
-                (byte)GameStateUtility.BitStates[4],
-                (byte)GameStateUtility.BitStates[5],
-                (byte)GameStateUtility.BitStates[6],
-                (byte)GameStateUtility.BitStates[7],
+                (byte)MoveUtility.BitStates[0],
+                (byte)MoveUtility.BitStates[1],
+                (byte)MoveUtility.BitStates[2],
+                (byte)MoveUtility.BitStates[3],
+                (byte)MoveUtility.BitStates[4],
+                (byte)MoveUtility.BitStates[5],
+                (byte)MoveUtility.BitStates[6],
+                (byte)MoveUtility.BitStates[7],
             };
+              
+        internal ulong[] KnightAttacks { get; private set; }
+        internal ulong[] KingAttacks { get; private set; }
 
-        public ulong[] KnightAttacks { get; private set; }
-        public ulong[] KingAttacks { get; private set; }
+        internal ulong[] WhitePawnAttacks { get; private set; }
+        internal ulong[] WhitePawnMoves { get; private set; }
+        internal ulong[] WhitePawnDoubleMoves { get; private set; }
 
-        public ulong[] WhitePawnAttacks { get; private set; }
-        public ulong[] WhitePawnMoves { get; private set; }
-        public ulong[] WhitePawnDoubleMoves { get; private set; }
+        internal ulong[] BlackPawnAttacks { get; private set; }
+        internal ulong[] BlackPawnMoves { get; private set; }
+        internal ulong[] BlackPawnDoubleMoves { get; private set; }
 
-        public ulong[] BlackPawnAttacks { get; private set; }
-        public ulong[] BlackPawnMoves { get; private set; }
-        public ulong[] BlackPawnDoubleMoves { get; private set; }
-
-        public ulong[][] RankAttacks { get; private set; }
-        public ulong[][] FileAttacks { get; private set; }
-        public ulong[][] DiagonalA1H8Attacks { get; private set; }
-        public ulong[][] DiagonalA8H1Attacks { get; private set; }
-
+        internal ulong[][] RankAttacks { get; private set; }
+        internal ulong[][] FileAttacks { get; private set; }
+        internal ulong[][] DiagonalA1H8Attacks { get; private set; }
+        internal ulong[][] DiagonalA8H1Attacks { get; private set; }        
 
         //This should be private, but I wanted to write tests against it to ensure that it works correctly.
-        public byte[][] SlidingAttacks {get; private set;}
+        internal byte[][] SlidingAttacks {get; private set;}
 
-        public MoveLookups()
+        private ulong[] RankMask = new ulong[64];
+        private ulong[] FileMask = new ulong[64];        
+
+        internal MoveData()
         {
             InitializeArrays();
 
@@ -61,6 +63,13 @@ namespace DotNetEngine.Engine
 
             GenerateDiagonalA1H8Attacks();
             GenerateDiagonalA8H1Attacks();
+
+            GenerateMasks();
+        }       
+
+        internal ulong GetRookMoves(int fromSquare, ulong occupiedSquares, ulong targetboard)
+        {
+            return GetRankMoves(fromSquare, occupiedSquares, targetboard) | GetFileMoves(fromSquare, occupiedSquares, targetboard);
         }
 
         private void InitializeArrays()
@@ -94,6 +103,21 @@ namespace DotNetEngine.Engine
             }
         }
 
+        private void GenerateMasks()
+        {
+            for (var file = 1; file < 9; file++)
+            {
+                for (var rank = 1; rank < 9; rank++)
+                {
+                    for (var bit = 2; bit < 8; bit++)
+                    {
+                        RankMask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.BitStates[MoveUtility.BoardIndex[rank][bit]];
+                        FileMask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.BitStates[MoveUtility.BoardIndex[bit][file]];
+                    }     
+                }
+            }
+        }
+
         private void GenerateDiagonalA8H1Attacks()
         {
             for (var square = 0; square < 64; square++)
@@ -103,10 +127,10 @@ namespace DotNetEngine.Engine
                     for (var attackbit = 0; attackbit < 8; attackbit++)
                     {
                             
-                        var slidingattackindex = 8 - GameStateUtility.Ranks[square] < GameStateUtility.Files[square] - 1 ? 8 - GameStateUtility.Ranks[square] : GameStateUtility.Files[square] - 1;
+                        var slidingattackindex = 8 - MoveUtility.Ranks[square] < MoveUtility.Files[square] - 1 ? 8 - MoveUtility.Ranks[square] : MoveUtility.Files[square] - 1;
                         if ((SlidingAttacks[slidingattackindex][attackState] & byteBitStates[attackbit]) == byteBitStates[attackbit])
                         {
-                            var diagonalLength = GameStateUtility.Files[square] + GameStateUtility.Ranks[square];
+                            var diagonalLength = MoveUtility.Files[square] + MoveUtility.Ranks[square];
                             
                             var file = 0;
                             var rank = 0;
@@ -124,7 +148,7 @@ namespace DotNetEngine.Engine
 
                             if ((file > 0) && (file < 9) && (rank > 0) && (rank < 9))
                             {
-                                DiagonalA8H1Attacks[square][attackState] |=  GameStateUtility.BitStates[GameStateUtility.BoardIndex[rank][file]];
+                                DiagonalA8H1Attacks[square][attackState] |=  MoveUtility.BitStates[MoveUtility.BoardIndex[rank][file]];
                             }
                         }
                     }
@@ -141,10 +165,10 @@ namespace DotNetEngine.Engine
                     for (var attackbit = 0; attackbit < 8; attackbit++)
                     {
 
-                        var slidingattackindex = (GameStateUtility.Ranks[square] - 1) < (GameStateUtility.Files[square] - 1) ? (GameStateUtility.Ranks[square] - 1) : (GameStateUtility.Files[square] - 1);
+                        var slidingattackindex = (MoveUtility.Ranks[square] - 1) < (MoveUtility.Files[square] - 1) ? (MoveUtility.Ranks[square] - 1) : (MoveUtility.Files[square] - 1);
                         if ((SlidingAttacks[slidingattackindex][attackState] & byteBitStates[attackbit]) == byteBitStates[attackbit])
                         {
-                            var diagonalLength = GameStateUtility.Files[square] - GameStateUtility.Ranks[square];
+                            var diagonalLength = MoveUtility.Files[square] - MoveUtility.Ranks[square];
 
                             var file = 0;
                             var rank = 0;
@@ -162,7 +186,7 @@ namespace DotNetEngine.Engine
 
                             if ((file > 0) && (file < 9) && (rank > 0) && (rank < 9))
                             {
-                                DiagonalA1H8Attacks[square][attackState] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[rank][file]];
+                                DiagonalA1H8Attacks[square][attackState] |= MoveUtility.BitStates[MoveUtility.BoardIndex[rank][file]];
                             }
                         }
                     }
@@ -193,19 +217,17 @@ namespace DotNetEngine.Engine
                 {
                     for (var attackbit = 0; attackbit < 8; attackbit++)
                     {
-                        if ((SlidingAttacks[8 - GameStateUtility.Ranks[square]][attackState] & byteBitStates[attackbit]) == byteBitStates[attackbit])
+                        if ((SlidingAttacks[8 - MoveUtility.Ranks[square]][attackState] & byteBitStates[attackbit]) == byteBitStates[attackbit])
                         {
-                            var file = GameStateUtility.Files[square];
+                            var file = MoveUtility.Files[square];
                             var rank = 8 - attackbit;
-                            FileAttacks[square][attackState] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[rank][file]];
+                            FileAttacks[square][attackState] |= MoveUtility.BitStates[MoveUtility.BoardIndex[rank][file]];
                         }
                     }
                 }
             }
         }
-
-
-
+        
         /// <summary>
         /// Generates a jagged array of sliding attacks.
         /// Sliding attacks have two Components
@@ -279,7 +301,7 @@ namespace DotNetEngine.Engine
             {
                 for (var attackState = 0; attackState < 64; attackState++)
                 {
-                    RankAttacks[square][attackState] = ((ulong)SlidingAttacks[GameStateUtility.Files[square] - 1][attackState] << (GameStateUtility.ShiftedRank[square] - 1));
+                    RankAttacks[square][attackState] = ((ulong)SlidingAttacks[MoveUtility.Files[square] - 1][attackState] << (MoveUtility.ShiftedRank[square] - 1));
                 }
             }
         }
@@ -288,15 +310,15 @@ namespace DotNetEngine.Engine
         {
             for (int i = 0; i < 64; i++)
             {
-                var file = GameStateUtility.Files[i];
-                var rank = GameStateUtility.Ranks[i];
+                var file = MoveUtility.Files[i];
+                var rank = MoveUtility.Ranks[i];
 
                 var targetRank = rank - 1;
                 var targetFile = file;
 
                 //SingleMove
                 if (ValidLocation(targetFile, targetRank))
-                    BlackPawnMoves[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
+                    BlackPawnMoves[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
 
                 //Double Move
                 if (rank == 7)
@@ -304,7 +326,7 @@ namespace DotNetEngine.Engine
                     targetRank = rank - 2;
 
                     if (ValidLocation(targetFile, targetRank))
-                        BlackPawnDoubleMoves[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
+                        BlackPawnDoubleMoves[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
                 }
             }
         }
@@ -313,15 +335,15 @@ namespace DotNetEngine.Engine
         {
             for (int i = 0; i < 64; i++)
             {
-                var file = GameStateUtility.Files[i];
-                var rank = GameStateUtility.Ranks[i];
+                var file = MoveUtility.Files[i];
+                var rank = MoveUtility.Ranks[i];
 
                 var targetRank = rank + 1;
                 var targetFile = file;
 
                 //Single Move
                 if (ValidLocation(targetFile, targetRank))
-                    WhitePawnMoves[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
+                    WhitePawnMoves[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
 
                 //Double Move
                 if (rank == 2)
@@ -329,7 +351,7 @@ namespace DotNetEngine.Engine
                     targetRank = rank + 2;
                     
                     if (ValidLocation(targetFile, targetRank))
-                        WhitePawnDoubleMoves[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
+                        WhitePawnDoubleMoves[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
                 }
             }
         }
@@ -339,21 +361,21 @@ namespace DotNetEngine.Engine
 
             for (int i = 0; i < 64; i++)
             {
-                var file = GameStateUtility.Files[i];
-                var rank = GameStateUtility.Ranks[i];
+                var file = MoveUtility.Files[i];
+                var rank = MoveUtility.Ranks[i];
 
                 //Attack Left
                 var targetFile = file - 1;
                 var targetRank = rank - 1;
 
                 if (ValidLocation(targetFile, targetRank))
-                    BlackPawnAttacks[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
+                    BlackPawnAttacks[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
 
                 //Attack Right
                 targetFile = file + 1;
 
                 if (ValidLocation(targetFile, targetRank))
-                    BlackPawnAttacks[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
+                    BlackPawnAttacks[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
             }
         }             
 
@@ -361,21 +383,21 @@ namespace DotNetEngine.Engine
         {
             for (int i = 0; i < 64; i++)
             {
-                var file = GameStateUtility.Files[i];
-                var rank = GameStateUtility.Ranks[i];
+                var file = MoveUtility.Files[i];
+                var rank = MoveUtility.Ranks[i];
 
                 //Attack Left
                 var targetFile = file - 1;
                 var targetRank = rank + 1;
 
                 if (ValidLocation(targetFile, targetRank))
-                    WhitePawnAttacks[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
+                    WhitePawnAttacks[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
 
                 //Attack Right
                 targetFile = file + 1;
 
                 if (ValidLocation(targetFile, targetRank))
-                    WhitePawnAttacks[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
+                    WhitePawnAttacks[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
             }
         }  
 
@@ -383,64 +405,64 @@ namespace DotNetEngine.Engine
         {
             for (int i = 0; i < 64; i++)
             {
-                var file = GameStateUtility.Files[i];
-                var rank = GameStateUtility.Ranks[i];
+                var file = MoveUtility.Files[i];
+                var rank = MoveUtility.Ranks[i];
 
                 //Down
                 var targetRank = rank - 1;
                 var targetFile = file;
 
                 if (ValidLocation(targetFile, targetRank))
-                    KingAttacks[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
+                    KingAttacks[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
 
                 //Up
                 targetRank = rank + 1;
                 targetFile = file;
 
                 if (ValidLocation(targetFile, targetRank))
-                    KingAttacks[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
+                    KingAttacks[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
 
                 //Left
                 targetRank = rank;
                 targetFile = file - 1;
 
                 if (ValidLocation(targetFile, targetRank))
-                    KingAttacks[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
+                    KingAttacks[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
 
                 //Right
                 targetRank = rank;
                 targetFile = file + 1;
 
                 if (ValidLocation(targetFile, targetRank))
-                    KingAttacks[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
+                    KingAttacks[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
 
                 //Down Left
                 targetRank = rank - 1;
                 targetFile = file - 1;
 
                 if (ValidLocation(targetFile, targetRank))
-                    KingAttacks[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
+                    KingAttacks[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
 
                 //Down Right
                 targetRank = rank - 1;
                 targetFile = file + 1;
 
                 if (ValidLocation(targetFile, targetRank))
-                    KingAttacks[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
+                    KingAttacks[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
 
                 //Up Left
                 targetRank = rank + 1;
                 targetFile = file - 1;
 
                 if (ValidLocation(targetFile, targetRank))
-                    KingAttacks[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
+                    KingAttacks[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
 
                 //Up Right
                 targetRank = rank + 1;
                 targetFile = file + 1;
 
                 if (ValidLocation(targetFile, targetRank))
-                    KingAttacks[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
+                    KingAttacks[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
             }
         }
 
@@ -448,60 +470,60 @@ namespace DotNetEngine.Engine
         {
             for (int i = 0; i < 64; i++)
             {
-                var file = GameStateUtility.Files[i];
-                var rank = GameStateUtility.Ranks[i];
+                var file = MoveUtility.Files[i];
+                var rank = MoveUtility.Ranks[i];
 
                 //Down 2 Right 1
                 var targetRank = rank - 2;
                 var targetFile = file + 1;
 
                 if (ValidLocation(targetFile, targetRank))
-                    KnightAttacks[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
+                    KnightAttacks[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
 
                 //Down 2 Left 1
                 targetFile = file - 1;
 
                 if (ValidLocation(targetFile, targetRank))
-                    KnightAttacks[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
+                    KnightAttacks[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
 
                 //Down 1 Right 2
                 targetRank = rank - 1;
                 targetFile = file + 2;
 
                 if (ValidLocation(targetFile, targetRank))
-                    KnightAttacks[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
+                    KnightAttacks[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
 
                 //Down 1 Left 2
                 targetFile = file - 2;
 
                 if (ValidLocation(targetFile, targetRank))
-                    KnightAttacks[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
+                    KnightAttacks[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
 
                 //Up 2 Right 1
                 targetRank = rank + 2;
                 targetFile = file + 1;
 
                 if (ValidLocation(targetFile, targetRank))
-                    KnightAttacks[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
+                    KnightAttacks[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
 
                 //Up 2 Left 1
                 targetFile = file - 1;
 
                 if (ValidLocation(targetFile, targetRank))
-                    KnightAttacks[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
+                    KnightAttacks[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
 
                 //Up 1 Right 2
                 targetRank = rank + 1;
                 targetFile = file + 2;
 
                 if (ValidLocation(targetFile, targetRank))
-                    KnightAttacks[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
+                    KnightAttacks[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
 
                 //Up 1 Left 2
                 targetFile = file - 2;
 
                 if (ValidLocation(targetFile, targetRank))
-                    KnightAttacks[i] |= GameStateUtility.BitStates[GameStateUtility.BoardIndex[targetRank][targetFile]];
+                    KnightAttacks[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
                
             }
         }
@@ -509,6 +531,17 @@ namespace DotNetEngine.Engine
         private bool ValidLocation(int file, int rank)
         {
             return file >= 1 && file <= 8 && rank >= 1 && rank <= 8;
+        }
+    
+        private ulong GetRankMoves(int fromSquare, ulong occupiedSquares, ulong targetboard)
+        {
+            return RankAttacks[fromSquare][(occupiedSquares & RankMask[fromSquare]) >> MoveUtility.ShiftedRank[fromSquare]] & targetboard;
+        }
+
+        private ulong GetFileMoves(int fromSquare, ulong occupiedSquares, ulong targetboard)
+        {
+
+            return FileAttacks[fromSquare][(occupiedSquares & FileMask[fromSquare]) * MoveUtility.FileMagicMultiplication[fromSquare] >> 57] & targetboard;
         }
     }
 }
