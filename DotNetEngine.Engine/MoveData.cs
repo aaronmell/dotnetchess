@@ -127,8 +127,8 @@ namespace DotNetEngine.Engine
                 {
                     for (var bit = 2; bit < 8; bit++)
                     {
-                        RankMask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.BitStates[MoveUtility.BoardIndex[rank][bit]];
-                        FileMask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.BitStates[MoveUtility.BoardIndex[bit][file]];
+                        RankMask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.GetBitStatesByBoardIndex(rank, bit);
+                        FileMask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.GetBitStatesByBoardIndex(bit, file);
                     }
 
                     var diagonalA8H1 = file + rank; // from 2 to 16, longest diagonal = 9
@@ -137,14 +137,14 @@ namespace DotNetEngine.Engine
                     {
                         for (var square = 2; square < diagonalA8H1 - 1; square++)
                         {
-                            DiagonalA8H1Mask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.BitStates[MoveUtility.BoardIndex[square][diagonalA8H1 - square]];
+                            DiagonalA8H1Mask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.GetBitStatesByBoardIndex(square, diagonalA8H1 - square);
                         }
                     }
                     else
                     {
                         for (var square = 2; square < 17 - diagonalA8H1; square++)
                         {
-                            DiagonalA8H1Mask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.BitStates[MoveUtility.BoardIndex[diagonalA8H1 + square - 9][9 - square]];
+                            DiagonalA8H1Mask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.GetBitStatesByBoardIndex(diagonalA8H1 + square - 9, 9 - square);
                         }
                     }
                    
@@ -154,14 +154,14 @@ namespace DotNetEngine.Engine
                     {
                         for (var square = 2 ; square < 8 - diagonalA1H8 ; square ++)
                         {
-                            DiagonalA1H8Mask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.BitStates[MoveUtility.BoardIndex[diagonalA1H8 + square][square]];
+                            DiagonalA1H8Mask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.GetBitStatesByBoardIndex(diagonalA1H8 + square, square);
                         }
                     }
                     else
                     {
                         for (var square = 2 ; square < 8 + diagonalA1H8 ; square ++)
                         {
-                            DiagonalA1H8Mask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.BitStates[MoveUtility.BoardIndex[square][square - diagonalA1H8]];
+                            DiagonalA1H8Mask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.GetBitStatesByBoardIndex(square, square - diagonalA1H8);
                         }
                     }                    
                 }
@@ -198,7 +198,7 @@ namespace DotNetEngine.Engine
 
                             if ((file > 0) && (file < 9) && (rank > 0) && (rank < 9))
                             {
-                                DiagonalA8H1Attacks[square][attackState] |=  MoveUtility.BitStates[MoveUtility.BoardIndex[rank][file]];
+                                DiagonalA8H1Attacks[square][attackState] |=  MoveUtility.GetBitStatesByBoardIndex(rank, file);
                             }
                         }
                     }
@@ -236,7 +236,7 @@ namespace DotNetEngine.Engine
 
                             if ((file > 0) && (file < 9) && (rank > 0) && (rank < 9))
                             {
-                                DiagonalA1H8Attacks[square][attackState] |= MoveUtility.BitStates[MoveUtility.BoardIndex[rank][file]];
+                                DiagonalA1H8Attacks[square][attackState] |= MoveUtility.GetBitStatesByBoardIndex(rank, file);
                             }
                         }
                     }
@@ -271,7 +271,7 @@ namespace DotNetEngine.Engine
                         {
                             var file = MoveUtility.Files[square];
                             var rank = 8 - attackbit;
-                            FileAttacks[square][attackState] |= MoveUtility.BitStates[MoveUtility.BoardIndex[rank][file]];
+                            FileAttacks[square][attackState] |= MoveUtility.GetBitStatesByBoardIndex(rank, file);
                         }
                     }
                 }
@@ -368,7 +368,7 @@ namespace DotNetEngine.Engine
 
                 //SingleMove
                 if (ValidLocation(targetFile, targetRank))
-                    BlackPawnMoves[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
+                    BlackPawnMoves[i] |= MoveUtility.GetBitStatesByBoardIndex(targetRank, targetFile);
 
                 //Double Move
                 if (rank == 7)
@@ -376,7 +376,7 @@ namespace DotNetEngine.Engine
                     targetRank = rank - 2;
 
                     if (ValidLocation(targetFile, targetRank))
-                        BlackPawnDoubleMoves[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
+                        BlackPawnDoubleMoves[i] |= MoveUtility.GetBitStatesByBoardIndex(targetRank, targetFile);
                 }
             }
         }
@@ -393,7 +393,7 @@ namespace DotNetEngine.Engine
 
                 //Single Move
                 if (ValidLocation(targetFile, targetRank))
-                    WhitePawnMoves[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
+                    WhitePawnMoves[i] |= MoveUtility.GetBitStatesByBoardIndex(targetRank, targetFile);
 
                 //Double Move
                 if (rank == 2)
@@ -401,7 +401,7 @@ namespace DotNetEngine.Engine
                     targetRank = rank + 2;
                     
                     if (ValidLocation(targetFile, targetRank))
-                        WhitePawnDoubleMoves[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
+                        WhitePawnDoubleMoves[i] |= MoveUtility.GetBitStatesByBoardIndex(targetRank, targetFile);
                 }
             }
         }
@@ -419,13 +419,13 @@ namespace DotNetEngine.Engine
                 var targetRank = rank - 1;
 
                 if (ValidLocation(targetFile, targetRank))
-                    BlackPawnAttacks[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
+                    BlackPawnAttacks[i] |= MoveUtility.GetBitStatesByBoardIndex(targetRank, targetFile);
 
                 //Attack Right
                 targetFile = file + 1;
 
                 if (ValidLocation(targetFile, targetRank))
-                    BlackPawnAttacks[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
+                    BlackPawnAttacks[i] |= MoveUtility.GetBitStatesByBoardIndex(targetRank, targetFile);
             }
         }             
 
@@ -441,13 +441,13 @@ namespace DotNetEngine.Engine
                 var targetRank = rank + 1;
 
                 if (ValidLocation(targetFile, targetRank))
-                    WhitePawnAttacks[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
+                    WhitePawnAttacks[i] |= MoveUtility.GetBitStatesByBoardIndex(targetRank, targetFile);
 
                 //Attack Right
                 targetFile = file + 1;
 
                 if (ValidLocation(targetFile, targetRank))
-                    WhitePawnAttacks[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
+                    WhitePawnAttacks[i] |= MoveUtility.GetBitStatesByBoardIndex(targetRank, targetFile);
             }
         }  
 
@@ -463,56 +463,56 @@ namespace DotNetEngine.Engine
                 var targetFile = file;
 
                 if (ValidLocation(targetFile, targetRank))
-                    KingAttacks[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
+                    KingAttacks[i] |= MoveUtility.GetBitStatesByBoardIndex(targetRank, targetFile);
 
                 //Up
                 targetRank = rank + 1;
                 targetFile = file;
 
                 if (ValidLocation(targetFile, targetRank))
-                    KingAttacks[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
+                    KingAttacks[i] |= MoveUtility.GetBitStatesByBoardIndex(targetRank, targetFile);
 
                 //Left
                 targetRank = rank;
                 targetFile = file - 1;
 
                 if (ValidLocation(targetFile, targetRank))
-                    KingAttacks[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
+                    KingAttacks[i] |= MoveUtility.GetBitStatesByBoardIndex(targetRank, targetFile);
 
                 //Right
                 targetRank = rank;
                 targetFile = file + 1;
 
                 if (ValidLocation(targetFile, targetRank))
-                    KingAttacks[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
+                    KingAttacks[i] |= MoveUtility.GetBitStatesByBoardIndex(targetRank, targetFile);
 
                 //Down Left
                 targetRank = rank - 1;
                 targetFile = file - 1;
 
                 if (ValidLocation(targetFile, targetRank))
-                    KingAttacks[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
+                    KingAttacks[i] |= MoveUtility.GetBitStatesByBoardIndex(targetRank, targetFile);
 
                 //Down Right
                 targetRank = rank - 1;
                 targetFile = file + 1;
 
                 if (ValidLocation(targetFile, targetRank))
-                    KingAttacks[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
+                    KingAttacks[i] |= MoveUtility.GetBitStatesByBoardIndex(targetRank, targetFile);
 
                 //Up Left
                 targetRank = rank + 1;
                 targetFile = file - 1;
 
                 if (ValidLocation(targetFile, targetRank))
-                    KingAttacks[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
+                    KingAttacks[i] |= MoveUtility.GetBitStatesByBoardIndex(targetRank, targetFile);
 
                 //Up Right
                 targetRank = rank + 1;
                 targetFile = file + 1;
 
                 if (ValidLocation(targetFile, targetRank))
-                    KingAttacks[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
+                    KingAttacks[i] |= MoveUtility.GetBitStatesByBoardIndex(targetRank, targetFile);
             }
         }
 
@@ -528,52 +528,52 @@ namespace DotNetEngine.Engine
                 var targetFile = file + 1;
 
                 if (ValidLocation(targetFile, targetRank))
-                    KnightAttacks[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
+                    KnightAttacks[i] |= MoveUtility.GetBitStatesByBoardIndex(targetRank, targetFile);
 
                 //Down 2 Left 1
                 targetFile = file - 1;
 
                 if (ValidLocation(targetFile, targetRank))
-                    KnightAttacks[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
+                    KnightAttacks[i] |= MoveUtility.GetBitStatesByBoardIndex(targetRank, targetFile);
 
                 //Down 1 Right 2
                 targetRank = rank - 1;
                 targetFile = file + 2;
 
                 if (ValidLocation(targetFile, targetRank))
-                    KnightAttacks[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
+                    KnightAttacks[i] |= MoveUtility.GetBitStatesByBoardIndex(targetRank, targetFile);
 
                 //Down 1 Left 2
                 targetFile = file - 2;
 
                 if (ValidLocation(targetFile, targetRank))
-                    KnightAttacks[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
+                    KnightAttacks[i] |= MoveUtility.GetBitStatesByBoardIndex(targetRank, targetFile);
 
                 //Up 2 Right 1
                 targetRank = rank + 2;
                 targetFile = file + 1;
 
                 if (ValidLocation(targetFile, targetRank))
-                    KnightAttacks[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
+                    KnightAttacks[i] |= MoveUtility.GetBitStatesByBoardIndex(targetRank, targetFile);
 
                 //Up 2 Left 1
                 targetFile = file - 1;
 
                 if (ValidLocation(targetFile, targetRank))
-                    KnightAttacks[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
+                    KnightAttacks[i] |= MoveUtility.GetBitStatesByBoardIndex(targetRank, targetFile);
 
                 //Up 1 Right 2
                 targetRank = rank + 1;
                 targetFile = file + 2;
 
                 if (ValidLocation(targetFile, targetRank))
-                    KnightAttacks[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
+                    KnightAttacks[i] |= MoveUtility.GetBitStatesByBoardIndex(targetRank, targetFile);
 
                 //Up 1 Left 2
                 targetFile = file - 2;
 
                 if (ValidLocation(targetFile, targetRank))
-                    KnightAttacks[i] |= MoveUtility.BitStates[MoveUtility.BoardIndex[targetRank][targetFile]];
+                    KnightAttacks[i] |= MoveUtility.GetBitStatesByBoardIndex(targetRank, targetFile);
                
             }
         }

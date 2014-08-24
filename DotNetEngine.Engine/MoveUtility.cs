@@ -301,6 +301,11 @@
 			return (move & 0x00700000) > 0x00200000;
 		}
 
+
+        internal static ulong GetBitStatesByBoardIndex(int rank, int file)
+        {
+            return BitStates[BoardIndex[rank][file]];
+        }
 		private static uint SetPromotionPiece(uint move, uint promotionPiece)
 		{
 			move &= 0xff0fffff;
