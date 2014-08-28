@@ -159,7 +159,7 @@ namespace DotNetEngine.Engine
 			return gameState;
 		}
 
-		private static int GetEnPassantSquare(string enpassant)
+		private static uint GetEnPassantSquare(string enpassant)
 		{
 			if (enpassant == "-")
 				return 0;
@@ -169,7 +169,7 @@ namespace DotNetEngine.Engine
 
 			var fileNumber = Array.IndexOf(Files, file);
 
-			return (rank * 8) + fileNumber;
+			return (uint)((rank * 8) + fileNumber);
 		}
 	}
 }

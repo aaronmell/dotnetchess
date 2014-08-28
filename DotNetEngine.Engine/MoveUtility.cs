@@ -1,4 +1,5 @@
-﻿namespace DotNetEngine.Engine
+﻿using System.Diagnostics;
+namespace DotNetEngine.Engine
 {
     	/// <summary>
 	/// Helper functions used when dealing with a representation of a single move.
@@ -137,35 +138,33 @@
            18085043209519168, 9042521604759584, 4521260802379792, 2260630401189896, 0, 0
         };
 
-		/// <summary>
-		/// Used to create a new move
-		/// </summary>
-		/// <param name="fromSquare">The Square the piece is moving from</param>
-		/// <param name="toSquare">The square the piece is moving to</param>
-		/// <param name="movingPiece">The peice that is moving</param>
-		/// <param name="capturedPiece">The piece that was capture. If no piece was captured, this will be 0</param>
-		/// <param name="promotionPiece">The piece that was promoted. If no piece was promoted this will be 0. 
-		/// If an enpassant capture occurs this field will be set to a white or black pawn.
-		/// If a castling occurs, this field will be set to a white or black king</param>
-		/// <returns></returns>
-		internal static uint CreateMove(uint fromSquare, uint toSquare,  uint movingPiece, uint capturedPiece, uint promotionPiece)
-		{
-			var move = 0u;
+        /// <summary>
+        /// Implementation of bitscanforward.
+        /// Authored by Kim Walish 
+        /// </summary>
+        /// <param name="board"></param>
+        /// <see cref="http://chessprogramming.wikispaces.com/BitScan"/>
+        /// <returns>The lsb that is set on a board</returns>
+        internal static uint GetFirstPieceFromBitBoard(this ulong board)
+        {
+            var index = new uint[64]
+            {
+                0, 47,  1, 56, 48, 27,  2, 60,
+                57, 49, 41, 37, 28, 16,  3, 61,
+                54, 58, 35, 52, 50, 42, 21, 44,
+                38, 32, 29, 23, 17, 11,  4, 62,
+                46, 55, 26, 59, 40, 36, 15, 53,
+                34, 51, 20, 43, 31, 22, 10, 45,
+                25, 39, 14, 33, 19, 30,  9, 24,
+                13, 18,  8, 12,  7,  6,  5, 63
+            };
 
-			move = SetFromMove(move, fromSquare);
-			move = SetToMove(move, toSquare);
-			move = SetMovingPiece(move, movingPiece);
+            const ulong debruijn = 0x03f79d71b4cb0a89;
+            Debug.Assert(board != 0);
 
-			if (capturedPiece != 0)
-				move = SetCapturedPiece(move, capturedPiece);
-
-			if (promotionPiece != 0)
-				move = SetPromotionPiece(move, promotionPiece);
-
-			return move;
-
-		}
-
+            return index[((board ^ (board - 1)) * debruijn) >> 58];
+        }
+		
 		/// <summary>
 		/// Determines if a move was made by white or black
 		/// </summary>
@@ -301,44 +300,75 @@
 			return (move & 0x00700000) > 0x00200000;
 		}
 
-
+        /// <summary>
+        /// Gets the bit state by rank and file
+        /// </summary>
+        /// <param name="rank">The rank</param>
+        /// <param name="file">The file</param>
+        /// <returns></returns>
         internal static ulong GetBitStatesByBoardIndex(int rank, int file)
         {
             return BitStates[BoardIndex[rank][file]];
         }
-		private static uint SetPromotionPiece(uint move, uint promotionPiece)
+
+		internal static uint SetPromotionPiece(this uint move, uint promotionPiece)
 		{
 			move &= 0xff0fffff;
 			move |= (promotionPiece & 0x0000000f) << 20;
 			return move;
 		}
 
-		private static uint SetCapturedPiece(uint move, uint capturedPiece)
+        internal static uint SetCapturedPiece(this uint move, uint capturedPiece)
 		{
 			move &= 0xfff0ffff;
 			move |= (capturedPiece & 0x0000000f) << 16;
 			return move;
 		}
 
-		private static uint SetFromMove(uint move, uint moveFrom)
+        internal static uint SetFromMove(this uint move, uint moveFrom)
 		{
 			move &= 0xffffffc0;
 			move |= (moveFrom & 0x0000003f);
 			return move;
 		}
 
-		private static uint SetToMove(uint move, uint moveTo)
+        internal static uint SetToMove(this uint move, uint moveTo)
 		{
 			move &= 0xfffff03f;
 			move |= (moveTo & 0x0000003f) << 6;
 			return move;
 		}
 
-		private static uint SetMovingPiece(uint move, uint movingpiece)
+        internal static uint SetMovingPiece(this uint move, uint movingpiece)
 		{
 			move &= 0xffff0fff;
 			move |= (movingpiece & 0x0000000f) << 12;
 			return move;
 		}
+
+        internal static uint GetFromMove(this uint move)
+        {
+            return (move & 0x0000003f);
+        }
+
+        internal static uint GetToMove(this uint move)
+        { 
+        return (move >> 6) & 0x0000003f;
+        }
+
+        internal static uint GetMovingPiece(this uint move)
+        { 
+            return (move >> 12) & 0x0000000f;
+        }
+
+        internal static uint GetCapturedPiece(this uint move)
+        { 
+            return (move >> 16) & 0x0000000f;
+        }
+
+        internal static uint GetPromotedPiece(this uint move)
+        {
+            return (move >> 20) & 0x0000000f;
+        } 
 	}
 }

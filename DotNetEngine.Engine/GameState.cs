@@ -7,8 +7,8 @@ namespace DotNetEngine.Engine
 	/// </summary>
 	internal class GameState
 	{
-		private readonly ulong[] _allPieceBoards;
-
+        private readonly ulong[] _allPieceBoards;        
+     
 		//white bitboards
 		internal ulong WhitePawns { get; set; }
 		internal ulong WhiteKnights { get; set; }
@@ -16,6 +16,14 @@ namespace DotNetEngine.Engine
 		internal ulong WhiteRooks { get; set; }
 		internal ulong WhiteQueen { get; set; }
 		internal ulong WhiteKing { get; set; }
+
+        internal ulong WhitePieces 
+        { 
+            get 
+            {
+                return WhitePawns | WhiteKnights | WhiteBishops | WhiteRooks | WhiteQueen | WhiteKing;
+            } 
+        }
 
 		//black bitboards
 		internal ulong BlackPawns { get; set; }
@@ -25,10 +33,19 @@ namespace DotNetEngine.Engine
 		internal ulong BlackQueen { get; set; }
 		internal ulong BlackKing { get; set; }
 
-		/// <summary>
-		/// A list of all of the moves played so far.
-		/// </summary>
-		internal List<uint> Moves { get; set; }
+        internal ulong BlackPieces
+        {
+            get
+            {
+                return BlackPawns | BlackKnights | BlackBishops | BlackRooks | BlackQueen | BlackKing;
+            }
+        }
+
+        internal ulong AllPieces { get { return WhitePieces | BlackPieces; } }
+        /// <summary>
+        /// A List of all of the moves relating to this GameState.
+        /// </summary>
+        internal Dictionary<int,List<uint>> Moves { get; set; }
 
 		internal bool WhiteToMove { get; set; }
 
@@ -49,7 +66,7 @@ namespace DotNetEngine.Engine
 		internal int CurrentWhiteCastleStatus { get; set; }
 		internal int CurrentBlackCastleStatus { get; set; }
 		
-		internal int EnpassantTargetSquare { get; set; }
+		internal uint EnpassantTargetSquare { get; set; }
 
 		/// <summary>
 		/// The number of half moves currently made
@@ -67,7 +84,8 @@ namespace DotNetEngine.Engine
 		/// </summary>
 		internal uint[] BoardArray { get; private set; }
 
-		internal GameState()
+       
+        internal GameState()
 		{
 			_allPieceBoards = new[]
 			{
@@ -87,7 +105,7 @@ namespace DotNetEngine.Engine
 
 			BoardArray = new uint[64];
 
-			Moves = new List<uint>();
+            Moves = new Dictionary<int, List<uint>>();
 		}
-	}
+    }
 }

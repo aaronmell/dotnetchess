@@ -11,8 +11,6 @@ namespace DotNetEngine.Test
 		public void Throws_Exception_If_Invalid_Number_Of_Fields()
 		{
 			FenUtility.LoadStateFromFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 ");
-
-
 		}
 
 		[Test]

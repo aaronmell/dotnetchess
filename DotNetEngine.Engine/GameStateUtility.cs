@@ -6,29 +6,8 @@ namespace DotNetEngine.Engine
 	/// Helper methods that act on the GameState object and its properties
 	/// </summary>
 	internal static class GameStateUtility
-	{	
-
-		/// <summary>
-		/// Returns a bitboard that contains all of the white pieces
-		/// </summary>
-		/// <param name="state">The current game state</param>
-		/// <returns>a bitboard that contains all of the white pieces</returns>
-		internal static ulong GetAllWhitePiecesBoard(GameState state)
-		{
-			return (state.WhiteBishops | state.WhiteKing | state.WhiteKnights | state.WhitePawns | state.WhiteQueen | state.WhiteRooks);
-		}
-
-		/// <summary>
-		/// Returns a bitboard that contains all of the black pieces
-		/// </summary>
-		/// <param name="state">The current game state</param>
-		/// <returns>a bitboard that contains all of the black pieces</returns>
-		internal static ulong GetAllBlackPiecesBoard(GameState state)
-		{
-			return (state.BlackBishops | state.BlackKing | state.BlackKnights | state.BlackPawns | state.BlackQueen | state.BlackRooks);
-		}
-
-		/// <summary>
+	{		
+        /// <summary>
 		/// A helper method that converts the current game state to a easy to read console output
 		/// </summary>
 		/// <param name="state">The Current Game state</param>
@@ -208,5 +187,15 @@ namespace DotNetEngine.Engine
 
             return output.ToString();
         }
-	}
+	
+        internal static string ConvertAllMovesFromPlyToConsoleOutput(this GameState state, int ply)
+        {
+            var sb = new StringBuilder();
+            foreach (var move in state.Moves[ply])
+            {
+                sb.AppendLine(string.Format("FromSquare {0} ToSquare {1} MovingPiece {1} CapturedPiece {2} PromotedPiece {3}", move.GetFromMove(), move.GetToMove(), move.GetMovingPiece(), move.GetCapturedPiece(), move.GetPromotedPiece()));
+            }
+            return sb.ToString();
+        }
+    }
 }

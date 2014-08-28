@@ -20,7 +20,7 @@ namespace DotNetEngine.Test
 				WhiteRooks =   0xFF00000000000000ul
 			};
 
-			var board = GameStateUtility.GetAllWhitePiecesBoard(gameState);
+			var board = gameState.WhitePieces;
 
 			Assert.That(board, Is.EqualTo(0xFFFFFFFFFFFFFFFFul));
 		}
@@ -38,7 +38,7 @@ namespace DotNetEngine.Test
 				WhiteRooks = 0
 			};
 
-			var board = GameStateUtility.GetAllWhitePiecesBoard(gameState);
+            var board = gameState.WhitePieces;
 
 			Assert.That(board, Is.EqualTo(0));
 		}
@@ -56,7 +56,7 @@ namespace DotNetEngine.Test
 				BlackRooks = 0xFF00000000000000ul
 			};
 
-			var board = GameStateUtility.GetAllBlackPiecesBoard(gameState);
+            var board = gameState.BlackPieces;
 
 			Assert.That(board, Is.EqualTo(0xFFFFFFFFFFFFFFFFul));
 		}
@@ -74,7 +74,7 @@ namespace DotNetEngine.Test
 				BlackRooks = 0
 			};
 
-			var board = GameStateUtility.GetAllBlackPiecesBoard(gameState);
+            var board = gameState.BlackPieces;
 
 			Assert.That(board, Is.EqualTo(0));
 		}
