@@ -18,7 +18,12 @@ namespace DotNetEngine.Engine
 			{
                 targetBitmap = gameState.WhitePieces;
                 GenerateWhitePawnMoves(gameState, moveData, freeSquares, ply);               
-			}			
+			}
+		    else
+            {
+                targetBitmap = gameState.BlackPieces;
+                GenerateBlackPawnMoves(gameState, moveData, freeSquares, ply);
+            }
 		}
 
         private static void GenerateWhitePawnMoves(GameState gameState, MoveData moveData, ulong freeSquares, int ply)
@@ -35,7 +40,7 @@ namespace DotNetEngine.Engine
                 var pawnMoves = moveData.WhitePawnMoves[fromSquare] & freeSquares;
 
                 //Double Moves
-                if (MoveUtility.Ranks[fromSquare] == 2)
+                if (MoveUtility.Ranks[fromSquare] == 2  && pawnMoves > 0)
                 {
                     pawnMoves |= moveData.WhitePawnDoubleMoves[fromSquare] & freeSquares;
                 }
@@ -74,7 +79,7 @@ namespace DotNetEngine.Engine
                     //Remove the bit we just processed from the board
                     pawnMoves ^= MoveUtility.BitStates[toSquare];
                 }
-                //Add enPassant Logic here                
+                      
                 if (gameState.EnpassantTargetSquare > 0)
                 {
                     if ((moveData.WhitePawnAttacks[fromSquare] & MoveUtility.BitStates[gameState.EnpassantTargetSquare]) == MoveUtility.BitStates[gameState.EnpassantTargetSquare])
@@ -88,10 +93,81 @@ namespace DotNetEngine.Engine
                         }
                     }
                 }
-
                 pawnBoard ^= MoveUtility.BitStates[fromSquare];
                 move = move.SetPromotionPiece(MoveUtility.Empty);
             }
         }
-	}
+
+        private static void GenerateBlackPawnMoves(GameState gameState, MoveData moveData, ulong freeSquares, int ply)
+        {
+            var pawnBoard = gameState.BlackPawns;
+            var move = 0U.SetMovingPiece(MoveUtility.BlackPawn);
+
+            while (pawnBoard > 0)
+            {
+                uint fromSquare = pawnBoard.GetFirstPieceFromBitBoard();
+                move = move.SetFromMove(fromSquare);
+
+                //Normal Moves
+                var pawnMoves = moveData.BlackPawnMoves[fromSquare] & freeSquares;
+
+                //Double Moves
+                if (MoveUtility.Ranks[fromSquare] == 7 && pawnMoves > 0)
+                {
+                    pawnMoves |= moveData.BlackPawnDoubleMoves[fromSquare] & freeSquares;
+                }
+
+                //Captures
+                pawnMoves |= moveData.BlackPawnAttacks[fromSquare] & gameState.WhitePieces;
+
+                while (pawnMoves > 0)
+                {
+                    uint toSquare = pawnMoves.GetFirstPieceFromBitBoard();
+                    move = move.SetToMove(toSquare);
+                    move = move.SetCapturedPiece(gameState.BoardArray[toSquare]);
+
+                    if (MoveUtility.Ranks[toSquare] == 1)
+                    {
+                        move = move.SetPromotionPiece(MoveUtility.BlackQueen);
+                        gameState.Moves[ply].Add(move);
+
+                        move = move.SetPromotionPiece(MoveUtility.BlackRook);
+                        gameState.Moves[ply].Add(move);
+
+                        move = move.SetPromotionPiece(MoveUtility.BlackBishop);
+                        gameState.Moves[ply].Add(move);
+
+                        move = move.SetPromotionPiece(MoveUtility.BlackKnight);
+                        gameState.Moves[ply].Add(move);
+
+                        //Reset it back to empty so it doesn't screw up the next piece!
+                        move = move.SetPromotionPiece(MoveUtility.Empty);
+                    }
+                    else
+                    {
+                        gameState.Moves[ply].Add(move);
+                    }
+
+                    //Remove the bit we just processed from the board
+                    pawnMoves ^= MoveUtility.BitStates[toSquare];
+                }
+
+                if (gameState.EnpassantTargetSquare > 0)
+                {
+                    if ((moveData.BlackPawnAttacks[fromSquare] & MoveUtility.BitStates[gameState.EnpassantTargetSquare]) == MoveUtility.BitStates[gameState.EnpassantTargetSquare])
+                    {
+                        if ((gameState.WhitePawns & MoveUtility.BitStates[gameState.EnpassantTargetSquare + 8]) == MoveUtility.BitStates[gameState.EnpassantTargetSquare + 8])
+                        {
+                            move = move.SetPromotionPiece(MoveUtility.BlackPawn);
+                            move = move.SetCapturedPiece(MoveUtility.WhitePawn);
+                            move = move.SetToMove(gameState.EnpassantTargetSquare);
+                            gameState.Moves[ply].Add(move);
+                        }
+                    }
+                }
+                pawnBoard ^= MoveUtility.BitStates[fromSquare];
+                move = move.SetPromotionPiece(MoveUtility.Empty);
+            }
+        }
+    }
 }
