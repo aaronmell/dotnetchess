@@ -4,7 +4,6 @@ using System.Text;
 
 namespace DotNetEngine.Test
 {
-
 	public class GameStateUtilityTests
 	{
         [Test]
@@ -86,9 +85,9 @@ namespace DotNetEngine.Test
 		[Test]
 		public void BitBoardOutput()
 		{
-			var gameState = FenUtility.LoadStateFromFen("rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2");
+			var gameState = GameStateUtility.LoadStateFromFen("rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2");
 
-			var output = GameStateUtility.ConvertBitBoardsToConsoleOutput(gameState);
+            var output = gameState.ConvertBitBoardsToConsoleOutput();
 		}
 
 		/// <summary>
@@ -97,9 +96,9 @@ namespace DotNetEngine.Test
 		[Test]
 		public void ArrayBoardOutput()
 		{
-			var gameState = FenUtility.LoadStateFromFen("rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2");
+			var gameState = GameStateUtility.LoadStateFromFen("rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2");
 
-			var output = GameStateUtility.ConvertBoardArrayToConsoleOutput(gameState);
+            var output = gameState.ConvertBoardArrayToConsoleOutput();
 		}
 	}
 }

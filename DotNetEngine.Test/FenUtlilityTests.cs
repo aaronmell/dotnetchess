@@ -10,13 +10,13 @@ namespace DotNetEngine.Test
 		[ExpectedException(typeof (InvalidDataException))]
 		public void Throws_Exception_If_Invalid_Number_Of_Fields()
 		{
-			FenUtility.LoadStateFromFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 ");
+			GameStateUtility.LoadStateFromFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 ");
 		}
 
 		[Test]
 		public void Sets_Number_Of_Half_Moves_Correctly()
 		{
-			var gameState = FenUtility.LoadStateFromFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+			var gameState = GameStateUtility.LoadStateFromFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
 			Assert.That(gameState.FiftyMoveRuleCount, Is.EqualTo(0));
 		}
@@ -24,7 +24,7 @@ namespace DotNetEngine.Test
 		[Test]
 		public void Sets_Number_Of_Total_Moves_Correctly()
 		{
-			var gameState = FenUtility.LoadStateFromFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+			var gameState = GameStateUtility.LoadStateFromFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
 			Assert.That(gameState.TotalMoveCount, Is.EqualTo(1));
 		}
@@ -33,7 +33,7 @@ namespace DotNetEngine.Test
 		[TestCase("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1", false)]
 		public void Sets_WhiteToMove_Correctly(string input, bool result)
 		{
-			var gameState = FenUtility.LoadStateFromFen(input);
+			var gameState = GameStateUtility.LoadStateFromFen(input);
 
 			Assert.That(gameState.WhiteToMove, Is.EqualTo(result));
 		}
@@ -47,7 +47,7 @@ namespace DotNetEngine.Test
 		[TestCase("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b - - 0 1", 0)]
 		public void Sets_CanCastle_Correctly(string input, int result)
 		{
-			var gameState = FenUtility.LoadStateFromFen(input);
+			var gameState = GameStateUtility.LoadStateFromFen(input);
 
 			Assert.That(gameState.CurrentWhiteCastleStatus, Is.EqualTo(result));
 			Assert.That(gameState.CurrentBlackCastleStatus, Is.EqualTo(result));
@@ -58,7 +58,7 @@ namespace DotNetEngine.Test
 		[TestCase("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b - h8 0 1", 63)]
 		public void Sets_EnPassant_Correctly(string input, int result)
 		{
-			var gameState = FenUtility.LoadStateFromFen(input);
+			var gameState = GameStateUtility.LoadStateFromFen(input);
 			Assert.That(gameState.EnpassantTargetSquare, Is.EqualTo(result));
 		}
 	}

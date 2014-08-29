@@ -397,7 +397,7 @@ namespace DotNetEngine.Test
         {
             var move = moveLookups.GetBishopMoves(fromSquare, occupiedSquares, targetboard);
 
-            GameStateUtility.ConvertSingleBitBoardsToConsoleOutput(move);
+            move.ConvertSingleBitBoardsToConsoleOutput();
 
             Assert.That(move, Is.EqualTo(result));
 
@@ -416,7 +416,7 @@ namespace DotNetEngine.Test
         {
             var move = moveLookups.GetQueenMoves(fromSquare, occupiedSquares, targetboard);
 
-            GameStateUtility.ConvertSingleBitBoardsToConsoleOutput(move);
+            move.ConvertSingleBitBoardsToConsoleOutput();
 
             Assert.That(move, Is.EqualTo(result));
 

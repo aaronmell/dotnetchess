@@ -41,7 +41,6 @@
   <ItemGroup>
     <Compile Include="GameStateUtility.cs" />
     <Compile Include="Engine.cs" />
-    <Compile Include="FenUtility.cs" />
     <Compile Include="GameState.cs" />
     <Compile Include="MoveGeneratorUtility.cs" />
     <Compile Include="MoveData.cs" />

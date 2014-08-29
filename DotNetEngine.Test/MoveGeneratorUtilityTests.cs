@@ -24,7 +24,7 @@ namespace DotNetEngine.Test
         [TestCase(15U, 23U)]
         public void Generates_Valid_WhiteSinglePawn_Moves(uint fromMove, uint toMove)
         {
-            var gameState = FenUtility.LoadStateFromFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+            var gameState = GameStateUtility.LoadStateFromFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
             gameState.GenerateMoves(1, _moveData);
 
@@ -50,7 +50,7 @@ namespace DotNetEngine.Test
         [TestCase(15U, 31U)]
         public void Generates_Valid_WhiteDoublePawn_Moves(uint fromMove, uint toMove)
         {
-            var gameState = FenUtility.LoadStateFromFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+            var gameState = GameStateUtility.LoadStateFromFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
             gameState.GenerateMoves(1, _moveData);
 
@@ -82,7 +82,7 @@ namespace DotNetEngine.Test
         [TestCase(15U, 22U)]
         public void Generates_Valid_WhitePawn_Capture_Moves(uint fromMove, uint toMove)
         {
-            var gameState = FenUtility.LoadStateFromFen("8/8/8/8/8/pppppppp/PPPPPPPP/8 w KQkq - 0 1");
+            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/pppppppp/PPPPPPPP/8 w KQkq - 0 1");
 
             gameState.GenerateMoves(1, _moveData);
 
@@ -133,7 +133,7 @@ namespace DotNetEngine.Test
         [TestCase(55U, 63U, MoveUtility.WhiteQueen)]
         public void Generates_Valid_WhitePawn_Promotion_Moves(uint fromMove, uint toMove, uint promotedPiece)
         {
-            var gameState = FenUtility.LoadStateFromFen("8/PPPPPPPP/8/8/8/8/8/8 w KQkq - 0 1");
+            var gameState = GameStateUtility.LoadStateFromFen("8/PPPPPPPP/8/8/8/8/8/8 w KQkq - 0 1");
 
             gameState.GenerateMoves(1, _moveData);
 
@@ -167,9 +167,9 @@ namespace DotNetEngine.Test
             var gameState = new GameState();
 
             if (fromMove % 2 == 0)
-                gameState = FenUtility.LoadStateFromFen("8/8/8/PpPpPpPp/8/8/8/8 w - - 0 1");
+                gameState = GameStateUtility.LoadStateFromFen("8/8/8/PpPpPpPp/8/8/8/8 w - - 0 1");
             else
-                gameState = FenUtility.LoadStateFromFen("8/8/8/pPpPpPpP/8/8/8/8 w - - 0 1");
+                gameState = GameStateUtility.LoadStateFromFen("8/8/8/pPpPpPpP/8/8/8/8 w - - 0 1");
 
             gameState.EnpassantTargetSquare = toMove;
             gameState.GenerateMoves(1, _moveData);
@@ -191,7 +191,7 @@ namespace DotNetEngine.Test
         {
             var gameState = new GameState();
 
-            gameState = FenUtility.LoadStateFromFen("8/8/RRRRRRRR/PPPPPPPP/8/8/8/8 w - - 0 1");           
+            gameState = GameStateUtility.LoadStateFromFen("8/8/RRRRRRRR/PPPPPPPP/8/8/8/8 w - - 0 1");           
                        
             gameState.GenerateMoves(1, _moveData);
 
@@ -211,7 +211,7 @@ namespace DotNetEngine.Test
         [TestCase(55U, 47U)]
         public void Generates_Valid_BlackSinglePawn_Moves(uint fromMove, uint toMove)
         {
-            var gameState = FenUtility.LoadStateFromFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1");
+            var gameState = GameStateUtility.LoadStateFromFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1");
 
             gameState.GenerateMoves(1, _moveData);
 
@@ -237,7 +237,7 @@ namespace DotNetEngine.Test
         [TestCase(55U, 39U)]
         public void Generates_Valid_BlackDoublePawn_Moves(uint fromMove, uint toMove)
         {
-            var gameState = FenUtility.LoadStateFromFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1");
+            var gameState = GameStateUtility.LoadStateFromFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1");
 
             gameState.GenerateMoves(1, _moveData);
 
@@ -269,7 +269,7 @@ namespace DotNetEngine.Test
         [TestCase(55U, 46U)]
         public void Generates_Valid_BlackPawn_Capture_Moves(uint fromMove, uint toMove)
         {
-            var gameState = FenUtility.LoadStateFromFen("8/pppppppp/PPPPPPPP/8/8/8/8/8 b KQkq - 0 1");
+            var gameState = GameStateUtility.LoadStateFromFen("8/pppppppp/PPPPPPPP/8/8/8/8/8 b KQkq - 0 1");
 
             gameState.GenerateMoves(1, _moveData);
 
@@ -319,7 +319,7 @@ namespace DotNetEngine.Test
         [TestCase(15U, 7U, MoveUtility.BlackQueen)]
         public void Generates_Valid_BlackPawn_Promotion_Moves(uint fromMove, uint toMove, uint promotedPiece)
         {
-            var gameState = FenUtility.LoadStateFromFen("8/8/8/8/8/8/pppppppp/8 b KQkq - 0 1");
+            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/pppppppp/8 b KQkq - 0 1");
 
             gameState.GenerateMoves(1, _moveData);
 
@@ -353,9 +353,9 @@ namespace DotNetEngine.Test
             var gameState = new GameState();
 
             if (fromMove % 2 == 0)
-                gameState = FenUtility.LoadStateFromFen("8/8/8/8/pPpPpPpP/8/8/8 b - - 0 1"); 
+                gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/pPpPpPpP/8/8/8 b - - 0 1"); 
             else
-                gameState = FenUtility.LoadStateFromFen("8/8/8/8/PpPpPpPp/8/8/8 b - - 0 1");
+                gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/PpPpPpPp/8/8/8 b - - 0 1");
 
             gameState.EnpassantTargetSquare = toMove;
             gameState.GenerateMoves(1, _moveData);
@@ -377,7 +377,7 @@ namespace DotNetEngine.Test
         {
             var gameState = new GameState();
 
-            gameState = FenUtility.LoadStateFromFen("8/8/pppppppp/rrrrrrrr/8/8/8/8 w - - 0 1");
+            gameState = GameStateUtility.LoadStateFromFen("8/8/pppppppp/rrrrrrrr/8/8/8/8 w - - 0 1");
 
             gameState.GenerateMoves(1, _moveData);
 
