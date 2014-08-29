@@ -185,6 +185,19 @@ namespace DotNetEngine.Test
             Assert.That(capturedPiece, Is.EqualTo(MoveUtility.BlackPawn), "Captured Piece");
             Assert.That(promotedPiece, Is.EqualTo(MoveUtility.WhitePawn), "En Passant Piece");
         }
+
+        [Test]
+        public void Does_Not_Generate_Invalid_WhitePawn_Captures()
+        {
+            var gameState = new GameState();
+
+            gameState = FenUtility.LoadStateFromFen("8/8/RRRRRRRR/PPPPPPPP/8/8/8/8 w - - 0 1");           
+                       
+            gameState.GenerateMoves(1, _moveData);
+
+            Assert.That(gameState.Moves[1].Count(), Is.EqualTo(0));
+
+        }
         #endregion
 
         #region Black Pawn Moves
@@ -357,6 +370,19 @@ namespace DotNetEngine.Test
             Assert.That(movingPiece, Is.EqualTo(MoveUtility.BlackPawn), "Moving Piece");
             Assert.That(capturedPiece, Is.EqualTo(MoveUtility.WhitePawn), "Captured Piece");
             Assert.That(promotedPiece, Is.EqualTo(MoveUtility.BlackPawn), "En Passant Piece");
+        }
+
+        [Test]
+        public void Does_Not_Generate_Invalid_BlackPawn_Captures()
+        {
+            var gameState = new GameState();
+
+            gameState = FenUtility.LoadStateFromFen("8/8/pppppppp/rrrrrrrr/8/8/8/8 w - - 0 1");
+
+            gameState.GenerateMoves(1, _moveData);
+
+            Assert.That(gameState.Moves[1].Count(), Is.EqualTo(0));
+
         }
         #endregion
     }
