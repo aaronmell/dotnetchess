@@ -18,19 +18,19 @@ namespace DotNetEngine.Engine
 			{
                 targetBitmap = gameState.WhitePieces;
                 GenerateWhitePawnMoves(gameState, moveData, generationMode, freeSquares, ply);
-                GenerateWhiteKnightMoves(gameState, moveData, generationMode, freeSquares, ply);
+                GenerateKnightMoves(gameState, moveData, generationMode, freeSquares, gameState.WhiteKnights, MoveUtility.WhiteKnight, moveData.KnightAttacks, gameState.BlackPieces, ply);
 			}
 		    else
             {
                 targetBitmap = gameState.BlackPieces;
                 GenerateBlackPawnMoves(gameState, moveData, generationMode, freeSquares, ply);
+                GenerateKnightMoves(gameState, moveData, generationMode, freeSquares, gameState.BlackKnights, MoveUtility.BlackKnight, moveData.KnightAttacks, gameState.WhitePieces, ply);
             }
 		}
 
-        private static void GenerateWhiteKnightMoves(GameState gameState, MoveData moveData, MoveGenerationMode generationMode, ulong freeSquares, int ply)
-        {
-            var knightBoard = gameState.WhiteKnights;
-            var move = 0U.SetMovingPiece(MoveUtility.WhiteKnight);
+        private static void GenerateKnightMoves(GameState gameState, MoveData moveData, MoveGenerationMode generationMode, ulong freeSquares, ulong knightBoard, uint movingPiece, ulong[] attackSquares, ulong attackedBoard, int ply)
+        {           
+            var move = 0U.SetMovingPiece(movingPiece);
 
             while (knightBoard > 0)
             {
@@ -41,12 +41,12 @@ namespace DotNetEngine.Engine
 
                 if (generationMode != MoveGenerationMode.CaptureMovesOnly)
                 {
-                    knightMoves = moveData.KnightAttacks[fromSquare] & freeSquares;
+                    knightMoves = attackSquares[fromSquare] & freeSquares;
                 }
 
                 if (generationMode == MoveGenerationMode.CaptureMovesOnly || generationMode == MoveGenerationMode.All)
                 {
-                    knightMoves |= moveData.KnightAttacks[fromSquare] & gameState.BlackPieces;
+                    knightMoves |= attackSquares[fromSquare] & attackedBoard;
                 }
 
                 while (knightMoves > 0)
