@@ -21,6 +21,7 @@ namespace DotNetEngine.Engine
                 GenerateKnightMoves(gameState, generationMode, freeSquares, gameState.WhiteKnights, MoveUtility.WhiteKnight, moveData.KnightAttacks, gameState.BlackPieces, ply);
                 GenerateRookMoves(gameState, moveData, generationMode, freeSquares, gameState.WhiteRooks, MoveUtility.WhiteRook, gameState.BlackPieces, ply);
                 GenerateBishopMoves(gameState, moveData, generationMode, freeSquares, gameState.WhiteBishops, MoveUtility.WhiteBishop, gameState.BlackPieces, ply);
+                GenerateQueenMoves(gameState, moveData, generationMode, freeSquares, gameState.WhiteQueen, MoveUtility.WhiteQueen, gameState.BlackPieces, ply);
 			}
 		    else
             {
@@ -29,8 +30,43 @@ namespace DotNetEngine.Engine
                 GenerateKnightMoves(gameState, generationMode, freeSquares, gameState.BlackKnights, MoveUtility.BlackKnight, moveData.KnightAttacks, gameState.WhitePieces, ply);
                 GenerateRookMoves(gameState, moveData, generationMode, freeSquares, gameState.BlackRooks, MoveUtility.BlackRook, gameState.WhitePieces, ply);
                 GenerateBishopMoves(gameState, moveData, generationMode, freeSquares, gameState.BlackBishops, MoveUtility.BlackBishop, gameState.WhitePieces, ply);
+                GenerateQueenMoves(gameState, moveData, generationMode, freeSquares, gameState.BlackQueen, MoveUtility.BlackQueen, gameState.WhitePieces, ply);
             }
 		}
+
+        private static void GenerateQueenMoves(GameState gameState, MoveData moveData, MoveGenerationMode generationMode, ulong freeSquares, ulong queenBoard, uint movingPiece, ulong attackedBoard, int ply)
+        {
+            var move = 0U.SetMovingPiece(movingPiece);
+
+            while (queenBoard > 0)
+            {
+                uint fromSquare = queenBoard.GetFirstPieceFromBitBoard();
+                move = move.SetFromMove(fromSquare);
+
+                var queenMoves = 0UL;
+
+                if (generationMode != MoveGenerationMode.CaptureMovesOnly)
+                {
+                    queenMoves = moveData.GetQueenMoves(fromSquare, gameState.AllPieces, freeSquares) & freeSquares;
+                }
+
+                if (generationMode == MoveGenerationMode.CaptureMovesOnly || generationMode == MoveGenerationMode.All)
+                {
+                    queenMoves |= moveData.GetQueenMoves(fromSquare, gameState.AllPieces, attackedBoard) & attackedBoard;
+                }
+
+                while (queenMoves > 0)
+                {
+                    uint toSquare = queenMoves.GetFirstPieceFromBitBoard();
+                    move = move.SetToMove(toSquare);
+                    move = move.SetCapturedPiece(gameState.BoardArray[toSquare]);
+                    gameState.Moves[ply].Add(move);
+                    queenMoves ^= MoveUtility.BitStates[toSquare];
+                }
+                queenBoard ^= MoveUtility.BitStates[fromSquare];
+            }
+        }
+
 
         private static void GenerateBishopMoves(GameState gameState, MoveData moveData, MoveGenerationMode generationMode, ulong freeSquares, ulong bishopBoard, uint movingPiece, ulong attackedBoard, int ply)
         {

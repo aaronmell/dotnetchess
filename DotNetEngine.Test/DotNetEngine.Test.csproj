@@ -48,6 +48,7 @@
     <Compile Include="MoveGenerationTests\KnightMoveGenerationTests.cs" />
     <Compile Include="MoveDataTests.cs" />
     <Compile Include="MoveGenerationTests\PawnGenerationTests.cs" />
+    <Compile Include="MoveGenerationTests\QueenMoveGenerationTests.cs" />
     <Compile Include="MoveGenerationTests\RookMoveGenerationTests.cs" />
     <Compile Include="MoveUtilityTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
