@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GameStateUtilityTests.cs" />
+    <Compile Include="MoveGenerationTests\BishopMoveGenerationTests.cs" />
     <Compile Include="MoveGenerationTests\KnightMoveGenerationTests.cs" />
     <Compile Include="MoveDataTests.cs" />
     <Compile Include="MoveGenerationTests\PawnGenerationTests.cs" />

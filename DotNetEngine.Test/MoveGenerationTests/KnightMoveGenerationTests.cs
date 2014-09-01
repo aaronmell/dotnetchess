@@ -119,10 +119,8 @@ namespace DotNetEngine.Test
         [TestCase(MoveGenerationMode.CaptureMovesOnly)]
         [TestCase(MoveGenerationMode.QuietMovesOnly)]
         public void Does_Not_Generate_Invalid_White_Knight_Captures_Against_Own_Pieces(MoveGenerationMode mode)
-        {
-            var gameState = new GameState();
-
-            gameState = GameStateUtility.LoadStateFromFen("8/8/2K1K3/1K3K2/3N4/1K3K2/2K1K3/8 w - - 0 1");
+        {            
+            var gameState = GameStateUtility.LoadStateFromFen("8/8/2K1K3/1K3K2/3N4/1K3K2/2K1K3/8 w - - 0 1");
 
             gameState.GenerateMoves(mode, 1, _moveData);
             var testMoves = gameState.Moves[1].Where(x => x.GetMovingPiece() == MoveUtility.WhiteKnight);
