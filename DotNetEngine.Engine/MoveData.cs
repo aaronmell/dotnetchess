@@ -73,17 +73,17 @@ namespace DotNetEngine.Engine
             GenerateMasks();
         } 
 
-        internal ulong GetRookMoves(int fromSquare, ulong occupiedSquares, ulong targetboard)
+        internal ulong GetRookMoves(uint fromSquare, ulong occupiedSquares, ulong targetboard)
         {
             return GetRankMoves(fromSquare, occupiedSquares, targetboard) | GetFileMoves(fromSquare, occupiedSquares, targetboard);
         }
 
-        internal ulong GetBishopMoves(int fromSquare, ulong occupiedSquares, ulong targetboard)
+        internal ulong GetBishopMoves(uint fromSquare, ulong occupiedSquares, ulong targetboard)
         {
             return GetDiagonalA8H1Moves(fromSquare, occupiedSquares, targetboard) | GetDiagonalA1H8Moves(fromSquare, occupiedSquares, targetboard);
         }
 
-        public ulong GetQueenMoves(int fromSquare, ulong occupiedSquares, ulong targetboard)
+        public ulong GetQueenMoves(uint fromSquare, ulong occupiedSquares, ulong targetboard)
         {
             return GetRookMoves(fromSquare, occupiedSquares, targetboard) | GetBishopMoves(fromSquare, occupiedSquares, targetboard);
         }
@@ -583,23 +583,23 @@ namespace DotNetEngine.Engine
             return file >= 1 && file <= 8 && rank >= 1 && rank <= 8;
         }
     
-        private ulong GetRankMoves(int fromSquare, ulong occupiedSquares, ulong targetboard)
+        private ulong GetRankMoves(uint fromSquare, ulong occupiedSquares, ulong targetboard)
         {
             return RankAttacks[fromSquare][(occupiedSquares & RankMask[fromSquare]) >> MoveUtility.ShiftedRank[fromSquare]] & targetboard;
         }
 
-        private ulong GetFileMoves(int fromSquare, ulong occupiedSquares, ulong targetboard)
+        private ulong GetFileMoves(uint fromSquare, ulong occupiedSquares, ulong targetboard)
         {
 
             return FileAttacks[fromSquare][(occupiedSquares & FileMask[fromSquare]) * MoveUtility.FileMagicMultiplication[fromSquare] >> 57] & targetboard;
         }
 
-        private ulong GetDiagonalA8H1Moves(int fromSquare, ulong occupiedSquares, ulong targetboard)
+        private ulong GetDiagonalA8H1Moves(uint fromSquare, ulong occupiedSquares, ulong targetboard)
         {
             return DiagonalA8H1Attacks[fromSquare][(occupiedSquares & DiagonalA8H1Mask[fromSquare]) * MoveUtility.DiagonalA8H1MagicMultiplcation[fromSquare] >> 57] & targetboard;
         }
 
-        private ulong GetDiagonalA1H8Moves(int fromSquare, ulong occupiedSquares, ulong targetboard)
+        private ulong GetDiagonalA1H8Moves(uint fromSquare, ulong occupiedSquares, ulong targetboard)
         {
             return DiagonalA1H8Attacks[fromSquare][(occupiedSquares & DiagonalA1H8Mask[fromSquare]) * MoveUtility.DiagonalA1H8MagicMultiplcation[fromSquare] >> 57] & targetboard;
         }

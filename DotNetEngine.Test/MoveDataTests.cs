@@ -367,33 +367,33 @@ namespace DotNetEngine.Test
             Assert.That(attack, Is.EqualTo(result));
         }
 
-        [TestCase(0, 1ul, ulong.MaxValue, 72340172838076926UL)] 
-        [TestCase(0, 1ul, ulong.MinValue, 0UL)]
-        [TestCase(0, ulong.MaxValue, ulong.MaxValue, 258UL)]
-        [TestCase(0, ulong.MaxValue, ulong.MinValue, 0UL)] 
-        [TestCase(7, 128ul, ulong.MaxValue, 9259542123273814143UL)]
-        [TestCase(7, 128ul, ulong.MinValue, 0UL)]
-        [TestCase(56, 72057594037927936ul, ulong.MaxValue, 18302911464433844481UL)]
-        [TestCase(56,72057594037927936ul, ulong.MinValue,0UL)]
-        [TestCase(63, 9223372036854775808UL, ulong.MaxValue, 9187484529235886208UL)]
-        [TestCase(63, 9223372036854775808UL, ulong.MinValue, 0UL)]
-        [TestCase(27, 134217728UL, ulong.MaxValue, 578721386714368008UL)]
-        [TestCase(27, 134217728UL, ulong.MinValue, 0UL)]      
-        public void Generates_RookMoves_Correctly(int fromSquare, ulong occupiedSquares, ulong targetboard, ulong result)
+        [TestCase(0U, 1ul, ulong.MaxValue, 72340172838076926UL)] 
+        [TestCase(0U, 1ul, ulong.MinValue, 0UL)]
+        [TestCase(0U, ulong.MaxValue, ulong.MaxValue, 258UL)]
+        [TestCase(0U, ulong.MaxValue, ulong.MinValue, 0UL)] 
+        [TestCase(7U, 128ul, ulong.MaxValue, 9259542123273814143UL)]
+        [TestCase(7U, 128ul, ulong.MinValue, 0UL)]
+        [TestCase(56U, 72057594037927936ul, ulong.MaxValue, 18302911464433844481UL)]
+        [TestCase(56U,72057594037927936ul, ulong.MinValue,0UL)]
+        [TestCase(63U, 9223372036854775808UL, ulong.MaxValue, 9187484529235886208UL)]
+        [TestCase(63U, 9223372036854775808UL, ulong.MinValue, 0UL)]
+        [TestCase(27U, 134217728UL, ulong.MaxValue, 578721386714368008UL)]
+        [TestCase(27U, 134217728UL, ulong.MinValue, 0UL)]      
+        public void Generates_RookMoves_Correctly(uint fromSquare, ulong occupiedSquares, ulong targetboard, ulong result)
         {
             var move = moveLookups.GetRookMoves(fromSquare, occupiedSquares, targetboard);
             Assert.That(move, Is.EqualTo(result));
         }
 
-        [TestCase(27, 134217728UL, ulong.MaxValue, 9241705379636978241UL)]
-        [TestCase(27, 134217728UL, ulong.MinValue, 0UL)]
-        [TestCase(27, ulong.MaxValue, ulong.MaxValue, 85900656640UL)]
-        [TestCase(27, ulong.MaxValue, ulong.MinValue, 0UL)]
-        [TestCase(28, 134217728UL, ulong.MaxValue, 108724279602332802UL)]
-        [TestCase(28, 134217728UL, ulong.MinValue, 0UL)]
-        [TestCase(28, ulong.MaxValue, ulong.MaxValue, 171801313280UL)]
-        [TestCase(28, ulong.MaxValue, ulong.MinValue, 0UL)]
-        public void Generates_BishopMoves_Correctly(int fromSquare, ulong occupiedSquares, ulong targetboard, ulong result)
+        [TestCase(27U, 134217728UL, ulong.MaxValue, 9241705379636978241UL)]
+        [TestCase(27U, 134217728UL, ulong.MinValue, 0UL)]
+        [TestCase(27U, ulong.MaxValue, ulong.MaxValue, 85900656640UL)]
+        [TestCase(27U, ulong.MaxValue, ulong.MinValue, 0UL)]
+        [TestCase(28U, 134217728UL, ulong.MaxValue, 108724279602332802UL)]
+        [TestCase(28U, 134217728UL, ulong.MinValue, 0UL)]
+        [TestCase(28U, ulong.MaxValue, ulong.MaxValue, 171801313280UL)]
+        [TestCase(28U, ulong.MaxValue, ulong.MinValue, 0UL)]
+        public void Generates_BishopMoves_Correctly(uint fromSquare, ulong occupiedSquares, ulong targetboard, ulong result)
         {
             var move = moveLookups.GetBishopMoves(fromSquare, occupiedSquares, targetboard);
 
@@ -404,15 +404,15 @@ namespace DotNetEngine.Test
 
         }
 
-        [TestCase(27, 134217728UL, ulong.MaxValue, 9820426766351346249UL)]
-        [TestCase(27, 134217728UL, ulong.MinValue, 0UL)]
-        [TestCase(27, ulong.MaxValue, ulong.MaxValue, 120596463616UL)]
-        [TestCase(27, ulong.MaxValue, ulong.MinValue, 0UL)]
-        [TestCase(28, 268435456UL, ulong.MaxValue, 1266167048752878738UL)]
-        [TestCase(28, 268435456UL, ulong.MinValue, 0UL)]
-        [TestCase(28, ulong.MaxValue, ulong.MaxValue, 241192927232UL)]
-        [TestCase(28, ulong.MaxValue, ulong.MinValue, 0UL)]
-        public void Generates_QueenMoves_Correctly(int fromSquare, ulong occupiedSquares, ulong targetboard, ulong result)
+        [TestCase(27U, 134217728UL, ulong.MaxValue, 9820426766351346249UL)]
+        [TestCase(27U, 134217728UL, ulong.MinValue, 0UL)]
+        [TestCase(27U, ulong.MaxValue, ulong.MaxValue, 120596463616UL)]
+        [TestCase(27U, ulong.MaxValue, ulong.MinValue, 0UL)]
+        [TestCase(28U, 268435456UL, ulong.MaxValue, 1266167048752878738UL)]
+        [TestCase(28U, 268435456UL, ulong.MinValue, 0UL)]
+        [TestCase(28U, ulong.MaxValue, ulong.MaxValue, 241192927232UL)]
+        [TestCase(28U, ulong.MaxValue, ulong.MinValue, 0UL)]
+        public void Generates_QueenMoves_Correctly(uint fromSquare, ulong occupiedSquares, ulong targetboard, ulong result)
         {
             var move = moveLookups.GetQueenMoves(fromSquare, occupiedSquares, targetboard);
 

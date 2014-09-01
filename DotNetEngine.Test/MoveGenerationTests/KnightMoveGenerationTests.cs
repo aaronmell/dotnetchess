@@ -97,8 +97,27 @@ namespace DotNetEngine.Test
             Assert.That(promotedPiece, Is.EqualTo(MoveUtility.Empty), "Promoted Piece");
         }
 
+        [TestCase(27U, 17U)]
+        [TestCase(27U, 10U)]
+        [TestCase(27U, 12U)]
+        [TestCase(27U, 21U)]
+        [TestCase(27U, 37U)]
+        [TestCase(27U, 42U)]
+        [TestCase(27U, 44U)]
+        [TestCase(27U, 33U)]
+        public void Generates_No_Valid_White_Knight_Captures_When_QuietMovesOnly(uint fromMove, uint toMove)
+        {
+            var gameState = GameStateUtility.LoadStateFromFen("8/8/2p1p3/1p3p2/3N4/1p3p2/2p1p3/8 w - - 0 1");
+            gameState.GenerateMoves(MoveGenerationMode.QuietMovesOnly, 1, _moveData);
+
+            var move = gameState.Moves[1].FirstOrDefault(x => x.GetFromMove() == fromMove && x.GetToMove() == toMove);
+
+            Assert.That(move, Is.EqualTo(0));
+        }
+
         [TestCase(MoveGenerationMode.All)]
         [TestCase(MoveGenerationMode.CaptureMovesOnly)]
+        [TestCase(MoveGenerationMode.QuietMovesOnly)]
         public void Does_Not_Generate_Invalid_White_Knight_Captures_Against_Own_Pieces(MoveGenerationMode mode)
         {
             var gameState = new GameState();
@@ -196,6 +215,24 @@ namespace DotNetEngine.Test
             Assert.That(movingPiece, Is.EqualTo(MoveUtility.BlackKnight), "Moving Piece");
             Assert.That(capturedPiece, Is.EqualTo(MoveUtility.WhitePawn), "Captured Piece");
             Assert.That(promotedPiece, Is.EqualTo(MoveUtility.Empty), "Promoted Piece");
+        }
+
+        [TestCase(27U, 17U)]
+        [TestCase(27U, 10U)]
+        [TestCase(27U, 12U)]
+        [TestCase(27U, 21U)]
+        [TestCase(27U, 37U)]
+        [TestCase(27U, 42U)]
+        [TestCase(27U, 44U)]
+        [TestCase(27U, 33U)]
+        public void Generates_No_Valid_Black_Knight_Captures_When_QuietMovesOnly(uint fromMove, uint toMove)
+        {
+            var gameState = GameStateUtility.LoadStateFromFen("8/8/2P1P3/1P3P2/3n4/1P3P2/2P1P3/8 b - - 0 1");
+            gameState.GenerateMoves(MoveGenerationMode.QuietMovesOnly, 1, _moveData);
+
+            var move = gameState.Moves[1].FirstOrDefault(x => x.GetFromMove() == fromMove && x.GetToMove() == toMove);
+
+            Assert.That(move, Is.EqualTo(0));
         }
 
         [TestCase(MoveGenerationMode.All)]

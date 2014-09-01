@@ -471,8 +471,9 @@ namespace DotNetEngine.Test
             gameState = GameStateUtility.LoadStateFromFen("8/8/RRRRRRRR/PPPPPPPP/8/8/8/8 w - - 0 1");           
                        
             gameState.GenerateMoves(mode, 1, _moveData);
+            var moves = gameState.Moves[1].Where(x => x.GetMovingPiece() == MoveUtility.WhitePawn);
 
-            Assert.That(gameState.Moves[1].Count(), Is.EqualTo(0));
+            Assert.That(moves, Is.Empty);
 
         }
         #endregion
@@ -935,7 +936,9 @@ namespace DotNetEngine.Test
 
             gameState.GenerateMoves(mode, 1, _moveData);
 
-            Assert.That(gameState.Moves[1].Count(), Is.EqualTo(0));
+            var moves = gameState.Moves[1].Where(x => x.GetMovingPiece() == MoveUtility.BlackPawn);
+
+            Assert.That(moves, Is.Empty);
 
         }
         #endregion

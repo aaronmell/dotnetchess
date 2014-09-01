@@ -18,17 +18,52 @@ namespace DotNetEngine.Engine
 			{
                 targetBitmap = gameState.WhitePieces;
                 GenerateWhitePawnMoves(gameState, moveData, generationMode, freeSquares, ply);
-                GenerateKnightMoves(gameState, moveData, generationMode, freeSquares, gameState.WhiteKnights, MoveUtility.WhiteKnight, moveData.KnightAttacks, gameState.BlackPieces, ply);
+                GenerateKnightMoves(gameState, generationMode, freeSquares, gameState.WhiteKnights, MoveUtility.WhiteKnight, moveData.KnightAttacks, gameState.BlackPieces, ply);
+                GenerateRookMoves(gameState, moveData, generationMode, freeSquares, gameState.WhiteRooks, MoveUtility.WhiteRook, gameState.BlackPieces, ply);
 			}
 		    else
             {
                 targetBitmap = gameState.BlackPieces;
                 GenerateBlackPawnMoves(gameState, moveData, generationMode, freeSquares, ply);
-                GenerateKnightMoves(gameState, moveData, generationMode, freeSquares, gameState.BlackKnights, MoveUtility.BlackKnight, moveData.KnightAttacks, gameState.WhitePieces, ply);
+                GenerateKnightMoves(gameState, generationMode, freeSquares, gameState.BlackKnights, MoveUtility.BlackKnight, moveData.KnightAttacks, gameState.WhitePieces, ply);
+                GenerateRookMoves(gameState, moveData, generationMode, freeSquares, gameState.BlackRooks, MoveUtility.BlackRook, gameState.WhitePieces, ply);
             }
 		}
 
-        private static void GenerateKnightMoves(GameState gameState, MoveData moveData, MoveGenerationMode generationMode, ulong freeSquares, ulong knightBoard, uint movingPiece, ulong[] attackSquares, ulong attackedBoard, int ply)
+        private static void GenerateRookMoves(GameState gameState, MoveData moveData, MoveGenerationMode generationMode, ulong freeSquares, ulong rookBoard, uint movingPiece, ulong attackedBoard, int ply)
+        {
+            var move = 0U.SetMovingPiece(movingPiece);
+
+            while (rookBoard > 0)
+            {
+                uint fromSquare = rookBoard.GetFirstPieceFromBitBoard();
+                move = move.SetFromMove(fromSquare);
+
+                var rookMoves = 0UL;
+
+                if (generationMode != MoveGenerationMode.CaptureMovesOnly)
+                {
+                    rookMoves = moveData.GetRookMoves(fromSquare, gameState.AllPieces, freeSquares) & freeSquares;
+                }
+
+                if (generationMode == MoveGenerationMode.CaptureMovesOnly || generationMode == MoveGenerationMode.All)
+                {
+                    rookMoves |= moveData.GetRookMoves(fromSquare, gameState.AllPieces, attackedBoard) & attackedBoard;
+                }
+
+                while (rookMoves > 0)
+                {
+                    uint toSquare = rookMoves.GetFirstPieceFromBitBoard();
+                    move = move.SetToMove(toSquare);
+                    move = move.SetCapturedPiece(gameState.BoardArray[toSquare]);
+                    gameState.Moves[ply].Add(move);
+                    rookMoves ^= MoveUtility.BitStates[toSquare];
+                }
+                rookBoard ^= MoveUtility.BitStates[fromSquare];
+            }       
+        }
+
+        private static void GenerateKnightMoves(GameState gameState, MoveGenerationMode generationMode, ulong freeSquares, ulong knightBoard, uint movingPiece, ulong[] attackSquares, ulong attackedBoard, int ply)
         {           
             var move = 0U.SetMovingPiece(movingPiece);
 
