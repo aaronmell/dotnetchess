@@ -42,7 +42,7 @@
     <Compile Include="GameStateUtility.cs" />
     <Compile Include="Engine.cs" />
     <Compile Include="GameState.cs" />
-    <Compile Include="MoveGenerationType.cs" />
+    <Compile Include="MoveGenerationMode.cs" />
     <Compile Include="MoveGeneratorUtility.cs" />
     <Compile Include="MoveData.cs" />
     <Compile Include="MoveUtility.cs" />

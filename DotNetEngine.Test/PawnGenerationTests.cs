@@ -9,7 +9,7 @@ using DotNetEngine.Engine;
 
 namespace DotNetEngine.Test
 {
-    public class MoveGeneratorUtilityTests
+    public class PawnGenerationTests
     {
         private MoveData _moveData = new MoveData();
 
@@ -461,14 +461,16 @@ namespace DotNetEngine.Test
             Assert.That(move, Is.EqualTo(0));
         }
 
-        [Test]
-        public void Does_Not_Generate_Invalid_White_Pawn_Captures()
+        [TestCase(MoveGenerationMode.All)]
+        [TestCase(MoveGenerationMode.CaptureMovesOnly)]
+        [TestCase(MoveGenerationMode.QuietMovesOnly)]
+        public void Does_Not_Generate_Invalid_White_Pawn_Captures(MoveGenerationMode  mode)
         {
             var gameState = new GameState();
 
             gameState = GameStateUtility.LoadStateFromFen("8/8/RRRRRRRR/PPPPPPPP/8/8/8/8 w - - 0 1");           
                        
-            gameState.GenerateMoves(MoveGenerationMode.All, 1, _moveData);
+            gameState.GenerateMoves(mode, 1, _moveData);
 
             Assert.That(gameState.Moves[1].Count(), Is.EqualTo(0));
 
@@ -922,14 +924,16 @@ namespace DotNetEngine.Test
             Assert.That(move, Is.EqualTo(0));
         }
 
-        [Test]
-        public void Does_Not_Generate_Invalid_Black_PawnCaptures()
+        [TestCase(MoveGenerationMode.All)]
+        [TestCase(MoveGenerationMode.CaptureMovesOnly)]
+        [TestCase(MoveGenerationMode.QuietMovesOnly)]
+        public void Does_Not_Generate_Invalid_Black_PawnCaptures(MoveGenerationMode mode)
         {
             var gameState = new GameState();
 
             gameState = GameStateUtility.LoadStateFromFen("8/8/pppppppp/rrrrrrrr/8/8/8/8 w - - 0 1");
 
-            gameState.GenerateMoves(MoveGenerationMode.All, 1, _moveData);
+            gameState.GenerateMoves(mode, 1, _moveData);
 
             Assert.That(gameState.Moves[1].Count(), Is.EqualTo(0));
 

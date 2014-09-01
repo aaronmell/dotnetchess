@@ -17,7 +17,8 @@ namespace DotNetEngine.Engine
 			if (gameState.WhiteToMove)
 			{
                 targetBitmap = gameState.WhitePieces;
-                GenerateWhitePawnMoves(gameState, moveData, generationMode ,freeSquares, ply);               
+                GenerateWhitePawnMoves(gameState, moveData, generationMode, freeSquares, ply);
+                GenerateWhiteKnightMoves(gameState, moveData, generationMode, freeSquares, ply);
 			}
 		    else
             {
@@ -25,6 +26,40 @@ namespace DotNetEngine.Engine
                 GenerateBlackPawnMoves(gameState, moveData, generationMode, freeSquares, ply);
             }
 		}
+
+        private static void GenerateWhiteKnightMoves(GameState gameState, MoveData moveData, MoveGenerationMode generationMode, ulong freeSquares, int ply)
+        {
+            var knightBoard = gameState.WhiteKnights;
+            var move = 0U.SetMovingPiece(MoveUtility.WhiteKnight);
+
+            while (knightBoard > 0)
+            {
+                uint fromSquare = knightBoard.GetFirstPieceFromBitBoard();
+                move = move.SetFromMove(fromSquare);
+               
+                var knightMoves = 0UL;
+
+                if (generationMode != MoveGenerationMode.CaptureMovesOnly)
+                {
+                    knightMoves = moveData.KnightAttacks[fromSquare] & freeSquares;
+                }
+
+                if (generationMode == MoveGenerationMode.CaptureMovesOnly || generationMode == MoveGenerationMode.All)
+                {
+                    knightMoves |= moveData.KnightAttacks[fromSquare] & gameState.BlackPieces;
+                }
+
+                while (knightMoves > 0)
+                {
+                    uint toSquare = knightMoves.GetFirstPieceFromBitBoard();
+                    move = move.SetToMove(toSquare);
+                    move = move.SetCapturedPiece(gameState.BoardArray[toSquare]);
+                    gameState.Moves[ply].Add(move);
+                    knightMoves ^= MoveUtility.BitStates[toSquare];
+                }
+                knightBoard ^= MoveUtility.BitStates[fromSquare];
+            }           
+        }
 
         private static void GenerateWhitePawnMoves(GameState gameState, MoveData moveData, MoveGenerationMode generationMode, ulong freeSquares, int ply)
         {   
