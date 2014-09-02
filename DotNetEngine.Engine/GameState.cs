@@ -66,6 +66,8 @@ namespace DotNetEngine.Engine
 		internal int CurrentWhiteCastleStatus { get; set; }
 		internal int CurrentBlackCastleStatus { get; set; }
 		
+        
+
 		internal uint EnpassantTargetSquare { get; set; }
 
 		/// <summary>
@@ -83,8 +85,7 @@ namespace DotNetEngine.Engine
 		/// This array is little endian encoded. A1 = 0 and H8 = 63
 		/// </summary>
 		internal uint[] BoardArray { get; private set; }
-
-       
+               
         internal GameState()
 		{
 			_allPieceBoards = new[]

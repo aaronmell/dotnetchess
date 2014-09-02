@@ -138,6 +138,11 @@ namespace DotNetEngine.Engine
            18085043209519168, 9042521604759584, 4521260802379792, 2260630401189896, 0, 0
         };
 
+        internal static ulong WhiteCastleOOMask { get { return GetBitStatesByBoardIndex(1, 6) | GetBitStatesByBoardIndex(1, 7); } }
+        internal static ulong WhiteCastleOOOMask { get { return GetBitStatesByBoardIndex(1, 2) | GetBitStatesByBoardIndex(1, 3) | GetBitStatesByBoardIndex(1, 4); } }
+        internal static ulong BlackCastleOOMask { get { return GetBitStatesByBoardIndex(8, 6) | GetBitStatesByBoardIndex(8, 7); } }
+        internal static ulong BlackCastleOOOMask { get { return GetBitStatesByBoardIndex(8, 2) | GetBitStatesByBoardIndex(8, 3) | GetBitStatesByBoardIndex(8, 4); } }
+
         /// <summary>
         /// Implementation of bitscanforward.
         /// Authored by Kim Walish 
@@ -370,5 +375,7 @@ namespace DotNetEngine.Engine
         {
             return (move >> 20) & 0x0000000f;
         } 
+
+        
 	}
 }

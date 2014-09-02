@@ -22,6 +22,9 @@ namespace DotNetEngine.Engine
                 GenerateRookMoves(gameState, moveData, generationMode, freeSquares, gameState.WhiteRooks, MoveUtility.WhiteRook, gameState.BlackPieces, ply);
                 GenerateBishopMoves(gameState, moveData, generationMode, freeSquares, gameState.WhiteBishops, MoveUtility.WhiteBishop, gameState.BlackPieces, ply);
                 GenerateQueenMoves(gameState, moveData, generationMode, freeSquares, gameState.WhiteQueen, MoveUtility.WhiteQueen, gameState.BlackPieces, ply);
+                GenerateKingMoves(gameState, generationMode, freeSquares, gameState.WhiteKing, 
+                    MoveUtility.WhiteKing, moveData.KingAttacks, gameState.BlackPieces, gameState.CurrentWhiteCastleStatus, 
+                    MoveUtility.WhiteCastleOOMask, MoveUtility.WhiteCastleOOOMask, moveData.WhiteCastleOOMove, moveData.WhiteCastleOOOMove, ply);
 			}
 		    else
             {
@@ -31,9 +34,63 @@ namespace DotNetEngine.Engine
                 GenerateRookMoves(gameState, moveData, generationMode, freeSquares, gameState.BlackRooks, MoveUtility.BlackRook, gameState.WhitePieces, ply);
                 GenerateBishopMoves(gameState, moveData, generationMode, freeSquares, gameState.BlackBishops, MoveUtility.BlackBishop, gameState.WhitePieces, ply);
                 GenerateQueenMoves(gameState, moveData, generationMode, freeSquares, gameState.BlackQueen, MoveUtility.BlackQueen, gameState.WhitePieces, ply);
+                GenerateKingMoves(gameState, generationMode, freeSquares, gameState.BlackKing,
+                  MoveUtility.BlackKing, moveData.KingAttacks, gameState.WhitePieces, gameState.CurrentBlackCastleStatus,
+                  MoveUtility.BlackCastleOOMask, MoveUtility.BlackCastleOOOMask, moveData.BlackCastleOOMove, moveData.BlackCastleOOOMove, ply);
             }
 		}
 
+        private static void GenerateKingMoves(GameState gameState, MoveGenerationMode generationMode, ulong freeSquares, 
+            ulong kingBoard, uint movingPiece, ulong[] attackSquares, ulong attackedBoard, int castleStatus,ulong castleMaskOO, 
+            ulong castleMaskOOO, uint castleOOMove, uint castleOOOMove, int ply)
+        {
+            var move = 0U.SetMovingPiece(movingPiece);
+
+            while (kingBoard > 0)
+            {
+                uint fromSquare = kingBoard.GetFirstPieceFromBitBoard();
+                move = move.SetFromMove(fromSquare);
+
+                var kingMoves = 0UL;
+
+                if (generationMode != MoveGenerationMode.CaptureMovesOnly)
+                {
+                    kingMoves = attackSquares[fromSquare] & freeSquares;
+
+                    if (castleStatus.CanCastleOO())
+                    {
+                        if ((castleMaskOO & gameState.AllPieces) == 0)
+                        {
+                            gameState.Moves[ply].Add(castleOOMove);
+                        }
+                    }
+
+                    if (castleStatus.CanCastleOOO())
+                    {
+                        if ((castleMaskOOO & gameState.AllPieces) == 0)
+                        {
+                            gameState.Moves[ply].Add(castleOOOMove);
+                        }
+                    }
+                }
+
+                if (generationMode == MoveGenerationMode.CaptureMovesOnly || generationMode == MoveGenerationMode.All)
+                {
+                    kingMoves |= attackSquares[fromSquare] & attackedBoard;
+                }
+
+                while (kingMoves > 0)
+                {
+                    uint toSquare = kingMoves.GetFirstPieceFromBitBoard();
+                    move = move.SetToMove(toSquare);
+                    move = move.SetCapturedPiece(gameState.BoardArray[toSquare]);
+                    gameState.Moves[ply].Add(move);
+                    kingMoves ^= MoveUtility.BitStates[toSquare];
+                }
+                kingBoard ^= MoveUtility.BitStates[fromSquare];
+            }
+        }
+       
         private static void GenerateQueenMoves(GameState gameState, MoveData moveData, MoveGenerationMode generationMode, ulong freeSquares, ulong queenBoard, uint movingPiece, ulong attackedBoard, int ply)
         {
             var move = 0U.SetMovingPiece(movingPiece);
@@ -66,7 +123,6 @@ namespace DotNetEngine.Engine
                 queenBoard ^= MoveUtility.BitStates[fromSquare];
             }
         }
-
 
         private static void GenerateBishopMoves(GameState gameState, MoveData moveData, MoveGenerationMode generationMode, ulong freeSquares, ulong bishopBoard, uint movingPiece, ulong attackedBoard, int ply)
         {

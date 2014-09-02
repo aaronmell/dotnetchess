@@ -207,7 +207,6 @@ namespace DotNetEngine.Engine
             return sb.ToString();
         }
               
-
         /// <summary>
         /// Take a FEN string and converts it into a GameState object
         /// </summary>
@@ -363,6 +362,16 @@ namespace DotNetEngine.Engine
             var fileNumber = Array.IndexOf(Files, file);
 
             return (uint)((rank * 8) + fileNumber);
+        }
+
+        internal static bool CanCastleOO(this int castleStatus)
+        {
+            return castleStatus == 1 || castleStatus == 3;
+        }
+
+        internal static bool CanCastleOOO(this int castleStatus)
+        {
+            return castleStatus == 2 || castleStatus == 3;
         }
     }
 }

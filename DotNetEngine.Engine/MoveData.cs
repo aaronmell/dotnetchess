@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DotNetEngine.Engine;
 
 namespace DotNetEngine.Engine
 {
@@ -47,8 +48,12 @@ namespace DotNetEngine.Engine
         internal ulong[][] RankAttacks { get; private set; }
         internal ulong[][] FileAttacks { get; private set; }
         internal ulong[][] DiagonalA1H8Attacks { get; private set; }
-        internal ulong[][] DiagonalA8H1Attacks { get; private set; }        
+        internal ulong[][] DiagonalA8H1Attacks { get; private set; }       
 
+        internal uint WhiteCastleOOMove { get; private set; }
+        internal uint WhiteCastleOOOMove { get; private set; }
+        internal uint BlackCastleOOMove { get; private set; }
+        internal uint BlackCastleOOOMove { get; private set; }
         //This should be private, but I wanted to write tests against it to ensure that it works correctly.
         internal byte[][] SlidingAttacks {get; private set;}      
 
@@ -71,6 +76,29 @@ namespace DotNetEngine.Engine
             GenerateDiagonalA8H1Attacks();
 
             GenerateMasks();
+            GenerateCastlingMoves();
+
+        }
+
+        private void GenerateCastlingMoves()
+        {
+            var move = 0U.SetMovingPiece(MoveUtility.WhiteKing);
+            move = move.SetPromotionPiece(MoveUtility.WhiteKing);
+            move = move.SetFromMove(4U);
+            move = move.SetToMove(6U);
+
+            WhiteCastleOOMove = move;
+            move = move.SetToMove(2U);
+            WhiteCastleOOOMove = move;
+
+            move = 0U.SetMovingPiece(MoveUtility.BlackKing);
+            move = move.SetPromotionPiece(MoveUtility.BlackKing);
+            move = move.SetFromMove(60U);
+            move = move.SetToMove(62U);
+
+            BlackCastleOOMove = move;
+            move = move.SetToMove(58);
+            BlackCastleOOOMove = move;
         } 
 
         internal ulong GetRookMoves(uint fromSquare, ulong occupiedSquares, ulong targetboard)
