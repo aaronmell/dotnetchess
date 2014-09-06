@@ -12,7 +12,7 @@ namespace DotNetEngine.Test.MakeMoveTests
     {
         #region White Knight
         [Test]
-        public void MakeMove_Sets_Kings_Bitboard_When_White_Knight_Moves()
+        public void MakeMove_Sets_Knights_Bitboard_When_White_Knight_Moves()
         {
             var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/3N4/8 w - - 0 1");
 
@@ -88,7 +88,6 @@ namespace DotNetEngine.Test.MakeMoveTests
 
             Assert.That(gameState.FiftyMoveRuleCount, Is.EqualTo(0));
         }
-
         #endregion
 
         #region Black Knight

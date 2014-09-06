@@ -198,6 +198,23 @@ namespace DotNetEngine.Engine
                         }
                         break;
                     }
+                case MoveUtility.WhiteBishop:
+                    {
+                        WhiteBishops ^= fromAndToBitboard;
+                        WhitePieces ^= fromAndToBitboard;
+
+                        BoardArray[toMove] = MoveUtility.WhiteBishop;
+
+                        if (capturedPiece > 0)
+                        {
+                            CapturePiece(toMove, capturedPiece, fromBitboard);
+                        }
+                        else
+                        {
+                            AllPieces ^= fromAndToBitboard;
+                        }
+                        break;
+                    }
                 case MoveUtility.BlackPawn:
                     {
                         BlackPawns ^= fromAndToBitboard;
@@ -279,6 +296,23 @@ namespace DotNetEngine.Engine
                         BlackPieces ^= fromAndToBitboard;
 
                         BoardArray[toMove] = MoveUtility.BlackKnight;
+
+                        if (capturedPiece > 0)
+                        {
+                            CapturePiece(toMove, capturedPiece, fromBitboard);
+                        }
+                        else
+                        {
+                            AllPieces ^= fromAndToBitboard;
+                        }
+                        break;
+                    }
+                case MoveUtility.BlackBishop:
+                    {
+                        BlackBishops ^= fromAndToBitboard;
+                        BlackPieces ^= fromAndToBitboard;
+
+                        BoardArray[toMove] = MoveUtility.BlackBishop;
 
                         if (capturedPiece > 0)
                         {
