@@ -141,7 +141,7 @@ namespace DotNetEngine.Engine
                             BoardArray[toMove] = move.GetPromotedPiece();
                         }
                         break;
-                    }
+                    }                
                 case MoveUtility.WhiteKing:
                     {
                         WhiteKing ^= fromAndToBitboard;
@@ -178,6 +178,23 @@ namespace DotNetEngine.Engine
                                 BoardArray[0] = MoveUtility.Empty;
                                 BoardArray[3] = MoveUtility.WhiteRook;
                             }
+                        }
+                        break;
+                    }
+                case MoveUtility.WhiteKnight:
+                    {
+                        WhiteKnights ^= fromAndToBitboard;
+                        WhitePieces ^= fromAndToBitboard;
+
+                        BoardArray[toMove] = MoveUtility.WhiteKnight;
+
+                        if (capturedPiece > 0)
+                        {
+                            CapturePiece(toMove, capturedPiece, fromBitboard);
+                        }
+                        else
+                        {
+                            AllPieces ^= fromAndToBitboard;
                         }
                         break;
                     }
@@ -253,6 +270,23 @@ namespace DotNetEngine.Engine
                                 BoardArray[56] = MoveUtility.Empty;
                                 BoardArray[59] = MoveUtility.BlackRook;
                             }
+                        }
+                        break;
+                    }
+                case MoveUtility.BlackKnight:
+                    {
+                        BlackKnights ^= fromAndToBitboard;
+                        BlackPieces ^= fromAndToBitboard;
+
+                        BoardArray[toMove] = MoveUtility.BlackKnight;
+
+                        if (capturedPiece > 0)
+                        {
+                            CapturePiece(toMove, capturedPiece, fromBitboard);
+                        }
+                        else
+                        {
+                            AllPieces ^= fromAndToBitboard;
                         }
                         break;
                     }
