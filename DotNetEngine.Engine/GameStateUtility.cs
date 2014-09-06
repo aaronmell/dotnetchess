@@ -42,7 +42,7 @@ namespace DotNetEngine.Engine
 						output.Append("n");
 					else if ((state.BlackPawns & position) == position)
 						output.Append("p");
-					else if ((state.BlackQueen & position) == position)
+					else if ((state.BlackQueens & position) == position)
 						output.Append("q");
 					else if ((state.BlackRooks & position) == position)
 						output.Append("r");
@@ -55,7 +55,7 @@ namespace DotNetEngine.Engine
 						output.Append("N");
 					else if ((state.WhitePawns & position) == position)
 						output.Append("P");
-					else if ((state.WhiteQueen & position) == position)
+					else if ((state.WhiteQueens & position) == position)
 						output.Append("Q");
 					else if ((state.WhiteRooks & position) == position)
 						output.Append("R");
@@ -269,36 +269,48 @@ namespace DotNetEngine.Engine
                             {
                                 gameState.BoardArray[boardArrayPosition] = MoveUtility.BlackPawn;
                                 gameState.BlackPawns += currentPosition;
+                                gameState.BlackPieces += currentPosition;
+                                gameState.AllPieces += currentPosition;
                                 break;
                             }
                         case 'k':
                             {
                                 gameState.BoardArray[boardArrayPosition] = MoveUtility.BlackKing;
                                 gameState.BlackKing += currentPosition;
+                                gameState.BlackPieces += currentPosition;
+                                gameState.AllPieces += currentPosition;
                                 break;
                             }
                         case 'q':
                             {
                                 gameState.BoardArray[boardArrayPosition] = MoveUtility.BlackQueen;
-                                gameState.BlackQueen += currentPosition;
+                                gameState.BlackQueens += currentPosition;
+                                gameState.BlackPieces += currentPosition;
+                                gameState.AllPieces += currentPosition;
                                 break;
                             }
                         case 'r':
                             {
                                 gameState.BoardArray[boardArrayPosition] = MoveUtility.BlackRook;
                                 gameState.BlackRooks += currentPosition;
+                                gameState.BlackPieces += currentPosition;
+                                gameState.AllPieces += currentPosition;
                                 break;
                             }
                         case 'n':
                             {
                                 gameState.BoardArray[boardArrayPosition] = MoveUtility.BlackKnight;
                                 gameState.BlackKnights += currentPosition;
+                                gameState.BlackPieces += currentPosition;
+                                gameState.AllPieces += currentPosition;
                                 break;
                             }
                         case 'b':
                             {
                                 gameState.BoardArray[boardArrayPosition] = MoveUtility.BlackBishop;
                                 gameState.BlackBishops += currentPosition;
+                                gameState.BlackPieces += currentPosition;
+                                gameState.AllPieces += currentPosition;
                                 break;
                             }
 
@@ -306,36 +318,49 @@ namespace DotNetEngine.Engine
                             {
                                 gameState.BoardArray[boardArrayPosition] = MoveUtility.WhitePawn;
                                 gameState.WhitePawns += currentPosition;
+                                gameState.WhitePieces += currentPosition;
+                                gameState.AllPieces += currentPosition;
                                 break;
                             }
                         case 'K':
                             {
                                 gameState.BoardArray[boardArrayPosition] = MoveUtility.WhiteKing;
                                 gameState.WhiteKing += currentPosition;
+                                gameState.WhitePieces += currentPosition;
+                                gameState.AllPieces += currentPosition;
                                 break;
                             }
                         case 'Q':
                             {
                                 gameState.BoardArray[boardArrayPosition] = MoveUtility.WhiteQueen;
-                                gameState.WhiteQueen += currentPosition;
+                                gameState.WhiteQueens += currentPosition;
+                                gameState.WhitePieces += currentPosition;
+                                gameState.AllPieces += currentPosition;
                                 break;
                             }
                         case 'R':
                             {
                                 gameState.BoardArray[boardArrayPosition] = MoveUtility.WhiteRook;
                                 gameState.WhiteRooks += currentPosition;
+                                gameState.WhitePieces += currentPosition;
+                                gameState.AllPieces += currentPosition;
+
                                 break;
                             }
                         case 'N':
                             {
                                 gameState.BoardArray[boardArrayPosition] = MoveUtility.WhiteKnight;
                                 gameState.WhiteKnights += currentPosition;
+                                gameState.WhitePieces += currentPosition;
+                                gameState.AllPieces += currentPosition;
                                 break;
                             }
                         case 'B':
                             {
                                 gameState.BoardArray[boardArrayPosition] = MoveUtility.BlackBishop;
                                 gameState.WhiteBishops += currentPosition;
+                                gameState.WhitePieces += currentPosition;
+                                gameState.AllPieces += currentPosition;
                                 break;
                             }
                         default:

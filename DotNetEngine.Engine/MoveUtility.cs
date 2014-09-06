@@ -175,7 +175,7 @@ namespace DotNetEngine.Engine
 		/// </summary>
 		/// <param name="move">The move being checked</param>
 		/// <returns>A bool value indicating if a move was made by white or black</returns>
-		internal static bool IsWhiteMove(uint move)
+		internal static bool IsWhiteMove(this uint move)
 		{
 			return (~move & 0x00008000) == 0x00008000;
 		}
@@ -185,7 +185,7 @@ namespace DotNetEngine.Engine
 		/// </summary>
 		/// <param name="move">The move being checked</param>
 		/// <returns>A bool value indicating if a move is an enpassant</returns>
-		internal static bool IsEnPassant(uint move)
+		internal static bool IsEnPassant(this uint move)
 		{
 			return (move & 0x00700000) == 0x00100000;
 		}
@@ -195,7 +195,7 @@ namespace DotNetEngine.Engine
 		/// </summary>
 		/// <param name="move">The move being checked</param>
 		/// <returns>A bool value indicating if a pawn moved</returns>
-		internal static bool IsPawnMoved(uint move)
+		internal static bool IsPawnMoved(this uint move)
 		{
 			return (move & 0x00007000) == 0x00001000;
 		}
@@ -205,7 +205,7 @@ namespace DotNetEngine.Engine
 		/// </summary>
 		/// <param name="move">The move being checked</param>
 		/// <returns>A bool value indicating if a rook moved</returns>
-		internal static bool IsRookMoved(uint move)
+		internal static bool IsRookMoved(this uint move)
 		{
 			return (move & 0x00007000) == 0x00006000;
 		}
@@ -215,7 +215,7 @@ namespace DotNetEngine.Engine
 		/// </summary>
 		/// <param name="move">The move being checked</param>
 		/// <returns>A bool value indicating if a king moved</returns>
-		internal static bool IsKingMoved(uint move)
+		internal static bool IsKingMoved(this uint move)
 		{
 			return (move & 0x00007000) == 0x00002000;
 		}
@@ -225,7 +225,7 @@ namespace DotNetEngine.Engine
 		/// </summary>
 		/// <param name="move">The move being checked</param>
 		/// <returns>A bool value indicating if a pawn moved two squares</returns>
-		internal static bool IsPawnDoubleMoved(uint move)
+		internal static bool IsPawnDoubleMoved(this uint move)
 		{
 			 return ((( move & 0x00007000) == 0x00001000) && (((( move & 0x00000038) == 0x00000008) && ((( move & 0x00000e00) == 0x00000600))) || 
 													  ((( move & 0x00000038) == 0x00000030) && ((( move & 0x00000e00) == 0x00000800)))));
@@ -236,7 +236,7 @@ namespace DotNetEngine.Engine
 		/// </summary>
 		/// <param name="move">The move being checked</param>
 		/// <returns>A bool value indicating if any piece was captured</returns>
-		internal static bool IsPieceCaptured(uint move)
+		internal static bool IsPieceCaptured(this uint move)
 		{
 			return (move & 0x000f0000) != 0x00000000;
 		}
@@ -246,7 +246,7 @@ namespace DotNetEngine.Engine
 		/// </summary>
 		/// <param name="move">The move being checked</param>
 		/// <returns>A bool value indicating if a king was captured</returns>
-		internal static bool IsKingCaptured(uint move)
+		internal static bool IsKingCaptured(this uint move)
 		{
 			return (move & 0x00070000) == 0x00020000;
 		}
@@ -256,7 +256,7 @@ namespace DotNetEngine.Engine
 		/// </summary>
 		/// <param name="move">The move being checked</param>
 		/// <returns>A bool value indicating if a rook was captured</returns>
-		internal static bool IsRookCaptured(uint move)
+		internal static bool IsRookCaptured(this uint move)
 		{
 			return (move & 0x00070000) == 0x00060000;
 		}
@@ -266,7 +266,7 @@ namespace DotNetEngine.Engine
 		/// </summary>
 		/// <param name="move">The move being checked</param>
 		/// <returns>A bool value indicating if either castle occurred</returns>
-		internal static bool IsCastle(uint move)
+		internal static bool IsCastle(this uint move)
 		{
 			return (move & 0x00700000) == 0x00200000;
 		}
@@ -277,7 +277,7 @@ namespace DotNetEngine.Engine
 		/// <param name="move">The move being checked</param>
 		/// <returns>A bool value indicating if a O-O castle occurred</returns>
 // ReSharper disable InconsistentNaming
-		internal static bool IsCastleOO(uint move)
+		internal static bool IsCastleOO(this uint move)
 // ReSharper restore InconsistentNaming
 		{
 			return (move & 0x007001c0) == 0x00200180;
@@ -289,7 +289,7 @@ namespace DotNetEngine.Engine
 		/// <param name="move">The move being checked</param>
 		/// <returns>A bool value indicating if a O-O-O castle occurred</returns>
 // ReSharper disable InconsistentNaming
-		internal static bool IsCastleOOO(uint move)
+		internal static bool IsCastleOOO(this uint move)
 // ReSharper restore InconsistentNaming
 		{
 			return (move & 0x007001c0) == 0x00200080;
@@ -300,7 +300,7 @@ namespace DotNetEngine.Engine
 		/// </summary>
 		/// <param name="move">The move being checked</param>
 		/// <returns>A bool value indicating if a promotion occurred</returns>
-		internal static bool IsPromotion(uint move)
+		internal static bool IsPromotion(this uint move)
 		{
 			return (move & 0x00700000) > 0x00200000;
 		}

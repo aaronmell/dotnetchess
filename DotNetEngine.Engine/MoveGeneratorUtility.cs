@@ -21,7 +21,7 @@ namespace DotNetEngine.Engine
                 GenerateKnightMoves(gameState, generationMode, freeSquares, gameState.WhiteKnights, MoveUtility.WhiteKnight, moveData.KnightAttacks, gameState.BlackPieces, ply);
                 GenerateRookMoves(gameState, moveData, generationMode, freeSquares, gameState.WhiteRooks, MoveUtility.WhiteRook, gameState.BlackPieces, ply);
                 GenerateBishopMoves(gameState, moveData, generationMode, freeSquares, gameState.WhiteBishops, MoveUtility.WhiteBishop, gameState.BlackPieces, ply);
-                GenerateQueenMoves(gameState, moveData, generationMode, freeSquares, gameState.WhiteQueen, MoveUtility.WhiteQueen, gameState.BlackPieces, ply);
+                GenerateQueenMoves(gameState, moveData, generationMode, freeSquares, gameState.WhiteQueens, MoveUtility.WhiteQueen, gameState.BlackPieces, ply);
                 GenerateKingMoves(gameState, generationMode, freeSquares, gameState.WhiteKing, 
                     MoveUtility.WhiteKing, moveData.KingAttacks, gameState.BlackPieces, gameState.CurrentWhiteCastleStatus, 
                     MoveUtility.WhiteCastleOOMask, MoveUtility.WhiteCastleOOOMask, moveData.WhiteCastleOOMove, moveData.WhiteCastleOOOMove, ply);
@@ -33,7 +33,7 @@ namespace DotNetEngine.Engine
                 GenerateKnightMoves(gameState, generationMode, freeSquares, gameState.BlackKnights, MoveUtility.BlackKnight, moveData.KnightAttacks, gameState.WhitePieces, ply);
                 GenerateRookMoves(gameState, moveData, generationMode, freeSquares, gameState.BlackRooks, MoveUtility.BlackRook, gameState.WhitePieces, ply);
                 GenerateBishopMoves(gameState, moveData, generationMode, freeSquares, gameState.BlackBishops, MoveUtility.BlackBishop, gameState.WhitePieces, ply);
-                GenerateQueenMoves(gameState, moveData, generationMode, freeSquares, gameState.BlackQueen, MoveUtility.BlackQueen, gameState.WhitePieces, ply);
+                GenerateQueenMoves(gameState, moveData, generationMode, freeSquares, gameState.BlackQueens, MoveUtility.BlackQueen, gameState.WhitePieces, ply);
                 GenerateKingMoves(gameState, generationMode, freeSquares, gameState.BlackKing,
                   MoveUtility.BlackKing, moveData.KingAttacks, gameState.WhitePieces, gameState.CurrentBlackCastleStatus,
                   MoveUtility.BlackCastleOOMask, MoveUtility.BlackCastleOOOMask, moveData.BlackCastleOOMove, moveData.BlackCastleOOOMove, ply);
