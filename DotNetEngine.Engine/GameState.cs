@@ -220,7 +220,24 @@ namespace DotNetEngine.Engine
                         WhiteRooks ^= fromAndToBitboard;
                         WhitePieces ^= fromAndToBitboard;
 
-                        BoardArray[toMove] = MoveUtility.WhiteBishop;
+                        BoardArray[toMove] = MoveUtility.WhiteRook;
+
+                        if (capturedPiece > 0)
+                        {
+                            CapturePiece(toMove, capturedPiece, fromBitboard);
+                        }
+                        else
+                        {
+                            AllPieces ^= fromAndToBitboard;
+                        }
+                        break;
+                    }
+                case MoveUtility.WhiteQueen:
+                    {
+                        WhiteQueens ^= fromAndToBitboard;
+                        WhitePieces ^= fromAndToBitboard;
+
+                        BoardArray[toMove] = MoveUtility.WhiteQueen;
 
                         if (capturedPiece > 0)
                         {
@@ -346,7 +363,24 @@ namespace DotNetEngine.Engine
                         BlackRooks ^= fromAndToBitboard;
                         BlackPieces ^= fromAndToBitboard;
 
-                        BoardArray[toMove] = MoveUtility.BlackBishop;
+                        BoardArray[toMove] = MoveUtility.BlackRook;
+
+                        if (capturedPiece > 0)
+                        {
+                            CapturePiece(toMove, capturedPiece, fromBitboard);
+                        }
+                        else
+                        {
+                            AllPieces ^= fromAndToBitboard;
+                        }
+                        break;
+                    }
+                case MoveUtility.BlackQueen:
+                    {
+                        BlackQueens ^= fromAndToBitboard;
+                        BlackPieces ^= fromAndToBitboard;
+
+                        BoardArray[toMove] = MoveUtility.BlackQueen;
 
                         if (capturedPiece > 0)
                         {

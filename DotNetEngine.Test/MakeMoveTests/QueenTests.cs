@@ -8,33 +8,33 @@ using System.Threading.Tasks;
 
 namespace DotNetEngine.Test.MakeMoveTests
 {
-    public class RookTests
+    public class QueenTests
     {
-        #region White Rook
+        #region White Queen
         [Test]
-        public void MakeMove_Sets_Rook_Bitboard_When_White_Rook_Moves()
+        public void MakeMove_Sets_Queen_Bitboard_When_White_Queen_Moves()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/3R4/8 w - - 0 1");
+            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/3Q4/8 w - - 0 1");
 
             var move = 0U;
             move = move.SetFromMove(11U);
             move = move.SetToMove(19U);
-            move = move.SetMovingPiece(MoveUtility.WhiteRook);
+            move = move.SetMovingPiece(MoveUtility.WhiteQueen);
 
             gameState.MakeMove(move);
 
-            Assert.That(gameState.WhiteRooks, Is.EqualTo(MoveUtility.BitStates[19]), "Piece Bitboard");
+            Assert.That(gameState.WhiteQueens, Is.EqualTo(MoveUtility.BitStates[19]), "Piece Bitboard");
         }
 
         [Test]
-        public void MakeMove_Sets_White_Bitboard_When_White_Rook_Moves()
+        public void MakeMove_Sets_White_Bitboard_When_White_Queen_Moves()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/3R4/8 w - - 0 1");
+            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/3Q4/8 w - - 0 1");
 
             var move = 0U;
             move = move.SetFromMove(11U);
             move = move.SetToMove(19U);
-            move = move.SetMovingPiece(MoveUtility.WhiteRook);
+            move = move.SetMovingPiece(MoveUtility.WhiteQueen);
 
             gameState.MakeMove(move);
 
@@ -42,14 +42,14 @@ namespace DotNetEngine.Test.MakeMoveTests
         }
 
         [Test]
-        public void MakeMove_Sets_AllPieces_Bitboard_When_White_Rook_Moves()
+        public void MakeMove_Sets_AllPieces_Bitboard_When_White_Queen_Moves()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/3R4/8 w - - 0 1");
+            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/3Q4/8 w - - 0 1");
 
             var move = 0U;
             move = move.SetFromMove(11U);
             move = move.SetToMove(19U);
-            move = move.SetMovingPiece(MoveUtility.WhiteRook);
+            move = move.SetMovingPiece(MoveUtility.WhiteQueen);
 
             gameState.MakeMove(move);
 
@@ -57,15 +57,15 @@ namespace DotNetEngine.Test.MakeMoveTests
         }
 
         [Test]
-        public void MakeMove_Sets_50_Move_Rules_When_White_Rook_Moves()
+        public void MakeMove_Sets_50_Move_Rules_When_White_Queen_Moves()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/3R4/8 w - - 0 1");
+            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/3Q4/8 w - - 0 1");
             gameState.FiftyMoveRuleCount = 10;
 
             var move = 0U;
             move = move.SetFromMove(11U);
             move = move.SetToMove(19U);
-            move = move.SetMovingPiece(MoveUtility.WhiteRook);
+            move = move.SetMovingPiece(MoveUtility.WhiteQueen);
 
             gameState.MakeMove(move);
 
@@ -73,15 +73,15 @@ namespace DotNetEngine.Test.MakeMoveTests
         }
 
         [Test]
-        public void MakeMove_Sets_50_Move_Rules_When_White_Rook_Captures()
+        public void MakeMove_Sets_50_Move_Rules_When_White_Queen_Captures()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/4p3/3R4/8 w - - 0 1");
+            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/4p3/3Q4/8 w - - 0 1");
             gameState.FiftyMoveRuleCount = 10;
 
             var move = 0U;
             move = move.SetFromMove(11U);
             move = move.SetToMove(19U);
-            move = move.SetMovingPiece(MoveUtility.WhiteRook);
+            move = move.SetMovingPiece(MoveUtility.WhiteQueen);
             move = move.SetCapturedPiece(MoveUtility.BlackPawn);
 
             gameState.MakeMove(move);
@@ -90,31 +90,31 @@ namespace DotNetEngine.Test.MakeMoveTests
         }
         #endregion
 
-        #region Black Rook
+        #region Black Queen
         [Test]
-        public void MakeMove_Sets_Rook_Bitboard_When_Black_Rook_Moves()
+        public void MakeMove_Sets_Queen_Bitboard_When_Black_Queen_Moves()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/3r4/8 b - - 0 1");
+            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/3q4/8 b - - 0 1");
 
             var move = 0U;
             move = move.SetFromMove(11U);
             move = move.SetToMove(19U);
-            move = move.SetMovingPiece(MoveUtility.BlackRook);
+            move = move.SetMovingPiece(MoveUtility.BlackQueen);
 
             gameState.MakeMove(move);
 
-            Assert.That(gameState.BlackRooks, Is.EqualTo(MoveUtility.BitStates[19]), "Piece Bitboard");
+            Assert.That(gameState.BlackQueens, Is.EqualTo(MoveUtility.BitStates[19]), "Piece Bitboard");
         }
 
         [Test]
-        public void MakeMove_Sets_Black_Bitboard_When_Black_Rook_Moves()
+        public void MakeMove_Sets_Black_Bitboard_When_Black_Queen_Moves()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/3r4/8 b - - 0 1");
+            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/3q4/8 b - - 0 1");
 
             var move = 0U;
             move = move.SetFromMove(11U);
             move = move.SetToMove(19U);
-            move = move.SetMovingPiece(MoveUtility.BlackRook);
+            move = move.SetMovingPiece(MoveUtility.BlackQueen);
 
             gameState.MakeMove(move);
 
@@ -122,14 +122,14 @@ namespace DotNetEngine.Test.MakeMoveTests
         }
 
         [Test]
-        public void MakeMove_Sets_AllPieces_Bitboard_When_Black_Rook_Moves()
+        public void MakeMove_Sets_AllPieces_Bitboard_When_Black_Queen_Moves()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/3r4/8 b - - 0 1");
+            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/3q4/8 b - - 0 1");
 
             var move = 0U;
             move = move.SetFromMove(11U);
             move = move.SetToMove(19U);
-            move = move.SetMovingPiece(MoveUtility.BlackRook);
+            move = move.SetMovingPiece(MoveUtility.BlackQueen);
 
             gameState.MakeMove(move);
 
@@ -137,15 +137,15 @@ namespace DotNetEngine.Test.MakeMoveTests
         }
 
         [Test]
-        public void MakeMove_Sets_50_Move_Rules_When_Black_Rook_Moves()
+        public void MakeMove_Sets_50_Move_Rules_When_Black_Queen_Moves()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/3r4/8 b - - 0 1");
+            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/3q4/8 b - - 0 1");
             gameState.FiftyMoveRuleCount = 10;
 
             var move = 0U;
             move = move.SetFromMove(11U);
             move = move.SetToMove(19U);
-            move = move.SetMovingPiece(MoveUtility.BlackRook);
+            move = move.SetMovingPiece(MoveUtility.BlackQueen);
 
             gameState.MakeMove(move);
 
@@ -153,15 +153,15 @@ namespace DotNetEngine.Test.MakeMoveTests
         }
 
         [Test]
-        public void MakeMove_Sets_50_Move_Rules_When_Black_Rook_Captures()
+        public void MakeMove_Sets_50_Move_Rules_When_Black_Queen_Captures()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/4p3/3r4/8 b - - 0 1");
+            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/4P3/3q4/8 b - - 0 1");
             gameState.FiftyMoveRuleCount = 10;
 
             var move = 0U;
             move = move.SetFromMove(11U);
             move = move.SetToMove(19U);
-            move = move.SetMovingPiece(MoveUtility.BlackRook);
+            move = move.SetMovingPiece(MoveUtility.BlackQueen);
             move = move.SetCapturedPiece(MoveUtility.WhitePawn);
 
             gameState.MakeMove(move);
@@ -171,8 +171,8 @@ namespace DotNetEngine.Test.MakeMoveTests
         #endregion
 
         #region BoardArray
-        [TestCase("8/8/8/8/8/8/3R4/8 w - - 0 1", MoveUtility.WhiteRook)]
-        [TestCase("8/8/8/8/8/8/3r4/8 b - - 0 1", MoveUtility.BlackRook)]
+        [TestCase("8/8/8/8/8/8/3Q4/8 w - - 0 1", MoveUtility.WhiteQueen)]
+        [TestCase("8/8/8/8/8/8/3q4/8 b - - 0 1", MoveUtility.BlackQueen)]
         public void MakeMove_Sets_Board_Array_From_Square(string initialFen, uint movingPiece)
         {
             var gameState = GameStateUtility.LoadStateFromFen(initialFen);
@@ -187,8 +187,8 @@ namespace DotNetEngine.Test.MakeMoveTests
             Assert.That(gameState.BoardArray[11U], Is.EqualTo(MoveUtility.Empty));
         }
 
-        [TestCase("8/8/8/8/8/8/3R4/8 w - - 0 1", MoveUtility.WhiteRook)]
-        [TestCase("8/8/8/8/8/8/3r4/8 b - - 0 1", MoveUtility.BlackRook)]
+        [TestCase("8/8/8/8/8/8/3Q4/8 w - - 0 1", MoveUtility.WhiteQueen)]
+        [TestCase("8/8/8/8/8/8/3q4/8 b - - 0 1", MoveUtility.BlackQueen)]
         public void MakeMove_Sets_Board_Array_To_Square(string initialFen, uint movingPiece)
         {
             var gameState = GameStateUtility.LoadStateFromFen(initialFen);
