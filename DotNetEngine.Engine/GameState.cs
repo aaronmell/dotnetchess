@@ -7,8 +7,6 @@ namespace DotNetEngine.Engine
 	/// </summary>
 	internal class GameState
 	{
-        private readonly ulong[] _allPieceBoards;        
-     
 		//white bitboards
 		internal ulong WhitePawns { get; set; }
 		internal ulong WhiteKnights { get; set; }
@@ -62,23 +60,7 @@ namespace DotNetEngine.Engine
                
         internal GameState()
 		{
-			_allPieceBoards = new[]
-			{
-				BlackBishops,
-				BlackKing,
-				BlackKnights,
-				BlackPawns,
-				BlackQueens,
-				BlackRooks,
-				WhiteBishops,
-				WhiteKing,
-				WhiteKnights,
-				WhitePawns,
-				WhiteQueens,
-				WhiteRooks
-			};
-
-			BoardArray = new uint[64];
+	        BoardArray = new uint[64];
 
             Moves = new Dictionary<int, List<uint>>();
 		}

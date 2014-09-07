@@ -1,16 +1,12 @@
 ﻿using DotNetEngine.Engine;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace DotNetEngine.Test
+namespace DotNetEngine.Test.MoveGenerationTests
 {
     public class KnightMoveGenerationTests
     {
-        private MoveData _moveData = new MoveData();
+        private readonly MoveData _moveData = new MoveData();
 
         #region White Knights
         [TestCase(27U, 17U, MoveGenerationMode.All)]
@@ -237,9 +233,7 @@ namespace DotNetEngine.Test
         [TestCase(MoveGenerationMode.CaptureMovesOnly)]
         public void Does_Not_Generate_Invalid_Black_Knight_Captures_Against_Own_Pieces(MoveGenerationMode mode)
         {
-            var gameState = new GameState();
-
-            gameState = GameStateUtility.LoadStateFromFen("8/8/2k1k3/1k3k2/3n4/1k3k2/2k1k3/8 b - - 0 1");
+            var gameState = GameStateUtility.LoadStateFromFen("8/8/2k1k3/1k3k2/3n4/1k3k2/2k1k3/8 b - - 0 1");
 
             gameState.GenerateMoves(mode, 1, _moveData);
             var testMoves = gameState.Moves[1].Where(x => x.GetMovingPiece() == MoveUtility.BlackKnight);

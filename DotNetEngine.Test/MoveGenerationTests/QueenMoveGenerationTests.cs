@@ -1,16 +1,12 @@
 ﻿using DotNetEngine.Engine;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DotNetEngine.Test.MoveGenerationTests
 {
     public class QueenMoveGenerationTests
     {
-        private MoveData _moveData = new MoveData();
+        private readonly MoveData _moveData = new MoveData();
 
         #region White Queen
         [TestCase(27U, 0U, MoveGenerationMode.All)]

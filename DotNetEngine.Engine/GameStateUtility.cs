@@ -167,10 +167,10 @@ namespace DotNetEngine.Engine
 		}
 
         /// <summary>
-        /// A helper method that converts the current game state to a easy to read console output
+        /// A helper method that converts a single bitboard to a easy to read console output
         /// </summary>
-        /// <param name="state">The Current Game state</param>
-        /// <returns>A formatted chess board</returns>
+        /// <param name="bitboard"></param>
+		/// <returns>A formatted chess board</returns>
         internal static string ConvertSingleBitBoardsToConsoleOutput(this ulong bitboard)
         {
             var output = new StringBuilder(" - - - - - - - - ");
@@ -184,10 +184,7 @@ namespace DotNetEngine.Engine
 
                     var position = MoveUtility.BitStates[(i * 8) + j];
 
-                    if ((position & bitboard) == position)
-                        output.Append("X");
-                    else
-                        output.Append(" ");
+	                output.Append((position & bitboard) == position ? "X" : " ");
                 }
 
                 output.AppendLine("|");
@@ -202,7 +199,7 @@ namespace DotNetEngine.Engine
             var sb = new StringBuilder();
             foreach (var move in state.Moves[ply])
             {
-                sb.AppendLine(string.Format("FromSquare {0} ToSquare {1} MovingPiece {1} CapturedPiece {2} PromotedPiece {3}", move.GetFromMove(), move.GetToMove(), move.GetMovingPiece(), move.GetCapturedPiece(), move.GetPromotedPiece()));
+                sb.AppendLine(string.Format("FromSquare {0} ToSquare {1} MovingPiece {2} CapturedPiece {3} PromotedPiece {4}", move.GetFromMove(), move.GetToMove(), move.GetMovingPiece(), move.GetCapturedPiece(), move.GetPromotedPiece()));
             }
             return sb.ToString();
         }

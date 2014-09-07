@@ -9,15 +9,12 @@ namespace DotNetEngine.Engine
 	{  
 		internal static void GenerateMoves(this GameState gameState, MoveGenerationMode generationMode, int ply, MoveData moveData)
 		{
-            ulong targetBitmap;
-            var moves = new List<ulong>(64);
-            var freeSquares = ~gameState.AllPieces;
+			var freeSquares = ~gameState.AllPieces;
             gameState.Moves.Add(ply, new List<uint>(64));
 
 			if (gameState.WhiteToMove)
 			{
-                targetBitmap = gameState.WhitePieces;
-                GenerateWhitePawnMoves(gameState, moveData, generationMode, freeSquares, ply);
+				GenerateWhitePawnMoves(gameState, moveData, generationMode, freeSquares, ply);
                 GenerateKnightMoves(gameState, generationMode, freeSquares, gameState.WhiteKnights, MoveUtility.WhiteKnight, moveData.KnightAttacks, gameState.BlackPieces, ply);
                 GenerateRookMoves(gameState, moveData, generationMode, freeSquares, gameState.WhiteRooks, MoveUtility.WhiteRook, gameState.BlackPieces, ply);
                 GenerateBishopMoves(gameState, moveData, generationMode, freeSquares, gameState.WhiteBishops, MoveUtility.WhiteBishop, gameState.BlackPieces, ply);
@@ -28,8 +25,7 @@ namespace DotNetEngine.Engine
 			}
 		    else
             {
-                targetBitmap = gameState.BlackPieces;
-                GenerateBlackPawnMoves(gameState, moveData, generationMode, freeSquares, ply);
+	            GenerateBlackPawnMoves(gameState, moveData, generationMode, freeSquares, ply);
                 GenerateKnightMoves(gameState, generationMode, freeSquares, gameState.BlackKnights, MoveUtility.BlackKnight, moveData.KnightAttacks, gameState.WhitePieces, ply);
                 GenerateRookMoves(gameState, moveData, generationMode, freeSquares, gameState.BlackRooks, MoveUtility.BlackRook, gameState.WhitePieces, ply);
                 GenerateBishopMoves(gameState, moveData, generationMode, freeSquares, gameState.BlackBishops, MoveUtility.BlackBishop, gameState.WhitePieces, ply);
@@ -48,7 +44,7 @@ namespace DotNetEngine.Engine
 
             while (kingBoard > 0)
             {
-                uint fromSquare = kingBoard.GetFirstPieceFromBitBoard();
+                var fromSquare = kingBoard.GetFirstPieceFromBitBoard();
                 move = move.SetFromMove(fromSquare);
 
                 var kingMoves = 0UL;

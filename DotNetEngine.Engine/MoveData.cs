@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DotNetEngine.Engine;
-
-namespace DotNetEngine.Engine
+﻿namespace DotNetEngine.Engine
 {
      
     /// <summary>
@@ -13,7 +6,7 @@ namespace DotNetEngine.Engine
     /// </summary>
     internal class MoveData
     {
-        private static byte[] byteBitStates = new byte[8]
+        private static readonly byte[] ByteBitStates = new []
             {
                 (byte)MoveUtility.BitStates[0],
                 (byte)MoveUtility.BitStates[1],
@@ -22,17 +15,14 @@ namespace DotNetEngine.Engine
                 (byte)MoveUtility.BitStates[4],
                 (byte)MoveUtility.BitStates[5],
                 (byte)MoveUtility.BitStates[6],
-                (byte)MoveUtility.BitStates[7],
+                (byte)MoveUtility.BitStates[7]
             };
               
-        private ulong[] RankMask = new ulong[64];
-        private ulong[] FileMask = new ulong[64];
+        private readonly ulong[] _rankMask = new ulong[64];
+        private readonly ulong[] _fileMask = new ulong[64];
         
-        private ulong[] DiagonalA1H8Mask = new ulong[64];
-        private ulong[] DiagonalA8H1Mask = new ulong[64];
-
-        private ulong[] DiagonalA1H8MagicMultiplication = new ulong[64];
-        private ulong[] DiagonalA8H1MagicMultiplication = new ulong[64];
+        private readonly ulong[] _diagonalA1H8Mask = new ulong[64];
+        private readonly ulong[] _diagonalA8H1Mask = new ulong[64];
 
         internal ulong[] KnightAttacks { get; private set; }
         internal ulong[] KingAttacks { get; private set; }
@@ -50,10 +40,13 @@ namespace DotNetEngine.Engine
         internal ulong[][] DiagonalA1H8Attacks { get; private set; }
         internal ulong[][] DiagonalA8H1Attacks { get; private set; }       
 
+// ReSharper disable InconsistentNaming
         internal uint WhiteCastleOOMove { get; private set; }
         internal uint WhiteCastleOOOMove { get; private set; }
         internal uint BlackCastleOOMove { get; private set; }
         internal uint BlackCastleOOOMove { get; private set; }
+// ReSharper restore InconsistentNaming
+
         //This should be private, but I wanted to write tests against it to ensure that it works correctly.
         internal byte[][] SlidingAttacks {get; private set;}      
 
@@ -155,8 +148,8 @@ namespace DotNetEngine.Engine
                 {
                     for (var bit = 2; bit < 8; bit++)
                     {
-                        RankMask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.GetBitStatesByBoardIndex(rank, bit);
-                        FileMask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.GetBitStatesByBoardIndex(bit, file);
+                        _rankMask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.GetBitStatesByBoardIndex(rank, bit);
+                        _fileMask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.GetBitStatesByBoardIndex(bit, file);
                     }
 
                     var diagonalA8H1 = file + rank; // from 2 to 16, longest diagonal = 9
@@ -165,14 +158,14 @@ namespace DotNetEngine.Engine
                     {
                         for (var square = 2; square < diagonalA8H1 - 1; square++)
                         {
-                            DiagonalA8H1Mask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.GetBitStatesByBoardIndex(square, diagonalA8H1 - square);
+                            _diagonalA8H1Mask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.GetBitStatesByBoardIndex(square, diagonalA8H1 - square);
                         }
                     }
                     else
                     {
                         for (var square = 2; square < 17 - diagonalA8H1; square++)
                         {
-                            DiagonalA8H1Mask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.GetBitStatesByBoardIndex(diagonalA8H1 + square - 9, 9 - square);
+                            _diagonalA8H1Mask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.GetBitStatesByBoardIndex(diagonalA8H1 + square - 9, 9 - square);
                         }
                     }
                    
@@ -182,14 +175,14 @@ namespace DotNetEngine.Engine
                     {
                         for (var square = 2 ; square < 8 - diagonalA1H8 ; square ++)
                         {
-                            DiagonalA1H8Mask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.GetBitStatesByBoardIndex(diagonalA1H8 + square, square);
+                            _diagonalA1H8Mask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.GetBitStatesByBoardIndex(diagonalA1H8 + square, square);
                         }
                     }
                     else
                     {
                         for (var square = 2 ; square < 8 + diagonalA1H8 ; square ++)
                         {
-                            DiagonalA1H8Mask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.GetBitStatesByBoardIndex(square, square - diagonalA1H8);
+                            _diagonalA1H8Mask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.GetBitStatesByBoardIndex(square, square - diagonalA1H8);
                         }
                     }                    
                 }
@@ -206,12 +199,12 @@ namespace DotNetEngine.Engine
                     {
                             
                         var slidingattackindex = 8 - MoveUtility.Ranks[square] < MoveUtility.Files[square] - 1 ? 8 - MoveUtility.Ranks[square] : MoveUtility.Files[square] - 1;
-                        if ((SlidingAttacks[slidingattackindex][attackState] & byteBitStates[attackbit]) == byteBitStates[attackbit])
+                        if ((SlidingAttacks[slidingattackindex][attackState] & ByteBitStates[attackbit]) == ByteBitStates[attackbit])
                         {
                             var diagonalLength = MoveUtility.Files[square] + MoveUtility.Ranks[square];
                             
-                            var file = 0;
-                            var rank = 0;
+                            int file;
+                            int rank;
 
                             if (diagonalLength < 10)
                             {
@@ -244,12 +237,12 @@ namespace DotNetEngine.Engine
                     {
 
                         var slidingattackindex = (MoveUtility.Ranks[square] - 1) < (MoveUtility.Files[square] - 1) ? (MoveUtility.Ranks[square] - 1) : (MoveUtility.Files[square] - 1);
-                        if ((SlidingAttacks[slidingattackindex][attackState] & byteBitStates[attackbit]) == byteBitStates[attackbit])
+                        if ((SlidingAttacks[slidingattackindex][attackState] & ByteBitStates[attackbit]) == ByteBitStates[attackbit])
                         {
                             var diagonalLength = MoveUtility.Files[square] - MoveUtility.Ranks[square];
 
-                            var file = 0;
-                            var rank = 0;
+                            int file;
+                            int rank;
 
                             if (diagonalLength < 0)
                             {
@@ -295,7 +288,7 @@ namespace DotNetEngine.Engine
                 {
                     for (var attackbit = 0; attackbit < 8; attackbit++)
                     {
-                        if ((SlidingAttacks[8 - MoveUtility.Ranks[square]][attackState] & byteBitStates[attackbit]) == byteBitStates[attackbit])
+                        if ((SlidingAttacks[8 - MoveUtility.Ranks[square]][attackState] & ByteBitStates[attackbit]) == ByteBitStates[attackbit])
                         {
                             var file = MoveUtility.Files[square];
                             var rank = 8 - attackbit;
@@ -332,15 +325,15 @@ namespace DotNetEngine.Engine
 
                     if (position < 7)
                     {
-                        attackMask |= byteBitStates[position + 1];
+                        attackMask |= ByteBitStates[position + 1];
                     }
 
                     var slide = position + 2;
                     while (slide <= 7)
                     {
-                        if ((~stateMask & byteBitStates[slide - 1]) == byteBitStates[slide - 1])
+                        if ((~stateMask & ByteBitStates[slide - 1]) == ByteBitStates[slide - 1])
                         {
-                            attackMask |= byteBitStates[slide];
+                            attackMask |= ByteBitStates[slide];
                         }
                         else
                         {
@@ -350,14 +343,14 @@ namespace DotNetEngine.Engine
                     }
                     if (position > 0)
                     {
-                        attackMask |= byteBitStates[position - 1];
+                        attackMask |= ByteBitStates[position - 1];
                     }
                     slide = position - 2;
                     while (slide >= 0)
                     {
-                        if ((~stateMask & byteBitStates[slide + 1]) == byteBitStates[slide + 1])
+                        if ((~stateMask & ByteBitStates[slide + 1]) == ByteBitStates[slide + 1])
                         {
-                            attackMask |= byteBitStates[slide];
+                            attackMask |= ByteBitStates[slide];
                         }
                         else
                         {
@@ -613,23 +606,23 @@ namespace DotNetEngine.Engine
     
         private ulong GetRankMoves(uint fromSquare, ulong occupiedSquares, ulong targetboard)
         {
-            return RankAttacks[fromSquare][(occupiedSquares & RankMask[fromSquare]) >> MoveUtility.ShiftedRank[fromSquare]] & targetboard;
+            return RankAttacks[fromSquare][(occupiedSquares & _rankMask[fromSquare]) >> MoveUtility.ShiftedRank[fromSquare]] & targetboard;
         }
 
         private ulong GetFileMoves(uint fromSquare, ulong occupiedSquares, ulong targetboard)
         {
 
-            return FileAttacks[fromSquare][(occupiedSquares & FileMask[fromSquare]) * MoveUtility.FileMagicMultiplication[fromSquare] >> 57] & targetboard;
+            return FileAttacks[fromSquare][(occupiedSquares & _fileMask[fromSquare]) * MoveUtility.FileMagicMultiplication[fromSquare] >> 57] & targetboard;
         }
 
         private ulong GetDiagonalA8H1Moves(uint fromSquare, ulong occupiedSquares, ulong targetboard)
         {
-            return DiagonalA8H1Attacks[fromSquare][(occupiedSquares & DiagonalA8H1Mask[fromSquare]) * MoveUtility.DiagonalA8H1MagicMultiplcation[fromSquare] >> 57] & targetboard;
+            return DiagonalA8H1Attacks[fromSquare][(occupiedSquares & _diagonalA8H1Mask[fromSquare]) * MoveUtility.DiagonalA8H1MagicMultiplcation[fromSquare] >> 57] & targetboard;
         }
 
         private ulong GetDiagonalA1H8Moves(uint fromSquare, ulong occupiedSquares, ulong targetboard)
         {
-            return DiagonalA1H8Attacks[fromSquare][(occupiedSquares & DiagonalA1H8Mask[fromSquare]) * MoveUtility.DiagonalA1H8MagicMultiplcation[fromSquare] >> 57] & targetboard;
+            return DiagonalA1H8Attacks[fromSquare][(occupiedSquares & _diagonalA1H8Mask[fromSquare]) * MoveUtility.DiagonalA1H8MagicMultiplcation[fromSquare] >> 57] & targetboard;
         }
     }
 }

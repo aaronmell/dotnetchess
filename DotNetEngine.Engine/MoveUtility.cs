@@ -69,10 +69,10 @@ namespace DotNetEngine.Engine
         /// <summary>
         /// A Translation of rank and file to its index on the board
         /// </summary>
-        internal static int[][] BoardIndex = new int[][]
+        internal static int[][] BoardIndex = new []
         {
             new [] { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-            new [] { 0, 0, 1, 2, 3, 4, 5, 6, 7, },
+            new [] { 0, 0, 1, 2, 3, 4, 5, 6, 7 },
             new [] { 0, 8, 9, 10, 11, 12, 13, 14, 15 },
             new [] { 0, 16, 17, 18, 19, 20, 21, 22, 23 }, 
             new [] { 0, 24, 25, 26, 27, 28, 29, 30, 31 }, 
@@ -85,7 +85,7 @@ namespace DotNetEngine.Engine
         /// <summary>
         /// The give rank of a row if it was shifted up by a single rank
         /// </summary>
-        internal static int[] ShiftedRank = new int[64] 
+        internal static int[] ShiftedRank = new [] 
         {
             1, 1, 1, 1, 1, 1, 1, 1,
             9, 9, 9, 9, 9, 9, 9, 9,
@@ -97,7 +97,7 @@ namespace DotNetEngine.Engine
             57, 57, 57, 57, 57, 57, 57, 57
         };
 
-        internal static ulong[] FileMagicMultiplication = new ulong[64] 
+        internal static ulong[] FileMagicMultiplication = new ulong[] 
         {
             9241421688590303744, 4620710844295151872, 2310355422147575936, 1155177711073787968, 577588855536893984, 
             288794427768446992, 144397213884223496, 72198606942111748, 9241421688590303744, 4620710844295151872, 2310355422147575936, 
@@ -113,7 +113,7 @@ namespace DotNetEngine.Engine
 
         };
        
-        internal static ulong[] DiagonalA1H8MagicMultiplcation = new ulong[64] 
+        internal static ulong[] DiagonalA1H8MagicMultiplcation = new ulong[] 
         {
            72340172838076672, 36170086419038336, 18085043209519168, 9042521604759584, 4521260802379792, 2260630401189896, 0, 0, 72340172838076672,
            72340172838076672, 36170086419038336, 18085043209519168, 9042521604759584, 4521260802379792, 2260630401189896, 0, 72340172838076672, 
@@ -126,7 +126,7 @@ namespace DotNetEngine.Engine
            72340172838076672, 72340172838076672
         };
 
-        internal static ulong[] DiagonalA8H1MagicMultiplcation = new ulong[64] 
+        internal static ulong[] DiagonalA8H1MagicMultiplcation = new ulong[] 
         {
            0, 0, 72340172838076672, 72340172838076672, 72340172838076672, 72340172838076672, 72340172838076672, 72340172838076672, 0, 72340172838076672, 
            72340172838076672, 72340172838076672, 72340172838076672, 72340172838076672, 72340172838076672, 36170086419038336, 72340172838076672, 72340172838076672, 
@@ -152,7 +152,7 @@ namespace DotNetEngine.Engine
         /// <returns>The lsb that is set on a board</returns>
         internal static uint GetFirstPieceFromBitBoard(this ulong board)
         {
-            var index = new uint[64]
+            var index = new uint[]
             {
                 0, 47,  1, 56, 48, 27,  2, 60,
                 57, 49, 41, 37, 28, 16,  3, 61,

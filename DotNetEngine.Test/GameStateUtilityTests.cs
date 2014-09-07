@@ -1,25 +1,21 @@
 ﻿using DotNetEngine.Engine;
 using NUnit.Framework;
 using System.IO;
-using System.Text;
 
 namespace DotNetEngine.Test
 {
 	public class GameStateUtilityTests
 	{
-       
-
-		
         /// <summary>
 		/// This test is only useful for checking the output of the converter.
 		/// </summary>
 		[Test]
 		public void BitBoardOutput()
-		{
-			var gameState = GameStateUtility.LoadStateFromFen("rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2");
+        {
+	        var gameState = GameStateUtility.LoadStateFromFen("rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2");
 
-            var output = gameState.ConvertBitBoardsToConsoleOutput();
-		}
+	        gameState.ConvertBitBoardsToConsoleOutput();
+        }
 
 		/// <summary>
 		/// This test is only useful for checking the output of the converter.
@@ -29,7 +25,7 @@ namespace DotNetEngine.Test
 		{
 			var gameState = GameStateUtility.LoadStateFromFen("rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2");
 
-            var output = gameState.ConvertBoardArrayToConsoleOutput();
+            gameState.ConvertBoardArrayToConsoleOutput();
 		}
 
         [Test]

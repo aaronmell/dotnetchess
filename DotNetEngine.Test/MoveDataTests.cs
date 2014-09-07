@@ -1,27 +1,22 @@
 ﻿using DotNetEngine.Engine;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DotNetEngine.Test
 {
     public class MoveDataTests
     {
-        private MoveData moveLookups;
+        private MoveData _moveLookups;
 
         [SetUp]
         public void Setup()
         {
-            moveLookups = new MoveData();
+            _moveLookups = new MoveData();
         }
 
         [Test]
         public void Generates_Knight_Board_Correctly_Lower_Left_Board()
         {
-            var board = moveLookups.KnightAttacks[0];
+            var board = _moveLookups.KnightAttacks[0];
 
             Assert.That(board & MoveUtility.BitStates[10], Is.EqualTo(MoveUtility.BitStates[10]));
             Assert.That(board & MoveUtility.BitStates[17], Is.EqualTo(MoveUtility.BitStates[17]));
@@ -37,7 +32,7 @@ namespace DotNetEngine.Test
          [Test]
         public void Generates_Knight_Board_Correctly_Lower_Right_Board()
         {
-            var board = moveLookups.KnightAttacks[7];
+            var board = _moveLookups.KnightAttacks[7];
 
             Assert.That(board & MoveUtility.BitStates[13], Is.EqualTo(MoveUtility.BitStates[13]));
             Assert.That(board & MoveUtility.BitStates[22], Is.EqualTo(MoveUtility.BitStates[22]));
@@ -53,7 +48,7 @@ namespace DotNetEngine.Test
          [Test]
         public void Generates_Knight_Board_Correctly_Upper_Left_Board()
         {
-            var board = moveLookups.KnightAttacks[56];
+            var board = _moveLookups.KnightAttacks[56];
 
             Assert.That(board & MoveUtility.BitStates[50], Is.EqualTo(MoveUtility.BitStates[50]));
             Assert.That(board & MoveUtility.BitStates[41], Is.EqualTo(MoveUtility.BitStates[41]));
@@ -69,7 +64,7 @@ namespace DotNetEngine.Test
          [Test]
         public void Generates_Knight_Board_Correctly_Upper_Right_Board()
         {
-            var board = moveLookups.KnightAttacks[63];
+            var board = _moveLookups.KnightAttacks[63];
 
             Assert.That(board & MoveUtility.BitStates[53], Is.EqualTo(MoveUtility.BitStates[53]));
             Assert.That(board & MoveUtility.BitStates[46], Is.EqualTo(MoveUtility.BitStates[46]));
@@ -85,7 +80,7 @@ namespace DotNetEngine.Test
          [Test]
         public void Generates_Knight_Board_Correctly_Middle_Board()
         {
-            var board = moveLookups.KnightAttacks[27];
+            var board = _moveLookups.KnightAttacks[27];
 
             Assert.That(board & MoveUtility.BitStates[42], Is.EqualTo(MoveUtility.BitStates[42]));
             Assert.That(board & MoveUtility.BitStates[44], Is.EqualTo(MoveUtility.BitStates[44]));
@@ -110,7 +105,7 @@ namespace DotNetEngine.Test
         [Test]
         public void Generates_King_Board_Correctly_Lower_Left()
         {
-            var board = moveLookups.KingAttacks[0];
+            var board = _moveLookups.KingAttacks[0];
 
             Assert.That(board & MoveUtility.BitStates[1], Is.EqualTo(MoveUtility.BitStates[1]));
             Assert.That(board & MoveUtility.BitStates[8], Is.EqualTo(MoveUtility.BitStates[8]));
@@ -127,7 +122,7 @@ namespace DotNetEngine.Test
         [Test]
         public void Generates_King_Board_Correctly_Lower_Right()
         {
-            var board = moveLookups.KingAttacks[7];
+            var board = _moveLookups.KingAttacks[7];
 
             Assert.That(board & MoveUtility.BitStates[6], Is.EqualTo(MoveUtility.BitStates[6]));
             Assert.That(board & MoveUtility.BitStates[15], Is.EqualTo(MoveUtility.BitStates[15]));
@@ -144,7 +139,7 @@ namespace DotNetEngine.Test
         [Test]
         public void Generates_King_Board_Correctly_Upper_Left()
         {
-            var board = moveLookups.KingAttacks[56];
+            var board = _moveLookups.KingAttacks[56];
 
             Assert.That(board & MoveUtility.BitStates[48], Is.EqualTo(MoveUtility.BitStates[48]));
             Assert.That(board & MoveUtility.BitStates[49], Is.EqualTo(MoveUtility.BitStates[49]));
@@ -161,7 +156,7 @@ namespace DotNetEngine.Test
         [Test]
         public void Generates_King_Board_Correctly_Upper_Right()
         {
-            var board = moveLookups.KingAttacks[63];
+            var board = _moveLookups.KingAttacks[63];
 
             Assert.That(board & MoveUtility.BitStates[62], Is.EqualTo(MoveUtility.BitStates[62]));
             Assert.That(board & MoveUtility.BitStates[55], Is.EqualTo(MoveUtility.BitStates[55]));
@@ -178,7 +173,7 @@ namespace DotNetEngine.Test
         [Test]
         public void Generates_King_Board_Correctly_Center()
         {
-            var board = moveLookups.KingAttacks[27];
+            var board = _moveLookups.KingAttacks[27];
             
             Assert.That(board & MoveUtility.BitStates[26], Is.EqualTo(MoveUtility.BitStates[26]));
             Assert.That(board & MoveUtility.BitStates[28], Is.EqualTo(MoveUtility.BitStates[28]));
@@ -203,7 +198,7 @@ namespace DotNetEngine.Test
         [Test]
         public void Generates_White_Pawn_Attack_Board_Correctly()
         {
-            var board = moveLookups.WhitePawnAttacks[1];
+            var board = _moveLookups.WhitePawnAttacks[1];
 
             Assert.That(board & MoveUtility.BitStates[8], Is.EqualTo(MoveUtility.BitStates[8]));
             Assert.That(board & MoveUtility.BitStates[10], Is.EqualTo(MoveUtility.BitStates[10]));
@@ -219,7 +214,7 @@ namespace DotNetEngine.Test
         [Test]
         public void Generates_Black_Pawn_Attack_Board_Correctly()
         {
-            var board = moveLookups.BlackPawnAttacks[57];
+            var board = _moveLookups.BlackPawnAttacks[57];
 
             Assert.That(board & MoveUtility.BitStates[48], Is.EqualTo(MoveUtility.BitStates[48]));
             Assert.That(board & MoveUtility.BitStates[50], Is.EqualTo(MoveUtility.BitStates[50]));
@@ -236,7 +231,7 @@ namespace DotNetEngine.Test
         [TestCase(55, 63)]
         public void Generates_White_Pawn_Single_Move_Correctly(int boardIndex, int targetSquare)
         {
-            var board = moveLookups.WhitePawnMoves[boardIndex];
+            var board = _moveLookups.WhitePawnMoves[boardIndex];
 
             Assert.That(board & MoveUtility.BitStates[targetSquare], Is.EqualTo(MoveUtility.BitStates[targetSquare]));
 
@@ -252,7 +247,7 @@ namespace DotNetEngine.Test
         [TestCase(63, 55)]
         public void Generates_Black_Pawn_Single_Move_Correctly(int boardIndex, int targetSquare)
         {
-            var board = moveLookups.BlackPawnMoves[boardIndex];
+            var board = _moveLookups.BlackPawnMoves[boardIndex];
 
             Assert.That(board & MoveUtility.BitStates[targetSquare], Is.EqualTo(MoveUtility.BitStates[targetSquare]));
 
@@ -268,7 +263,7 @@ namespace DotNetEngine.Test
         [TestCase(15, 31)]
         public void Generates_White_Pawn_Double_Move_Correctly(int boardIndex, int targetSquare)
         {
-            var board = moveLookups.WhitePawnDoubleMoves[boardIndex];
+            var board = _moveLookups.WhitePawnDoubleMoves[boardIndex];
 
             Assert.That(board & MoveUtility.BitStates[targetSquare], Is.EqualTo(MoveUtility.BitStates[targetSquare]));
 
@@ -284,7 +279,7 @@ namespace DotNetEngine.Test
         [TestCase(55, 39)]
         public void Generates_Black_Pawn_Double_Move_Correctly(int boardIndex, int targetSquare)
         {
-            var board = moveLookups.BlackPawnDoubleMoves[boardIndex];
+            var board = _moveLookups.BlackPawnDoubleMoves[boardIndex];
 
             Assert.That(board & MoveUtility.BitStates[targetSquare], Is.EqualTo(MoveUtility.BitStates[targetSquare]));
 
@@ -304,7 +299,7 @@ namespace DotNetEngine.Test
         [TestCase(5, 0, 223)]
         public void Generates_Sliding_Attacks_Correctly(int position, int state, int result)
         {
-            var attack = moveLookups.SlidingAttacks[position][state];
+            var attack = _moveLookups.SlidingAttacks[position][state];
 
             Assert.That(attack, Is.EqualTo(result));
         }
@@ -317,7 +312,7 @@ namespace DotNetEngine.Test
         [TestCase(63, 63, 4611686018427387904UL)]
         public void Generates_RankAttacks_Correctly(int position, int state, ulong result)
         {
-            var attack = moveLookups.RankAttacks[position][state];
+            var attack = _moveLookups.RankAttacks[position][state];
 
             Assert.That(attack, Is.EqualTo(result));
         }
@@ -328,7 +323,7 @@ namespace DotNetEngine.Test
         [TestCase(56, 63, 281474976710656UL)]
         public void Generates_FileAttacks_Correctly(int position, int state, ulong result)
         {
-            var attack = moveLookups.FileAttacks[position][state];
+            var attack = _moveLookups.FileAttacks[position][state];
 
             Assert.That(attack, Is.EqualTo(result));
         }
@@ -345,7 +340,7 @@ namespace DotNetEngine.Test
         [TestCase(63, 63, 18014398509481984UL)]
         public void Generates_A1H8_DiagonalAttacks_Correctly(int position, int state, ulong result)
         {
-            var attack = moveLookups.DiagonalA1H8Attacks[position][state];
+            var attack = _moveLookups.DiagonalA1H8Attacks[position][state];
 
             Assert.That(attack, Is.EqualTo(result));
         }
@@ -362,7 +357,7 @@ namespace DotNetEngine.Test
         [TestCase(7, 63, 16384UL)]
         public void Generates_A8H1_DiagonalAttacks_Correctly(int position, int state, ulong result)
         {
-            var attack = moveLookups.DiagonalA8H1Attacks[position][state];
+            var attack = _moveLookups.DiagonalA8H1Attacks[position][state];
 
             Assert.That(attack, Is.EqualTo(result));
         }
@@ -381,7 +376,7 @@ namespace DotNetEngine.Test
         [TestCase(27U, 134217728UL, ulong.MinValue, 0UL)]      
         public void Generates_RookMoves_Correctly(uint fromSquare, ulong occupiedSquares, ulong targetboard, ulong result)
         {
-            var move = moveLookups.GetRookMoves(fromSquare, occupiedSquares, targetboard);
+            var move = _moveLookups.GetRookMoves(fromSquare, occupiedSquares, targetboard);
             Assert.That(move, Is.EqualTo(result));
         }
 
@@ -395,7 +390,7 @@ namespace DotNetEngine.Test
         [TestCase(28U, ulong.MaxValue, ulong.MinValue, 0UL)]
         public void Generates_BishopMoves_Correctly(uint fromSquare, ulong occupiedSquares, ulong targetboard, ulong result)
         {
-            var move = moveLookups.GetBishopMoves(fromSquare, occupiedSquares, targetboard);
+            var move = _moveLookups.GetBishopMoves(fromSquare, occupiedSquares, targetboard);
 
             move.ConvertSingleBitBoardsToConsoleOutput();
 
@@ -414,7 +409,7 @@ namespace DotNetEngine.Test
         [TestCase(28U, ulong.MaxValue, ulong.MinValue, 0UL)]
         public void Generates_QueenMoves_Correctly(uint fromSquare, ulong occupiedSquares, ulong targetboard, ulong result)
         {
-            var move = moveLookups.GetQueenMoves(fromSquare, occupiedSquares, targetboard);
+            var move = _moveLookups.GetQueenMoves(fromSquare, occupiedSquares, targetboard);
 
             move.ConvertSingleBitBoardsToConsoleOutput();
 

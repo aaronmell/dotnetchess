@@ -1,16 +1,11 @@
 ﻿using DotNetEngine.Engine;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DotNetEngine.Test.MakeMoveTests
 {
     public class KingTests
     {
-        private readonly MoveData moveData = new MoveData();
+        private readonly MoveData _moveData = new MoveData();
 
         #region White King
         [Test]
@@ -78,8 +73,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         {
             var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/8/4K2R w K - 0 1");
 
-            var move = 0U;
-            move = moveData.WhiteCastleOOMove;
+	        uint move = _moveData.WhiteCastleOOMove;
 
             gameState.MakeMove(move);
 
@@ -92,8 +86,7 @@ namespace DotNetEngine.Test.MakeMoveTests
 
             var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/8/4K2R w K - 0 1");
 
-            var move = 0U;
-            move = moveData.WhiteCastleOOMove;
+	        uint move = _moveData.WhiteCastleOOMove;
 
             gameState.MakeMove(move);
 
@@ -106,8 +99,7 @@ namespace DotNetEngine.Test.MakeMoveTests
 
             var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/8/R3K3 w Q - 0 1");
 
-            var move = 0U;
-            move = moveData.WhiteCastleOOOMove;
+	        uint move = _moveData.WhiteCastleOOOMove;
 
             gameState.MakeMove(move);
 
@@ -119,8 +111,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         {
             var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/8/R3K3 w Q - 0 1");
 
-            var move = 0U;
-            move = moveData.WhiteCastleOOOMove;
+	        uint move = _moveData.WhiteCastleOOOMove;
 
             gameState.MakeMove(move);
 
@@ -229,8 +220,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         {
             var gameState = GameStateUtility.LoadStateFromFen("4k2r/8/8/8/8/8/8/8 b k - 0 1");
 
-            var move = 0U;
-            move = moveData.BlackCastleOOMove;
+	        uint move = _moveData.BlackCastleOOMove;
 
             gameState.MakeMove(move);
 
@@ -243,8 +233,7 @@ namespace DotNetEngine.Test.MakeMoveTests
 
             var gameState = GameStateUtility.LoadStateFromFen("4k2r/8/8/8/8/8/8/8 b k - 0 1");
 
-            var move = 0U;
-            move = moveData.BlackCastleOOMove;
+	        uint move = _moveData.BlackCastleOOMove;
 
             gameState.MakeMove(move);
 
@@ -257,8 +246,7 @@ namespace DotNetEngine.Test.MakeMoveTests
 
             var gameState = GameStateUtility.LoadStateFromFen("r3k3/8/8/8/8/8/8/8 b q - 0 1");
 
-            var move = 0U;
-            move = moveData.BlackCastleOOOMove;
+	        uint move = _moveData.BlackCastleOOOMove;
 
             gameState.MakeMove(move);
 
@@ -270,8 +258,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         {
             var gameState = GameStateUtility.LoadStateFromFen("r3k3/8/8/8/8/8/8/8 b q - 0 1");
 
-            var move = 0U;
-            move = moveData.BlackCastleOOOMove;
+	        uint move = _moveData.BlackCastleOOOMove;
 
             gameState.MakeMove(move);
 
@@ -351,7 +338,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         {
             var gameState = GameStateUtility.LoadStateFromFen(initialFen);
 
-            var move = movingPiece == MoveUtility.WhiteRook ? moveData.WhiteCastleOOMove : moveData.BlackCastleOOMove;
+            var move = movingPiece == MoveUtility.WhiteRook ? _moveData.WhiteCastleOOMove : _moveData.BlackCastleOOMove;
 
             gameState.MakeMove(move);
 
@@ -364,7 +351,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         {
             var gameState = GameStateUtility.LoadStateFromFen(initialFen);
 
-            var move = movingPiece == MoveUtility.WhiteRook ? moveData.WhiteCastleOOOMove : moveData.BlackCastleOOOMove;
+            var move = movingPiece == MoveUtility.WhiteRook ? _moveData.WhiteCastleOOOMove : _moveData.BlackCastleOOOMove;
 
             gameState.MakeMove(move);
 
@@ -377,7 +364,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         {
             var gameState = GameStateUtility.LoadStateFromFen(initialFen);
 
-            var move = movingPiece == MoveUtility.WhiteRook ? moveData.WhiteCastleOOMove : moveData.BlackCastleOOMove;
+            var move = movingPiece == MoveUtility.WhiteRook ? _moveData.WhiteCastleOOMove : _moveData.BlackCastleOOMove;
 
             gameState.MakeMove(move);
 
@@ -390,7 +377,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         {
             var gameState = GameStateUtility.LoadStateFromFen(initialFen);
 
-            var move = movingPiece == MoveUtility.WhiteRook ? moveData.WhiteCastleOOOMove : moveData.BlackCastleOOOMove;
+            var move = movingPiece == MoveUtility.WhiteRook ? _moveData.WhiteCastleOOOMove : _moveData.BlackCastleOOOMove;
 
             gameState.MakeMove(move);
 

@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NUnit;
+﻿using System.Linq;
 using NUnit.Framework;
 using DotNetEngine.Engine;
 
-namespace DotNetEngine.Test
+namespace DotNetEngine.Test.MoveGenerationTests
 {
     public class PawnGenerationTests
     {
-        private MoveData _moveData = new MoveData();
+        private readonly MoveData _moveData = new MoveData();
 
         #region White Pawn Moves
         
@@ -408,14 +403,9 @@ namespace DotNetEngine.Test
         [TestCase(33U, 40U, MoveGenerationMode.CaptureMovesOnly)]
         public void Generates_Valid_White_Pawn_EnPassant_Moves_When_Not_QuietMovesOnly(uint fromMove, uint toMove, MoveGenerationMode mode)
         {
-            var gameState = new GameState();
+	        GameState gameState = GameStateUtility.LoadStateFromFen(fromMove % 2 == 0 ? "8/8/8/PpPpPpPp/8/8/8/8 w - - 0 1" : "8/8/8/pPpPpPpP/8/8/8/8 w - - 0 1");
 
-            if (fromMove % 2 == 0)
-                gameState = GameStateUtility.LoadStateFromFen("8/8/8/PpPpPpPp/8/8/8/8 w - - 0 1");
-            else
-                gameState = GameStateUtility.LoadStateFromFen("8/8/8/pPpPpPpP/8/8/8/8 w - - 0 1");
-
-            gameState.EnpassantTargetSquare = toMove;
+	        gameState.EnpassantTargetSquare = toMove;
             gameState.GenerateMoves(mode, 1, _moveData);
 
             var move = gameState.Moves[1].First(x => x.GetFromMove() == fromMove && x.GetToMove() == toMove);
@@ -446,14 +436,9 @@ namespace DotNetEngine.Test
         [TestCase(33U, 40U)]
         public void Generates_No_Valid_White_Pawn_EnPassant_Moves_When_QuietMovesOnly(uint fromMove, uint toMove)
         {
-            var gameState = new GameState();
+	        var gameState = GameStateUtility.LoadStateFromFen(fromMove % 2 == 0 ? "8/8/8/PpPpPpPp/8/8/8/8 w - - 0 1" : "8/8/8/pPpPpPpP/8/8/8/8 w - - 0 1");
 
-            if (fromMove % 2 == 0)
-                gameState = GameStateUtility.LoadStateFromFen("8/8/8/PpPpPpPp/8/8/8/8 w - - 0 1");
-            else
-                gameState = GameStateUtility.LoadStateFromFen("8/8/8/pPpPpPpP/8/8/8/8 w - - 0 1");
-
-            gameState.EnpassantTargetSquare = toMove;
+	        gameState.EnpassantTargetSquare = toMove;
             gameState.GenerateMoves(MoveGenerationMode.QuietMovesOnly, 1, _moveData);
 
             var move = gameState.Moves[1].FirstOrDefault(x => x.GetFromMove() == fromMove && x.GetToMove() == toMove);
@@ -466,9 +451,7 @@ namespace DotNetEngine.Test
         [TestCase(MoveGenerationMode.QuietMovesOnly)]
         public void Does_Not_Generate_Invalid_White_Pawn_Captures(MoveGenerationMode  mode)
         {
-            var gameState = new GameState();
-
-            gameState = GameStateUtility.LoadStateFromFen("8/8/RRRRRRRR/PPPPPPPP/8/8/8/8 w - - 0 1");           
+            var gameState = GameStateUtility.LoadStateFromFen("8/8/RRRRRRRR/PPPPPPPP/8/8/8/8 w - - 0 1");           
                        
             gameState.GenerateMoves(mode, 1, _moveData);
             var moves = gameState.Moves[1].Where(x => x.GetMovingPiece() == MoveUtility.WhitePawn);
@@ -873,14 +856,9 @@ namespace DotNetEngine.Test
         [TestCase(25U, 16U, MoveGenerationMode.CaptureMovesOnly)]
         public void Generates_Valid_Black_Pawn_EnPassant_Moves_When_Not_QuietMovesOnly(uint fromMove, uint toMove, MoveGenerationMode mode)
         {
-            var gameState = new GameState();
+            var gameState = GameStateUtility.LoadStateFromFen(fromMove % 2 == 0 ? "8/8/8/8/pPpPpPpP/8/8/8 b - - 0 1" : "8/8/8/8/PpPpPpPp/8/8/8 b - - 0 1");
 
-            if (fromMove % 2 == 0)
-                gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/pPpPpPpP/8/8/8 b - - 0 1"); 
-            else
-                gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/PpPpPpPp/8/8/8 b - - 0 1");
-
-            gameState.EnpassantTargetSquare = toMove;
+	        gameState.EnpassantTargetSquare = toMove;
             gameState.GenerateMoves(MoveGenerationMode.All, 1, _moveData);
 
             var move = gameState.Moves[1].First(x => x.GetFromMove() == fromMove && x.GetToMove() == toMove);
@@ -910,14 +888,9 @@ namespace DotNetEngine.Test
         [TestCase(25U, 16U)]
         public void Generates_No_Valid_Black_Pawn_EnPassant_Moves_When_QuietMovesOnly(uint fromMove, uint toMove)
         {
-            var gameState = new GameState();
+            var gameState = GameStateUtility.LoadStateFromFen(fromMove % 2 == 0 ? "8/8/8/8/pPpPpPpP/8/8/8 b - - 0 1" : "8/8/8/8/PpPpPpPp/8/8/8 b - - 0 1");
 
-            if (fromMove % 2 == 0)
-                gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/pPpPpPpP/8/8/8 b - - 0 1");
-            else
-                gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/PpPpPpPp/8/8/8 b - - 0 1");
-
-            gameState.EnpassantTargetSquare = toMove;
+	        gameState.EnpassantTargetSquare = toMove;
             gameState.GenerateMoves(MoveGenerationMode.QuietMovesOnly, 1, _moveData);
 
             var move = gameState.Moves[1].FirstOrDefault(x => x.GetFromMove() == fromMove && x.GetToMove() == toMove);
@@ -930,9 +903,7 @@ namespace DotNetEngine.Test
         [TestCase(MoveGenerationMode.QuietMovesOnly)]
         public void Does_Not_Generate_Invalid_Black_PawnCaptures(MoveGenerationMode mode)
         {
-            var gameState = new GameState();
-
-            gameState = GameStateUtility.LoadStateFromFen("8/8/pppppppp/rrrrrrrr/8/8/8/8 w - - 0 1");
+            var gameState = GameStateUtility.LoadStateFromFen("8/8/pppppppp/rrrrrrrr/8/8/8/8 w - - 0 1");
 
             gameState.GenerateMoves(mode, 1, _moveData);
 

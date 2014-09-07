@@ -1,6 +1,5 @@
 ﻿using DotNetEngine.Engine;
 using NUnit.Framework;
-using System.Text;
 
 namespace DotNetEngine.Test
 {
@@ -117,7 +116,7 @@ namespace DotNetEngine.Test
         {
             var move = 0U.SetMovingPiece(movedPiece);
 
-            Assert.That(MoveUtility.IsWhiteMove(move), Is.EqualTo(expectedResult));
+            Assert.That(move.IsWhiteMove(), Is.EqualTo(expectedResult));
         }
 
         [TestCase(MoveUtility.WhitePawn, true)]
@@ -128,7 +127,7 @@ namespace DotNetEngine.Test
         {
             var move = 0U.SetMovingPiece(movedPiece);
 
-            Assert.That(MoveUtility.IsPawnMoved(move), Is.EqualTo(expectedResult));
+            Assert.That(move.IsPawnMoved(), Is.EqualTo(expectedResult));
         }
 
         [TestCase(MoveUtility.WhiteKing, true)]
@@ -139,7 +138,7 @@ namespace DotNetEngine.Test
         {
             var move = 0U.SetMovingPiece(movedPiece);
 
-            Assert.That(MoveUtility.IsKingMoved(move), Is.EqualTo(expectedResult));
+            Assert.That(move.IsKingMoved(), Is.EqualTo(expectedResult));
         }
 
         [TestCase(MoveUtility.WhiteRook, true)]
@@ -150,7 +149,7 @@ namespace DotNetEngine.Test
         {
             var move = 0U.SetMovingPiece(movedPiece);
 
-            Assert.That(MoveUtility.IsRookMoved(move), Is.EqualTo(expectedResult));
+            Assert.That(move.IsRookMoved(), Is.EqualTo(expectedResult));
         }
 
         [TestCase(MoveUtility.WhitePawn, 8u, 24u, true)]
@@ -164,7 +163,7 @@ namespace DotNetEngine.Test
             move = move.SetToMove(toSquare);
             move = move.SetMovingPiece(movedPiece);
 
-            Assert.That(MoveUtility.IsPawnDoubleMoved(move), Is.EqualTo(expectedResult));
+            Assert.That(move.IsPawnDoubleMoved(), Is.EqualTo(expectedResult));
         }
 
         [TestCase(MoveUtility.WhitePawn, true)]
@@ -174,7 +173,7 @@ namespace DotNetEngine.Test
         {
             var move = 0U.SetPromotionPiece(promotionPiece);
             
-            Assert.That(MoveUtility.IsEnPassant(move), Is.EqualTo(expectedResult));
+            Assert.That(move.IsEnPassant(), Is.EqualTo(expectedResult));
         }
 
 
@@ -185,7 +184,7 @@ namespace DotNetEngine.Test
         {
             var move = 0U.SetCapturedPiece(capturedPiece);
 
-            Assert.That(MoveUtility.IsPieceCaptured(move), Is.EqualTo(expectedResult));
+            Assert.That(move.IsPieceCaptured(), Is.EqualTo(expectedResult));
         }
 
 
@@ -196,7 +195,7 @@ namespace DotNetEngine.Test
         {
             var move = 0U.SetCapturedPiece(capturedPiece);
 
-            Assert.That(MoveUtility.IsKingCaptured(move), Is.EqualTo(expectedResult));
+            Assert.That(move.IsKingCaptured(), Is.EqualTo(expectedResult));
         }
 
         [TestCase(MoveUtility.WhiteRook, true)]
@@ -206,7 +205,7 @@ namespace DotNetEngine.Test
         {
             var move = 0U.SetCapturedPiece(capturedPiece);
 
-            Assert.That(MoveUtility.IsRookCaptured(move), Is.EqualTo(expectedResult));
+            Assert.That(move.IsRookCaptured(), Is.EqualTo(expectedResult));
         }
 
         [TestCase(MoveUtility.BlackKing, true)]
@@ -216,7 +215,7 @@ namespace DotNetEngine.Test
         {
             var move = 0U.SetPromotionPiece(promotionPiece);
 
-            Assert.That(MoveUtility.IsCastle(move), Is.EqualTo(expectedResult));
+            Assert.That(move.IsCastle(), Is.EqualTo(expectedResult));
         }
 
         [TestCase(MoveUtility.BlackKing, 4u, 6u, true)]
@@ -232,7 +231,7 @@ namespace DotNetEngine.Test
           
            
 
-            Assert.That(MoveUtility.IsCastleOO(move), Is.EqualTo(expectedResult));
+            Assert.That(move.IsCastleOO(), Is.EqualTo(expectedResult));
         }
 
         [TestCase(MoveUtility.BlackKing, 4u, 2u, true)]
@@ -246,7 +245,7 @@ namespace DotNetEngine.Test
             move = move.SetMovingPiece(promotionPiece);
             move = move.SetPromotionPiece(promotionPiece);
 
-            Assert.That(MoveUtility.IsCastleOOO(move), Is.EqualTo(expectedResult));
+            Assert.That(move.IsCastleOOO(), Is.EqualTo(expectedResult));
         }
 
         [TestCase(MoveUtility.BlackQueen, true)]
@@ -256,7 +255,7 @@ namespace DotNetEngine.Test
         {
             var move = 0U.SetPromotionPiece(promotionPiece);
 
-            Assert.That(MoveUtility.IsPromotion(move), Is.EqualTo(expectedResult));
+            Assert.That(move.IsPromotion(), Is.EqualTo(expectedResult));
         } 
        
         [TestCase(ulong.MaxValue, 0)]
