@@ -59,6 +59,21 @@ namespace DotNetEngine.Test.MakeMoveTests
         }
 
         [Test]
+        public void MakeMove_Sets_CastleStatus_When_White_King_Moves()
+        {
+            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/8/R3K2R w KQ - 0 1");
+            
+            var move = 0U;
+            move = move.SetFromMove(11U);
+            move = move.SetToMove(19U);
+            move = move.SetMovingPiece(MoveUtility.WhiteKing);
+
+            gameState.MakeMove(move);
+
+            Assert.That(gameState.CurrentWhiteCastleStatus, Is.EqualTo((int)CastleStatus.CannotCastle), "All Pieces Bitboard");
+        }
+
+        [Test]
         public void MakeMove_Sets_Rook_BitBoard_When_CastleOO()
         {
             var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/8/4K2R w K - 0 1");
@@ -191,6 +206,22 @@ namespace DotNetEngine.Test.MakeMoveTests
             gameState.MakeMove(move);
 
             Assert.That(gameState.AllPieces, Is.EqualTo(MoveUtility.BitStates[19]), "All Pieces Bitboard");
+        }
+
+        [Test]
+        public void MakeMove_Sets_CastleStatus_When_Black_King_Moves()
+        {
+            var gameState = GameStateUtility.LoadStateFromFen("r3k2r/8/8/8/8/8/8/8 b kq - 0 1");
+            
+
+            var move = 0U;
+            move = move.SetFromMove(11U);
+            move = move.SetToMove(19U);
+            move = move.SetMovingPiece(MoveUtility.BlackKing);
+
+            gameState.MakeMove(move);
+
+            Assert.That(gameState.CurrentWhiteCastleStatus, Is.EqualTo((int)CastleStatus.CannotCastle), "All Pieces Bitboard");
         }
 
         [Test]

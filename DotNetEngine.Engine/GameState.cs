@@ -38,12 +38,7 @@ namespace DotNetEngine.Engine
 
 		internal bool WhiteToMove { get; set; }
 
-		/// <summary>
-		/// 0 - Cannot Castle 
-		/// 1 - Can Castle 00
-		/// 2 - Can Castle 000 
-		/// 3 - Can Castle Both 00 and 000
-		/// </summary>
+		
 		internal int CurrentWhiteCastleStatus { get; set; }
 		internal int CurrentBlackCastleStatus { get; set; }
 		
@@ -149,7 +144,7 @@ namespace DotNetEngine.Engine
                        
                         BoardArray[toMove] = MoveUtility.WhiteKing;
                       
-                        CurrentWhiteCastleStatus = 0;
+                        CurrentWhiteCastleStatus = (int)CastleStatus.CannotCastle;
 
                         if (capturedPiece > 0)
                         {
@@ -222,6 +217,15 @@ namespace DotNetEngine.Engine
 
                         BoardArray[toMove] = MoveUtility.WhiteRook;
 
+                        if (fromMove == 0)
+                        {                           
+                            CurrentWhiteCastleStatus &= ~(int)CastleStatus.OOOCastle;
+                        }
+                        if (fromMove == 7)
+                        {
+                            CurrentWhiteCastleStatus &= ~(int)CastleStatus.OOCastle;
+                        }
+
                         if (capturedPiece > 0)
                         {
                             CapturePiece(toMove, capturedPiece, fromBitboard);
@@ -292,7 +296,7 @@ namespace DotNetEngine.Engine
 
                         BoardArray[toMove] = MoveUtility.BlackKing;
 
-                        CurrentBlackCastleStatus = 0;
+                        CurrentBlackCastleStatus = (int)CastleStatus.CannotCastle;
 
                         if (capturedPiece > 0)
                         {
@@ -364,6 +368,15 @@ namespace DotNetEngine.Engine
                         BlackPieces ^= fromAndToBitboard;
 
                         BoardArray[toMove] = MoveUtility.BlackRook;
+
+                        if (fromMove == 56)
+                        {
+                            CurrentWhiteCastleStatus &= ~(int)CastleStatus.OOOCastle;
+                        }
+                        if (fromMove == 63)
+                        {
+                            CurrentWhiteCastleStatus &= ~(int)CastleStatus.OOCastle;
+                        }
 
                         if (capturedPiece > 0)
                         {
@@ -460,7 +473,7 @@ namespace DotNetEngine.Engine
 
         private void CapturePiece(uint toMove, uint capturedPiece, ulong fromBitBoard)
         {
-            var toBitBoard = toMove;          
+            var toBitBoard = MoveUtility.BitStates[toMove];          
 
             FiftyMoveRuleCount = 0;
             AllPieces ^= fromBitBoard;
@@ -490,7 +503,19 @@ namespace DotNetEngine.Engine
                     WhiteKing ^= toBitBoard;
                     WhitePieces ^= toBitBoard;
                     break;
-                }                   
+                }
+            case MoveUtility.WhiteRook:
+                {
+                    WhiteRooks ^= toBitBoard;
+                    WhitePieces ^= toBitBoard;
+                    break;
+                }
+            case MoveUtility.WhiteBishop:
+                {
+                    WhiteBishops ^= toBitBoard;
+                    WhitePieces ^= toBitBoard;
+                    break;
+                } 
             case MoveUtility.BlackPawn:
                 {
                     BlackPawns  ^=toBitBoard;
@@ -515,6 +540,18 @@ namespace DotNetEngine.Engine
                     BlackPieces ^= toBitBoard;
                     break;
                 }
+            case MoveUtility.BlackRook:
+                {
+                    BlackRooks ^= toBitBoard;
+                    BlackPieces ^= toBitBoard;
+                    break;
+                }
+            case MoveUtility.BlackBishop:
+                {
+                    BlackBishops ^= toBitBoard;
+                    BlackPieces ^= toBitBoard;
+                    break;
+                } 
             }           
         }
         
