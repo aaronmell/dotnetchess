@@ -395,5 +395,25 @@ namespace DotNetEngine.Engine
         {
             return castleStatus == 2 || castleStatus == 3;
         }
+   
+        internal static GameStateRecord CreateGameStateRecord(this GameState gameState, uint move)
+        {
+            return new GameStateRecord
+            {
+                Move = move,
+                CurrentWhiteCastleStatus = gameState.CurrentWhiteCastleStatus,
+                CurrentBlackCastleStatus = gameState.CurrentBlackCastleStatus,
+                EnpassantTargetSquare = gameState.EnpassantTargetSquare,
+                FiftyMoveRuleCount = gameState.FiftyMoveRuleCount
+            };
+        }
+
+        internal static void UpdateGameStateWithGameStateRecord(this GameState gameState, GameStateRecord gameStateRecord)
+        {
+            gameState.CurrentWhiteCastleStatus = gameStateRecord.CurrentWhiteCastleStatus;
+            gameState.CurrentBlackCastleStatus = gameStateRecord.CurrentBlackCastleStatus;
+            gameState.EnpassantTargetSquare = gameState.EnpassantTargetSquare;
+            gameState.FiftyMoveRuleCount = gameState.FiftyMoveRuleCount;
+        }
     }
 }

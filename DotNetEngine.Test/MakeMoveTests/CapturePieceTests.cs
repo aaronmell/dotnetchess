@@ -272,22 +272,6 @@ namespace DotNetEngine.Test.MakeMoveTests
 
 	        Assert.That(movingPiece < 8 ? gameState.BlackPieces : gameState.WhitePieces,
 	                    Is.EqualTo(MoveUtility.Empty));
-        }
-
-        [TestCase("8/8/8/8/8/8/3P4/8 w - - 0 1", MoveUtility.WhitePawn, false)]
-        [TestCase("8/8/8/8/8/8/3p4/8 b - - 0 1", MoveUtility.BlackPawn, true)]
-        public void SideToMoveCorrect_After_Move(string initialFen, uint movingPiece, bool whiteToMove)
-        {
-            var gameState = GameStateUtility.LoadStateFromFen(initialFen);
-
-            var move = 0U;
-            move = move.SetFromMove(11U);
-            move = move.SetToMove(19U);
-            move = move.SetMovingPiece(movingPiece);
-
-            gameState.MakeMove(move);
-
-            Assert.That(gameState.WhiteToMove, Is.EqualTo(whiteToMove));
-        }
+        }       
     }
 }

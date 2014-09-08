@@ -57,12 +57,18 @@ namespace DotNetEngine.Engine
 		/// This array is little endian encoded. A1 = 0 and H8 = 63
 		/// </summary>
 		internal uint[] BoardArray { get; private set; }
-               
+
+        /// <summary>
+        /// A stack containing all of the game state records, needed to unmake a move.
+        /// </summary>
+        internal Stack<GameStateRecord> PreviousGameStateRecords { get; set; }
+
         internal GameState()
 		{
 	        BoardArray = new uint[64];
 
             Moves = new Dictionary<int, List<uint>>();
+            PreviousGameStateRecords = new Stack<GameStateRecord>();
 		}
 
         //Updates the GameState to reflect a move being made
@@ -72,6 +78,8 @@ namespace DotNetEngine.Engine
             var toMove = move.GetToMove();
             var movingPiece = move.GetMovingPiece();
             var capturedPiece = move.GetCapturedPiece();
+
+            PreviousGameStateRecords.Push(this.CreateGameStateRecord(move));
 
             ulong fromBitboard = MoveUtility.BitStates[fromMove];
             ulong fromAndToBitboard = fromBitboard | MoveUtility.BitStates[toMove];
@@ -388,6 +396,25 @@ namespace DotNetEngine.Engine
                         break;
                     }
             }
+            WhiteToMove = !WhiteToMove;
+        }
+
+        internal void UnMakeMove(uint move)
+        {
+            var fromMove = move.GetFromMove();
+            var toMove = move.GetToMove();
+            var movingPiece = move.GetMovingPiece();
+            var capturedPiece = move.GetCapturedPiece();
+
+            ulong fromBitboard = MoveUtility.BitStates[fromMove];
+            ulong fromAndToBitboard = fromBitboard | MoveUtility.BitStates[toMove];
+
+            switch (movingPiece)
+            {
+
+            }
+
+            this.UpdateGameStateWithGameStateRecord(PreviousGameStateRecords.Pop());
             WhiteToMove = !WhiteToMove;
         }
 

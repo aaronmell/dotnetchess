@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CastleStatus.cs" />
+    <Compile Include="GameStateRecord.cs" />
     <Compile Include="GameStateUtility.cs" />
     <Compile Include="Engine.cs" />
     <Compile Include="GameState.cs" />
