@@ -67,6 +67,23 @@ namespace DotNetEngine.Test.MakeMoveTests
             Assert.That(gameState.CurrentWhiteCastleStatus, Is.EqualTo((int)castleStatus), "All Pieces Bitboard");
         }
 
+        [TestCase(56U, 0U, CastleStatus.OOCastle)]
+        [TestCase(63U, 7U, CastleStatus.OOOCastle)]
+        public void MakeMove_Sets_Can_Castle_When_White_Rook_Captured(uint fromMove, uint toMove, CastleStatus castleStatus)
+        {
+            var gameState = GameStateUtility.LoadStateFromFen("r3k2r/8/8/8/8/8/8/R3K2R b KQkq - 0 1");
+
+            var move = 0U;
+            move = move.SetFromMove(fromMove);
+            move = move.SetToMove(toMove);
+            move = move.SetMovingPiece(MoveUtility.BlackRook);
+            move = move.SetCapturedPiece(MoveUtility.WhiteRook);
+
+            gameState.MakeMove(move);
+
+            Assert.That(gameState.CurrentWhiteCastleStatus, Is.EqualTo((int)castleStatus), "All Pieces Bitboard");
+        }
+
         [Test]
         public void MakeMove_Sets_50_Move_Rules_When_White_Rook_Moves()
         {
@@ -157,6 +174,23 @@ namespace DotNetEngine.Test.MakeMoveTests
             move = move.SetFromMove(fromMove);
             move = move.SetToMove(toMove);
             move = move.SetMovingPiece(MoveUtility.BlackRook);
+
+            gameState.MakeMove(move);
+
+            Assert.That(gameState.CurrentWhiteCastleStatus, Is.EqualTo((int)castleStatus), "All Pieces Bitboard");
+        }
+
+        [TestCase(0U, 56U, CastleStatus.OOCastle)]
+        [TestCase(7U, 63U, CastleStatus.OOOCastle)]
+        public void MakeMove_Sets_Can_Castle_When_Black_Rook_Captured(uint fromMove, uint toMove, CastleStatus castleStatus)
+        {
+            var gameState = GameStateUtility.LoadStateFromFen("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1");
+
+            var move = 0U;
+            move = move.SetFromMove(fromMove);
+            move = move.SetToMove(toMove);
+            move = move.SetMovingPiece(MoveUtility.WhiteRook);
+            move = move.SetCapturedPiece(MoveUtility.BlackRook);
 
             gameState.MakeMove(move);
 

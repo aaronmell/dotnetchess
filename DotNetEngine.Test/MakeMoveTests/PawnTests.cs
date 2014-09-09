@@ -6,7 +6,7 @@ namespace DotNetEngine.Test.MakeMoveTests
     public class PawnTests
     {
         #region White Pawns
-        [TestCase]
+        [Test]
         public void MakeMove_Sets_White_Pawn_Board_Correctly()
         {
             var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/P7/8 w - - 0 1");
@@ -19,10 +19,9 @@ namespace DotNetEngine.Test.MakeMoveTests
             gameState.MakeMove(move);
 
             Assert.That(gameState.WhitePawns, Is.EqualTo(MoveUtility.BitStates[16]), "Piece Bitboard");
-            Assert.That(gameState.WhitePieces, Is.EqualTo(MoveUtility.BitStates[16]), "Color Bitboard");           
         }
 
-        [TestCase]
+        [Test]
         public void MakeMove_Sets_White_Pieces_Board_Correctly()
         {
             var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/P7/8 w - - 0 1");
@@ -36,10 +35,9 @@ namespace DotNetEngine.Test.MakeMoveTests
 
             
             Assert.That(gameState.WhitePieces, Is.EqualTo(MoveUtility.BitStates[16]), "Color Bitboard");
-            Assert.That(gameState.AllPieces, Is.EqualTo(MoveUtility.BitStates[16]), "All Bitboard");
         }
 
-        [TestCase]
+        [Test]
         public void MakeMove_Sets_All_Pieces_Board_Correctly_When_White()
         {
             var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/P7/8 w - - 0 1");
@@ -53,7 +51,7 @@ namespace DotNetEngine.Test.MakeMoveTests
             Assert.That(gameState.AllPieces, Is.EqualTo(MoveUtility.BitStates[16]), "All Bitboard");
         }
 
-        [TestCase]
+        [Test]
         public void MakeMove_Sets_EnPassant_Square_Correctly_When_White()
         {
             var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/P7/8 w - - 0 1");
@@ -67,7 +65,7 @@ namespace DotNetEngine.Test.MakeMoveTests
             Assert.That(gameState.EnpassantTargetSquare, Is.EqualTo(16U));
         }
         
-        [TestCase]
+        [Test]
         public void MakeMove_Sets_EnPassant_Opposite_Pawn_Board_Correctly_When_White()
         {
             var gameState = GameStateUtility.LoadStateFromFen("8/8/8/Pp6/8/8/8/8 w - - 0 1");
@@ -84,6 +82,7 @@ namespace DotNetEngine.Test.MakeMoveTests
             Assert.That(gameState.BlackPieces, Is.EqualTo(MoveUtility.Empty));
         }
 
+        [Test]
         public void MakeMove_Sets_50_Move_Rule_After_Pawn_Moves_When_White()
         {
             var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/P7/8 w - - 0 1");
@@ -97,7 +96,8 @@ namespace DotNetEngine.Test.MakeMoveTests
             gameState.MakeMove(move);
             Assert.That(gameState.FiftyMoveRuleCount, Is.EqualTo(0));
         }
-
+        
+        [Test]
         public void MakeMove_Sets_50_Move_Rule_After_Capture_When_White()
         {
             var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/P7/8 w - - 0 1");
@@ -113,11 +113,10 @@ namespace DotNetEngine.Test.MakeMoveTests
             Assert.That(gameState.FiftyMoveRuleCount, Is.EqualTo(0));
         }       
 
-        [TestCase]
+        [Test]
         public void MakeMove_Sets_White_Queen_Promotion_Piece_Correctly()
         {
             var gameState = GameStateUtility.LoadStateFromFen("8/P7/8/8/8/8/8/8 w - - 0 1");
-            gameState.FiftyMoveRuleCount = 10;
 
             var move = 0U;
             move = move.SetFromMove(48U);
@@ -130,11 +129,10 @@ namespace DotNetEngine.Test.MakeMoveTests
             Assert.That(gameState.WhiteQueens, Is.EqualTo(MoveUtility.BitStates[56]), "PromotionBoard");
         }
 
-        [TestCase]
+        [Test]
         public void MakeMove_Sets_White_Knight_Promotion_Piece_Correctly()
         {
             var gameState = GameStateUtility.LoadStateFromFen("8/P7/8/8/8/8/8/8 w - - 0 1");
-            gameState.FiftyMoveRuleCount = 10;
 
             var move = 0U;
             move = move.SetFromMove(48U);
@@ -147,11 +145,10 @@ namespace DotNetEngine.Test.MakeMoveTests
             Assert.That(gameState.WhiteKnights, Is.EqualTo(MoveUtility.BitStates[56]), "PromotionBoard");
         }
 
-        [TestCase]
+        [Test]
         public void MakeMove_Sets_White_Bishop_Promotion_Piece_Correctly()
         {
             var gameState = GameStateUtility.LoadStateFromFen("8/P7/8/8/8/8/8/8 w - - 0 1");
-            gameState.FiftyMoveRuleCount = 10;
 
             var move = 0U;
             move = move.SetFromMove(48U);
@@ -164,11 +161,10 @@ namespace DotNetEngine.Test.MakeMoveTests
             Assert.That(gameState.WhiteBishops, Is.EqualTo(MoveUtility.BitStates[56]), "PromotionBoard");
         }
 
-        [TestCase]
+        [Test]
         public void MakeMove_Sets_White_Rook_Promotion_Piece_Correctly()
         {
             var gameState = GameStateUtility.LoadStateFromFen("8/P7/8/8/8/8/8/8 w - - 0 1");
-            gameState.FiftyMoveRuleCount = 10;
 
             var move = 0U;
             move = move.SetFromMove(48U);
@@ -183,7 +179,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         #endregion
 
         #region Black Pawns
-        [TestCase]
+        [Test]
         public void MakeMove_Sets_Black_Pawn_Board_Correctly()
         {
             var gameState = GameStateUtility.LoadStateFromFen("8/p7/8/8/8/8/8/8 b - - 0 1");
@@ -198,7 +194,7 @@ namespace DotNetEngine.Test.MakeMoveTests
             Assert.That(gameState.BlackPawns, Is.EqualTo(MoveUtility.BitStates[40]), "Piece Bitboard");            
         }
 
-        [TestCase]
+        [Test]
         public void MakeMove_Sets_Black_Pieces_Board_Correctly()
         {
             var gameState = GameStateUtility.LoadStateFromFen("8/p7/8/8/8/8/8/8 b - - 0 1");
@@ -212,10 +208,9 @@ namespace DotNetEngine.Test.MakeMoveTests
 
 
             Assert.That(gameState.BlackPieces, Is.EqualTo(MoveUtility.BitStates[40]), "Color Bitboard");
-            Assert.That(gameState.AllPieces, Is.EqualTo(MoveUtility.BitStates[40]), "All Bitboard");
         }
 
-        [TestCase]
+        [Test]
         public void MakeMove_Sets_All_Pieces_Board_Correctly_When_Black()
         {
             var gameState = GameStateUtility.LoadStateFromFen("8/p7/8/8/8/8/8/8 b - - 0 1");
@@ -229,7 +224,7 @@ namespace DotNetEngine.Test.MakeMoveTests
             Assert.That(gameState.AllPieces, Is.EqualTo(MoveUtility.BitStates[40]), "All Bitboard");
         }
 
-        [TestCase]
+        [Test]
         public void MakeMove_Sets_EnPassant_Square_Correctly_When_Black()
         {
             var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/P7/8 b - - 0 1");
@@ -243,7 +238,7 @@ namespace DotNetEngine.Test.MakeMoveTests
             Assert.That(gameState.EnpassantTargetSquare, Is.EqualTo(40U));
         }
 
-        [TestCase]
+        [Test]
         public void MakeMove_Sets_EnPassant_Opposite_Pawn_Board_Correctly_When_Black()
         {
             var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/Pp6/8/8/8 b - - 0 1");
@@ -260,6 +255,7 @@ namespace DotNetEngine.Test.MakeMoveTests
             Assert.That(gameState.WhitePieces, Is.EqualTo(MoveUtility.Empty));
         }
 
+        [Test]
         public void MakeMove_Sets_50_Move_Rule_After_Pawn_Moves_When_Black()
         {
             var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/P7/8 b - - 0 1");
@@ -274,6 +270,7 @@ namespace DotNetEngine.Test.MakeMoveTests
             Assert.That(gameState.FiftyMoveRuleCount, Is.EqualTo(0));
         }
 
+        [Test]
         public void MakeMove_Sets_50_Move_Rule_After_Capture_When_Black()
         {
             var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/P7/8 b - - 0 1");
@@ -289,11 +286,10 @@ namespace DotNetEngine.Test.MakeMoveTests
             Assert.That(gameState.FiftyMoveRuleCount, Is.EqualTo(0));
         }
 
-        [TestCase]
+        [Test]
         public void MakeMove_Sets_Black_Queen_Promotion_Piece_Correctly()
         {
             var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/p7/8 b - - 0 1");
-            gameState.FiftyMoveRuleCount = 10;
 
             var move = 0U;
             move = move.SetFromMove(8U);
@@ -306,11 +302,10 @@ namespace DotNetEngine.Test.MakeMoveTests
             Assert.That(gameState.BlackQueens, Is.EqualTo(MoveUtility.BitStates[0]), "PromotionBoard");
         }
 
-        [TestCase]
+        [Test]
         public void MakeMove_Sets_Black_Knight_Promotion_Piece_Correctly()
         {
             var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/p7/8 b - - 0 1");
-            gameState.FiftyMoveRuleCount = 10;
 
             var move = 0U;
             move = move.SetFromMove(8U);
@@ -323,11 +318,10 @@ namespace DotNetEngine.Test.MakeMoveTests
             Assert.That(gameState.BlackKnights, Is.EqualTo(MoveUtility.BitStates[0]), "PromotionBoard");
         }
 
-        [TestCase]
+        [Test]
         public void MakeMove_Sets_Black_Bishop_Promotion_Piece_Correctly()
         {
             var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/p7/8 b - - 0 1");
-            gameState.FiftyMoveRuleCount = 10;
 
             var move = 0U;
             move = move.SetFromMove(8U);
@@ -340,11 +334,10 @@ namespace DotNetEngine.Test.MakeMoveTests
             Assert.That(gameState.BlackBishops, Is.EqualTo(MoveUtility.BitStates[0]), "PromotionBoard");
         }
 
-        [TestCase]
+        [Test]
         public void MakeMove_Sets_Black_Rook_Promotion_Piece_Correctly()
         {
             var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/p7/8 b - - 0 1");
-            gameState.FiftyMoveRuleCount = 10;
 
             var move = 0U;
             move = move.SetFromMove(8U);
@@ -392,7 +385,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         }
 
         [TestCase("8/8/8/pP6/8/8/8/8 w - - 0 1", 33U, 40U, MoveUtility.WhitePawn, MoveUtility.BlackPawn)]
-        [TestCase("8/8/8/8/pP6/8/8/8 b - - 0 1", 24U, 17U, MoveUtility.WhitePawn, MoveUtility.WhitePawn)]
+        [TestCase("8/8/8/8/pP6/8/8/8 b - - 0 1", 24U, 17U, MoveUtility.BlackPawn, MoveUtility.WhitePawn)]
         public void MakeMove_Sets_Board_Array_To_Square_After_Enpassant_Capture(string initialFen, uint fromSquare, uint toSquare, uint movingPiece, uint capturedPiece)
         {
             var gameState = GameStateUtility.LoadStateFromFen(initialFen);
@@ -409,7 +402,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         }
 
         [TestCase("8/8/8/pP6/8/8/8/8 w - - 0 1", 33U, 40U, MoveUtility.WhitePawn, MoveUtility.BlackPawn)]
-        [TestCase("8/8/8/8/pP6/8/8/8 b - - 0 1", 24U, 17U, MoveUtility.WhitePawn, MoveUtility.WhitePawn)]
+        [TestCase("8/8/8/8/pP6/8/8/8 b - - 0 1", 24U, 17U, MoveUtility.BlackPawn, MoveUtility.WhitePawn)]
         public void MakeMove_Sets_Board_Array_From_Square_After_Enpassant_Capture(string initialFen, uint fromSquare, uint toSquare, uint movingPiece, uint capturedPiece)
         {
             var gameState = GameStateUtility.LoadStateFromFen(initialFen);
