@@ -209,8 +209,8 @@ namespace DotNetEngine.Test.UnMakeMoveTests
             move = move.SetPromotionPiece(MoveUtility.BlackPawn);
 
             gameState.UnMakeMove(move);
-            Assert.That(gameState.BlackPawns, Is.EqualTo(MoveUtility.BitStates[16]));
-            Assert.That(gameState.BlackPieces, Is.EqualTo(MoveUtility.BitStates[16]));
+            Assert.That(gameState.BlackPawns, Is.EqualTo(MoveUtility.BitStates[25]));
+            Assert.That(gameState.BlackPieces, Is.EqualTo(MoveUtility.BitStates[25]));
         }
 
         [Test]

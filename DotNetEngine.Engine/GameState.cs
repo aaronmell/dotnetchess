@@ -445,6 +445,45 @@ namespace DotNetEngine.Engine
                         }
                         break;
                     }
+                case MoveUtility.WhiteKing:
+                    {
+                        WhiteKing ^= fromAndToBitboard;
+                        WhitePieces ^= fromAndToBitboard;
+
+                        BoardArray[fromMove] = MoveUtility.WhiteKing;
+
+                        CurrentWhiteCastleStatus = (int)CastleStatus.CannotCastle;
+
+                        if (capturedPiece > 0)
+                        {
+                            UnCapturePiece(toMove, capturedPiece, fromBitboard);
+                        }
+                        else
+                        {
+                            AllPieces ^= fromAndToBitboard;
+                        }
+
+                        if (move.IsCastle())
+                        {
+                            if (move.IsCastleOO())
+                            {
+                                WhiteRooks ^= MoveUtility.BitStates[5] | MoveUtility.BitStates[7];
+                                WhitePieces ^= MoveUtility.BitStates[5] | MoveUtility.BitStates[7];
+                                AllPieces ^= MoveUtility.BitStates[5] | MoveUtility.BitStates[7];
+                                BoardArray[5] = MoveUtility.Empty;
+                                BoardArray[7] = MoveUtility.WhiteRook;
+                            }
+                            else
+                            {
+                                WhiteRooks ^= MoveUtility.BitStates[0] | MoveUtility.BitStates[3];
+                                WhitePieces ^= MoveUtility.BitStates[0] | MoveUtility.BitStates[3];
+                                AllPieces ^= MoveUtility.BitStates[0] | MoveUtility.BitStates[3];
+                                BoardArray[3] = MoveUtility.Empty;
+                                BoardArray[0] = MoveUtility.WhiteRook;
+                            }
+                        }
+                        break;
+                    }
                 case MoveUtility.BlackPawn:
                     {
                         BlackPawns ^= fromAndToBitboard;
@@ -476,7 +515,47 @@ namespace DotNetEngine.Engine
                             UnPromotePiece(move.GetPromotedPiece(), toMove);
                         }
                         break;
-                    }       
+                    }
+                case MoveUtility.BlackKing:
+                    {
+                        BlackKing ^= fromAndToBitboard;
+                        BlackPieces ^= fromAndToBitboard;
+
+                        BoardArray[fromMove] = MoveUtility.BlackKing;
+
+                        CurrentBlackCastleStatus = (int)CastleStatus.CannotCastle;
+
+                        if (capturedPiece > 0)
+                        {
+                            CapturePiece(toMove, capturedPiece, fromBitboard);
+                        }
+                        else
+                        {
+                            AllPieces ^= fromAndToBitboard;
+                        }
+
+                        if (move.IsCastle())
+                        {
+                            if (move.IsCastleOO())
+                            {
+                                BlackRooks ^= MoveUtility.BitStates[61] | MoveUtility.BitStates[63];
+                                BlackPieces ^= MoveUtility.BitStates[61] | MoveUtility.BitStates[63];
+                                AllPieces ^= MoveUtility.BitStates[61] | MoveUtility.BitStates[63];
+                                BoardArray[61] = MoveUtility.Empty;
+                                BoardArray[63] = MoveUtility.BlackRook;
+                            }
+                            else
+                            {
+                                BlackRooks ^= MoveUtility.BitStates[56] | MoveUtility.BitStates[59];
+                                BlackPieces ^= MoveUtility.BitStates[56] | MoveUtility.BitStates[59];
+                                AllPieces ^= MoveUtility.BitStates[56] | MoveUtility.BitStates[59];
+                                BoardArray[59] = MoveUtility.Empty;
+                                BoardArray[56] = MoveUtility.BlackRook;
+                            }
+                        }
+                        break;
+                    }
+       
             }
             this.UpdateGameStateWithGameStateRecord(PreviousGameStateRecords.Pop());
             WhiteToMove = !WhiteToMove;
