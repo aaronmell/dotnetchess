@@ -150,7 +150,7 @@ namespace DotNetEngine.Test.UnUnMakeMoveTests
 
             gameState.UnMakeMove(move);
 
-            Assert.That(gameState.FiftyMoveRuleCount, Is.EqualTo(0));
+            Assert.That(gameState.FiftyMoveRuleCount, Is.EqualTo(10));
         }
 
         [Test]
@@ -170,7 +170,7 @@ namespace DotNetEngine.Test.UnUnMakeMoveTests
 
             gameState.UnMakeMove(move);
 
-            Assert.That(gameState.FiftyMoveRuleCount, Is.EqualTo(0));
+            Assert.That(gameState.FiftyMoveRuleCount, Is.EqualTo(10));
         }
         #endregion
 
@@ -311,7 +311,7 @@ namespace DotNetEngine.Test.UnUnMakeMoveTests
 
             gameState.UnMakeMove(move);
 
-            Assert.That(gameState.FiftyMoveRuleCount, Is.EqualTo(0));
+            Assert.That(gameState.FiftyMoveRuleCount, Is.EqualTo(10));
         }
 
         [Test]
@@ -331,7 +331,7 @@ namespace DotNetEngine.Test.UnUnMakeMoveTests
 
             gameState.UnMakeMove(move);
 
-            Assert.That(gameState.FiftyMoveRuleCount, Is.EqualTo(0));
+            Assert.That(gameState.FiftyMoveRuleCount, Is.EqualTo(10));
         }
         #endregion
 
