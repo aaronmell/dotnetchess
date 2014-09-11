@@ -501,6 +501,23 @@ namespace DotNetEngine.Engine
                         }
                         break;
                     }
+                case MoveUtility.WhiteBishop:
+                    {
+                        WhiteBishops ^= fromAndToBitboard;
+                        WhitePieces ^= fromAndToBitboard;
+
+                        BoardArray[fromMove] = MoveUtility.WhiteBishop;
+
+                        if (capturedPiece > 0)
+                        {
+                            CapturePiece(toMove, capturedPiece, fromBitboard);
+                        }
+                        else
+                        {
+                            AllPieces ^= fromAndToBitboard;
+                        }
+                        break;
+                    }
                 case MoveUtility.BlackPawn:
                     {
                         BlackPawns ^= fromAndToBitboard;
@@ -588,7 +605,24 @@ namespace DotNetEngine.Engine
                             AllPieces ^= fromAndToBitboard;
                         }
                         break;
-                    }       
+                    }
+                case MoveUtility.BlackBishop:
+                    {
+                        BlackBishops ^= fromAndToBitboard;
+                        BlackPieces ^= fromAndToBitboard;
+
+                        BoardArray[fromMove] = MoveUtility.BlackBishop;
+
+                        if (capturedPiece > 0)
+                        {
+                            CapturePiece(toMove, capturedPiece, fromBitboard);
+                        }
+                        else
+                        {
+                            AllPieces ^= fromAndToBitboard;
+                        }
+                        break;
+                    }
             }
             this.UpdateGameStateWithGameStateRecord(PreviousGameStateRecords.Pop());
             WhiteToMove = !WhiteToMove;

@@ -61,6 +61,7 @@
     <Compile Include="MoveGenerationTests\RookMoveGenerationTests.cs" />
     <Compile Include="MoveUtilityTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UnMakeMoveTests\BishopTests.cs" />
     <Compile Include="UnMakeMoveTests\KingTests.cs" />
     <Compile Include="UnMakeMoveTests\KnightTests.cs" />
     <Compile Include="UnMakeMoveTests\PawnTests.cs" />
