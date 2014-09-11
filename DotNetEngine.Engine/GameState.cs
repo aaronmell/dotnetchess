@@ -535,6 +535,23 @@ namespace DotNetEngine.Engine
                         }
                         break;
                     }
+                case MoveUtility.WhiteQueen:
+                    {
+                        WhiteQueens ^= fromAndToBitboard;
+                        WhitePieces ^= fromAndToBitboard;
+
+                        BoardArray[fromMove] = MoveUtility.WhiteQueen;
+
+                        if (capturedPiece > 0)
+                        {
+                            CapturePiece(toMove, capturedPiece, fromBitboard);
+                        }
+                        else
+                        {
+                            AllPieces ^= fromAndToBitboard;
+                        }
+                        break;
+                    }
                 case MoveUtility.BlackPawn:
                     {
                         BlackPawns ^= fromAndToBitboard;
@@ -659,6 +676,23 @@ namespace DotNetEngine.Engine
                         if (capturedPiece > 0)
                         {
                             UnCapturePiece(toMove, capturedPiece, fromBitboard);
+                        }
+                        else
+                        {
+                            AllPieces ^= fromAndToBitboard;
+                        }
+                        break;
+                    }
+                case MoveUtility.BlackQueen:
+                    {
+                        BlackQueens ^= fromAndToBitboard;
+                        BlackPieces ^= fromAndToBitboard;
+
+                        BoardArray[fromMove] = MoveUtility.BlackQueen;
+
+                        if (capturedPiece > 0)
+                        {
+                            CapturePiece(toMove, capturedPiece, fromBitboard);
                         }
                         else
                         {
