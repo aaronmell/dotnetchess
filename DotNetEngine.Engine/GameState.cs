@@ -510,7 +510,24 @@ namespace DotNetEngine.Engine
 
                         if (capturedPiece > 0)
                         {
-                            CapturePiece(toMove, capturedPiece, fromBitboard);
+                            UnCapturePiece(toMove, capturedPiece, fromBitboard);
+                        }
+                        else
+                        {
+                            AllPieces ^= fromAndToBitboard;
+                        }
+                        break;
+                    }
+                case MoveUtility.WhiteRook:
+                    {
+                        WhiteRooks ^= fromAndToBitboard;
+                        WhitePieces ^= fromAndToBitboard;
+
+                        BoardArray[fromMove] = MoveUtility.WhiteRook;
+
+                        if (capturedPiece > 0)
+                        {
+                            UnCapturePiece(toMove, capturedPiece, fromBitboard);
                         }
                         else
                         {
@@ -615,7 +632,33 @@ namespace DotNetEngine.Engine
 
                         if (capturedPiece > 0)
                         {
-                            CapturePiece(toMove, capturedPiece, fromBitboard);
+                            UnCapturePiece(toMove, capturedPiece, fromBitboard);
+                        }
+                        else
+                        {
+                            AllPieces ^= fromAndToBitboard;
+                        }
+                        break;
+                    }
+                case MoveUtility.BlackRook:
+                    {
+                        BlackRooks ^= fromAndToBitboard;
+                        BlackPieces ^= fromAndToBitboard;
+
+                        BoardArray[fromMove] = MoveUtility.BlackRook;
+
+                        if (fromMove == 56)
+                        {
+                            CurrentWhiteCastleStatus &= ~(int)CastleStatus.OOOCastle;
+                        }
+                        if (fromMove == 63)
+                        {
+                            CurrentWhiteCastleStatus &= ~(int)CastleStatus.OOCastle;
+                        }
+
+                        if (capturedPiece > 0)
+                        {
+                            UnCapturePiece(toMove, capturedPiece, fromBitboard);
                         }
                         else
                         {

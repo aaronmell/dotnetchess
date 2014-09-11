@@ -65,6 +65,7 @@
     <Compile Include="UnMakeMoveTests\KingTests.cs" />
     <Compile Include="UnMakeMoveTests\KnightTests.cs" />
     <Compile Include="UnMakeMoveTests\PawnTests.cs" />
+    <Compile Include="UnMakeMoveTests\RookTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DotNetEngine.Engine\DotNetEngine.Engine.csproj">
