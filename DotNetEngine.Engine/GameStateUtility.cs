@@ -412,8 +412,8 @@ namespace DotNetEngine.Engine
         {
             gameState.CurrentWhiteCastleStatus = gameStateRecord.CurrentWhiteCastleStatus;
             gameState.CurrentBlackCastleStatus = gameStateRecord.CurrentBlackCastleStatus;
-            gameState.EnpassantTargetSquare = gameState.EnpassantTargetSquare;
-            gameState.FiftyMoveRuleCount = gameState.FiftyMoveRuleCount;
+            gameState.EnpassantTargetSquare = gameStateRecord.EnpassantTargetSquare;
+            gameState.FiftyMoveRuleCount = gameStateRecord.FiftyMoveRuleCount;
         }
     }
 }

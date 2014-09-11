@@ -484,6 +484,23 @@ namespace DotNetEngine.Engine
                         }
                         break;
                     }
+                case MoveUtility.WhiteKnight:
+                    {
+                        WhiteKnights ^= fromAndToBitboard;
+                        WhitePieces ^= fromAndToBitboard;
+
+                        BoardArray[fromMove] = MoveUtility.WhiteKnight;
+
+                        if (capturedPiece > 0)
+                        {
+                            UnCapturePiece(toMove, capturedPiece, fromBitboard);
+                        }
+                        else
+                        {
+                            AllPieces ^= fromAndToBitboard;
+                        }
+                        break;
+                    }
                 case MoveUtility.BlackPawn:
                     {
                         BlackPawns ^= fromAndToBitboard;
@@ -555,7 +572,23 @@ namespace DotNetEngine.Engine
                         }
                         break;
                     }
-       
+                case MoveUtility.BlackKnight:
+                    {
+                        BlackKnights ^= fromAndToBitboard;
+                        BlackPieces ^= fromAndToBitboard;
+
+                        BoardArray[fromMove] = MoveUtility.BlackKnight;
+
+                        if (capturedPiece > 0)
+                        {
+                            UnCapturePiece(toMove, capturedPiece, fromBitboard);
+                        }
+                        else
+                        {
+                            AllPieces ^= fromAndToBitboard;
+                        }
+                        break;
+                    }       
             }
             this.UpdateGameStateWithGameStateRecord(PreviousGameStateRecords.Pop());
             WhiteToMove = !WhiteToMove;
