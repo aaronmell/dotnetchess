@@ -67,6 +67,7 @@
     <Compile Include="UnMakeMoveTests\PawnTests.cs" />
     <Compile Include="UnMakeMoveTests\QueenTests.cs" />
     <Compile Include="UnMakeMoveTests\RookTests.cs" />
+    <Compile Include="UnMakeMoveTests\UnCaptureTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DotNetEngine.Engine\DotNetEngine.Engine.csproj">
