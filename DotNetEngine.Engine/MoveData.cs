@@ -158,14 +158,14 @@
                     {
                         for (var square = 2; square < diagonalA8H1 - 1; square++)
                         {
-                            _diagonalA8H1Mask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.GetBitStatesByBoardIndex(square, diagonalA8H1 - square);
+                            _diagonalA8H1Mask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.GetBitStatesByBoardIndex(diagonalA8H1 - square, square);
                         }
                     }
                     else
                     {
                         for (var square = 2; square < 17 - diagonalA8H1; square++)
                         {
-                            _diagonalA8H1Mask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.GetBitStatesByBoardIndex(diagonalA8H1 + square - 9, 9 - square);
+                            _diagonalA8H1Mask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.GetBitStatesByBoardIndex(9 - square, diagonalA8H1 + square - 9);
                         }
                     }
                    
@@ -175,14 +175,14 @@
                     {
                         for (var square = 2 ; square < 8 - diagonalA1H8 ; square ++)
                         {
-                            _diagonalA1H8Mask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.GetBitStatesByBoardIndex(diagonalA1H8 + square, square);
+                            _diagonalA1H8Mask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.GetBitStatesByBoardIndex(square, diagonalA1H8 + square);
                         }
                     }
                     else
                     {
                         for (var square = 2 ; square < 8 + diagonalA1H8 ; square ++)
                         {
-                            _diagonalA1H8Mask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.GetBitStatesByBoardIndex(square, square - diagonalA1H8);
+                            _diagonalA1H8Mask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.GetBitStatesByBoardIndex(square - diagonalA1H8, square );
                         }
                     }                    
                 }
