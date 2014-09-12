@@ -60,6 +60,7 @@
     <Compile Include="MoveGenerationTests\QueenMoveGenerationTests.cs" />
     <Compile Include="MoveGenerationTests\RookMoveGenerationTests.cs" />
     <Compile Include="MoveUtilityTests.cs" />
+    <Compile Include="PerftTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnMakeMoveTests\BishopTests.cs" />
     <Compile Include="UnMakeMoveTests\KingTests.cs" />
@@ -67,7 +68,7 @@
     <Compile Include="UnMakeMoveTests\PawnTests.cs" />
     <Compile Include="UnMakeMoveTests\QueenTests.cs" />
     <Compile Include="UnMakeMoveTests\RookTests.cs" />
-    <Compile Include="UnMakeMoveTests\UnCaptureTests.cs" />
+    <Compile Include="UnMakeMoveTests\UnCapturePiecesTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DotNetEngine.Engine\DotNetEngine.Engine.csproj">

@@ -10,7 +10,11 @@ namespace DotNetEngine.Engine
 		internal static void GenerateMoves(this GameState gameState, MoveGenerationMode generationMode, int ply, MoveData moveData)
 		{
 			var freeSquares = ~gameState.AllPieces;
-            gameState.Moves.Add(ply, new List<uint>(64));
+
+            if (!gameState.Moves.ContainsKey(ply))
+                gameState.Moves.Add(ply, new List<uint>(64));
+            else
+                gameState.Moves[ply] = new List<uint>(64);
 
 			if (gameState.WhiteToMove)
 			{
