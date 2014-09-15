@@ -9,7 +9,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         [Test]
         public void MakeMove_Sets_Knights_Bitboard_When_White_Knight_Moves()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/3N4/8 w - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/3N4/8 w - - 0 1");
 
             var move = 0U;
             move = move.SetFromMove(11U);
@@ -24,7 +24,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         [Test]
         public void MakeMove_Sets_White_Bitboard_When_White_Knight_Moves()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/3N4/8 w - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/3N4/8 w - - 0 1");
 
             var move = 0U;
             move = move.SetFromMove(11U);
@@ -39,7 +39,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         [Test]
         public void MakeMove_Sets_AllPieces_Bitboard_When_White_Knight_Moves()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/3N4/8 w - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/3N4/8 w - - 0 1");
 
             var move = 0U;
             move = move.SetFromMove(11U);
@@ -54,7 +54,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         [Test]
         public void MakeMove_Sets_50_Move_Rules_When_White_Knight_Moves()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/3N4/8 w - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/3N4/8 w - - 0 1");
             gameState.FiftyMoveRuleCount = 10;
 
             var move = 0U;
@@ -70,7 +70,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         [Test]
         public void MakeMove_Sets_50_Move_Rules_When_White_Knight_Captures()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/4p3/8/3N4/8 w - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/4p3/8/3N4/8 w - - 0 1");
             gameState.FiftyMoveRuleCount = 10;
 
             var move = 0U;
@@ -89,7 +89,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         [Test]
         public void MakeMove_Sets_Knights_Bitboard_When_Black_Knight_Moves()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/3n4/8 b - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/3n4/8 b - - 0 1");
 
             var move = 0U;
             move = move.SetFromMove(11U);
@@ -104,7 +104,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         [Test]
         public void MakeMove_Sets_Black_Bitboard_When_Black_Knight_Moves()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/3n4/8 b - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/3n4/8 b - - 0 1");
 
             var move = 0U;
             move = move.SetFromMove(11U);
@@ -119,7 +119,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         [Test]
         public void MakeMove_Sets_AllPieces_Bitboard_When_Black_Knight_Moves()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/3n4/8 b - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/3n4/8 b - - 0 1");
 
             var move = 0U;
             move = move.SetFromMove(11U);
@@ -134,7 +134,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         [Test]
         public void MakeMove_Sets_50_Move_Rules_When_Black_Knight_Moves()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/3n4/8 w - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/3n4/8 w - - 0 1");
             gameState.FiftyMoveRuleCount = 10;
 
             var move = 0U;
@@ -150,7 +150,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         [Test]
         public void MakeMove_Sets_50_Move_Rules_When_Black_Knight_Captures()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/4P3/8/3n4/8 b - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/4P3/8/3n4/8 b - - 0 1");
             gameState.FiftyMoveRuleCount = 10;
 
             var move = 0U;
@@ -170,7 +170,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         [TestCase("8/8/8/8/8/8/3n4/8 w - - 0 1", MoveUtility.BlackKnight)]
         public void MakeMove_Sets_Board_Array_From_Square(string initialFen, uint movingPiece)
         {
-            var gameState = GameStateUtility.LoadStateFromFen(initialFen);
+            var gameState = GameStateUtility.LoadGameStateFromFen(initialFen);
 
             var move = 0U;
             move = move.SetFromMove(11U);
@@ -186,7 +186,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         [TestCase("8/8/8/8/8/8/3n4/8 w - - 0 1", MoveUtility.BlackKnight)]
         public void MakeMove_Sets_Board_Array_To_Square(string initialFen, uint movingPiece)
         {
-            var gameState = GameStateUtility.LoadStateFromFen(initialFen);
+            var gameState = GameStateUtility.LoadGameStateFromFen(initialFen);
 
             var move = 0U;
             move = move.SetFromMove(11U);

@@ -40,6 +40,93 @@ namespace DotNetEngine.Engine
             }
 		}
 
+        /// <summary>
+        /// This method is used to determine if a bitboard is attacked by a piece. 
+        /// </summary>        
+        /// <param name="checkWhiteAttack">IS true, we are checking white attacks.</param>
+        /// <returns>Returns true as soon as an attack is found. Returns false if no attack was found.</returns>
+        internal static bool IsBitBoardAttacked(this GameState gamestate, MoveData moveData, ulong targetBoard, bool checkWhiteAttacks)
+        {
+            if (checkWhiteAttacks)
+            {
+                while (targetBoard > 0)
+                {
+                    var targetPiece = targetBoard.GetFirstPieceFromBitBoard();
+
+                    if (((gamestate.WhitePawns & moveData.BlackPawnAttacks[targetPiece]) > 0) ||
+                        ((gamestate.WhiteKnights & moveData.KnightAttacks[targetPiece]) > 0) ||
+                            ((gamestate.WhiteKing & moveData.KingAttacks[targetPiece]) > 0))
+                    {
+                        return true;
+                    }                   
+
+                    var slidingAttacks = gamestate.WhiteQueens | gamestate.WhiteRooks;
+
+                    if (slidingAttacks > 0)
+                    {
+                        if (((moveData.RankAttacks[targetPiece][((gamestate.AllPieces & moveData.RankMask[targetPiece]) >> MoveUtility.ShiftedRank[targetPiece])] & slidingAttacks) > 0) ||
+                            ((moveData.FileAttacks[targetPiece][((gamestate.AllPieces & moveData.FileMask[targetPiece]) * MoveUtility.FileMagicMultiplication[targetPiece]) >> 57] & slidingAttacks) > 0))
+                        {
+                            return true;
+                        }
+                    }
+
+                    var diagonalAttacks = gamestate.WhiteQueens | gamestate.WhiteBishops;
+
+                    if (diagonalAttacks > 0)
+                    {
+                        if (((moveData.DiagonalA1H8Attacks[targetPiece][((gamestate.AllPieces & moveData.DiagonalA1H8Mask[targetPiece]) * MoveUtility.DiagonalA1H8MagicMultiplication[targetPiece]) >> 57] & diagonalAttacks) > 0) ||
+                            ((moveData.DiagonalA8H1Attacks[targetPiece][((gamestate.AllPieces & moveData.DiagonalA8H1Mask[targetPiece]) * MoveUtility.DiagonalA8H1MagicMultiplication[targetPiece]) >> 57] & diagonalAttacks) > 0))
+                        {
+                            return true;
+                        }
+                    }
+
+                    targetBoard ^= MoveUtility.BitStates[targetPiece];
+                }
+            }
+            else
+            {
+                while (targetBoard > 0)
+                {
+                    var targetPiece = targetBoard.GetFirstPieceFromBitBoard();
+
+                    if (((gamestate.BlackPawns & moveData.WhitePawnAttacks[targetPiece]) > 0) ||
+                        ((gamestate.BlackKnights & moveData.KnightAttacks[targetPiece]) > 0) ||
+                            ((gamestate.BlackKing & moveData.KingAttacks[targetPiece]) > 0))
+                    {
+                        return true;
+                    }
+
+                    var slidingAttacks = gamestate.BlackQueens | gamestate.BlackRooks;
+
+                    if (slidingAttacks > 0)
+                    {
+                        if (((moveData.RankAttacks[targetPiece][((gamestate.AllPieces & moveData.RankMask[targetPiece]) >> MoveUtility.ShiftedRank[targetPiece])] & slidingAttacks) > 0) ||
+                            ((moveData.FileAttacks[targetPiece][((gamestate.AllPieces & moveData.FileMask[targetPiece]) * MoveUtility.FileMagicMultiplication[targetPiece]) >> 57] & slidingAttacks) > 0))
+                        {
+                            return true;
+                        }
+                    }
+
+                    var diagonalAttacks = gamestate.BlackQueens | gamestate.BlackBishops;
+
+                    if (diagonalAttacks > 0)
+                    {
+                        if (((moveData.DiagonalA1H8Attacks[targetPiece][((gamestate.AllPieces & moveData.DiagonalA1H8Mask[targetPiece]) * MoveUtility.DiagonalA1H8MagicMultiplication[targetPiece]) >> 57] & diagonalAttacks) > 0) ||
+                            ((moveData.DiagonalA8H1Attacks[targetPiece][((gamestate.AllPieces & moveData.DiagonalA8H1Mask[targetPiece]) * MoveUtility.DiagonalA8H1MagicMultiplication[targetPiece]) >> 57] & diagonalAttacks) > 0))
+                        {
+                            return true;
+                        }
+                    }
+
+                    targetBoard ^= MoveUtility.BitStates[targetPiece];
+                }
+            }
+
+            return false;
+        }
+
         private static void GenerateKingMoves(GameState gameState, MoveGenerationMode generationMode, ulong freeSquares, 
             ulong kingBoard, uint movingPiece, ulong[] attackSquares, ulong attackedBoard, int castleStatus,ulong castleMaskOO, 
             ulong castleMaskOOO, uint castleOOMove, uint castleOOOMove, int ply)

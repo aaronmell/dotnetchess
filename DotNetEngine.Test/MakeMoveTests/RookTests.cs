@@ -9,7 +9,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         [Test]
         public void MakeMove_Sets_Rook_Bitboard_When_White_Rook_Moves()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/3R4/8 w - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/3R4/8 w - - 0 1");
 
             var move = 0U;
             move = move.SetFromMove(11U);
@@ -24,7 +24,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         [Test]
         public void MakeMove_Sets_White_Bitboard_When_White_Rook_Moves()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/3R4/8 w - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/3R4/8 w - - 0 1");
 
             var move = 0U;
             move = move.SetFromMove(11U);
@@ -39,7 +39,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         [Test]
         public void MakeMove_Sets_AllPieces_Bitboard_When_White_Rook_Moves()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/3R4/8 w - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/3R4/8 w - - 0 1");
 
             var move = 0U;
             move = move.SetFromMove(11U);
@@ -55,7 +55,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         [TestCase(7U, 6U, CastleStatus.OOOCastle)]
         public void MakeMove_Sets_Can_Castle_When_White_Rook_Moves(uint fromMove, uint toMove, CastleStatus castleStatus)
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/8/R3K2R w KQ - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/8/R3K2R w KQ - 0 1");
 
             var move = 0U;
             move = move.SetFromMove(fromMove);
@@ -71,7 +71,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         [TestCase(63U, 7U, CastleStatus.OOOCastle)]
         public void MakeMove_Sets_Can_Castle_When_White_Rook_Captured(uint fromMove, uint toMove, CastleStatus castleStatus)
         {
-            var gameState = GameStateUtility.LoadStateFromFen("r3k2r/8/8/8/8/8/8/R3K2R b KQkq - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("r3k2r/8/8/8/8/8/8/R3K2R b KQkq - 0 1");
 
             var move = 0U;
             move = move.SetFromMove(fromMove);
@@ -87,7 +87,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         [Test]
         public void MakeMove_Sets_50_Move_Rules_When_White_Rook_Moves()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/3R4/8 w - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/3R4/8 w - - 0 1");
             gameState.FiftyMoveRuleCount = 10;
 
             var move = 0U;
@@ -103,7 +103,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         [Test]
         public void MakeMove_Sets_50_Move_Rules_When_White_Rook_Captures()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/4p3/3R4/8 w - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/4p3/3R4/8 w - - 0 1");
             gameState.FiftyMoveRuleCount = 10;
 
             var move = 0U;
@@ -122,7 +122,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         [Test]
         public void MakeMove_Sets_Rook_Bitboard_When_Black_Rook_Moves()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/3r4/8 b - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/3r4/8 b - - 0 1");
 
             var move = 0U;
             move = move.SetFromMove(11U);
@@ -137,7 +137,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         [Test]
         public void MakeMove_Sets_Black_Bitboard_When_Black_Rook_Moves()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/3r4/8 b - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/3r4/8 b - - 0 1");
 
             var move = 0U;
             move = move.SetFromMove(11U);
@@ -152,7 +152,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         [Test]
         public void MakeMove_Sets_AllPieces_Bitboard_When_Black_Rook_Moves()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/3r4/8 b - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/3r4/8 b - - 0 1");
 
             var move = 0U;
             move = move.SetFromMove(11U);
@@ -168,7 +168,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         [TestCase(63U, 62U, CastleStatus.OOOCastle)]
         public void MakeMove_Sets_Can_Castle_When_Black_Rook_Moves(uint fromMove, uint toMove, CastleStatus castleStatus)
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/8/R3K2R w KQ - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/8/R3K2R w KQ - 0 1");
 
             var move = 0U;
             move = move.SetFromMove(fromMove);
@@ -184,7 +184,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         [TestCase(7U, 63U, CastleStatus.OOOCastle)]
         public void MakeMove_Sets_Can_Castle_When_Black_Rook_Captured(uint fromMove, uint toMove, CastleStatus castleStatus)
         {
-            var gameState = GameStateUtility.LoadStateFromFen("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1");
 
             var move = 0U;
             move = move.SetFromMove(fromMove);
@@ -200,7 +200,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         [Test]
         public void MakeMove_Sets_50_Move_Rules_When_Black_Rook_Moves()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/3r4/8 b - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/3r4/8 b - - 0 1");
             gameState.FiftyMoveRuleCount = 10;
 
             var move = 0U;
@@ -216,7 +216,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         [Test]
         public void MakeMove_Sets_50_Move_Rules_When_Black_Rook_Captures()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/4p3/3r4/8 b - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/4p3/3r4/8 b - - 0 1");
             gameState.FiftyMoveRuleCount = 10;
 
             var move = 0U;
@@ -236,7 +236,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         [TestCase("8/8/8/8/8/8/3r4/8 b - - 0 1", MoveUtility.BlackRook)]
         public void MakeMove_Sets_Board_Array_From_Square(string initialFen, uint movingPiece)
         {
-            var gameState = GameStateUtility.LoadStateFromFen(initialFen);
+            var gameState = GameStateUtility.LoadGameStateFromFen(initialFen);
 
             var move = 0U;
             move = move.SetFromMove(11U);
@@ -252,7 +252,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         [TestCase("8/8/8/8/8/8/3r4/8 b - - 0 1", MoveUtility.BlackRook)]
         public void MakeMove_Sets_Board_Array_To_Square(string initialFen, uint movingPiece)
         {
-            var gameState = GameStateUtility.LoadStateFromFen(initialFen);
+            var gameState = GameStateUtility.LoadGameStateFromFen(initialFen);
 
             var move = 0U;
             move = move.SetFromMove(11U);

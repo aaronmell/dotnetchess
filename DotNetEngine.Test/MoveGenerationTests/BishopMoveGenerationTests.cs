@@ -37,7 +37,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(27U, 6U, MoveGenerationMode.QuietMovesOnly)]
         public void Generates_Valid_White_Bishop_Moves_When_Not_CaptureOnly(uint fromMove, uint toMove, MoveGenerationMode mode)
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/3B4/8/8/8 w - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/3B4/8/8/8 w - - 0 1");
             gameState.GenerateMoves(mode, 1, _moveData);
 
             var move = gameState.Moves[1].First(x => x.GetFromMove() == fromMove && x.GetToMove() == toMove);
@@ -67,7 +67,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(27U, 6U)]
         public void Generates_No_Valid_White_Bishop_Moves_When_CaptureOnly(uint fromMove, uint toMove)
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/3B4/8/8/8 w - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/3B4/8/8/8 w - - 0 1");
             gameState.GenerateMoves(MoveGenerationMode.CaptureMovesOnly, 1, _moveData);
 
             var move = gameState.Moves[1].FirstOrDefault(x => x.GetFromMove() == fromMove && x.GetToMove() == toMove);
@@ -85,7 +85,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(27U, 9U, MoveGenerationMode.CaptureMovesOnly)]
         public void Generates_Valid_White_Bishop_Captures_When_Not_QuietMovesOnly(uint fromMove, uint toMove, MoveGenerationMode mode)
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/1p3p2/8/3B4/8/1p3p2/8 w - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/1p3p2/8/3B4/8/1p3p2/8 w - - 0 1");
             gameState.GenerateMoves(mode, 1, _moveData);
 
             var move = gameState.Moves[1].First(x => x.GetFromMove() == fromMove && x.GetToMove() == toMove);
@@ -105,7 +105,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(27U, 13U)]
         public void Generates_No_Valid_White_Bishop_Captures_When_QuietMovesOnly(uint fromMove, uint toMove)
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/1p3p2/8/3B4/8/1p3p2/8 w - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/1p3p2/8/3B4/8/1p3p2/8 w - - 0 1");
             gameState.GenerateMoves(MoveGenerationMode.QuietMovesOnly, 1, _moveData);
 
             var move = gameState.Moves[1].FirstOrDefault(x => x.GetFromMove() == fromMove && x.GetToMove() == toMove);
@@ -118,7 +118,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(MoveGenerationMode.QuietMovesOnly)]
         public void Does_Not_Generate_Invalid_White_Bishop_Captures_Against_Own_Pieces(MoveGenerationMode mode)
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/2P1P3/3B4/2P1P3/8/8 w - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/2P1P3/3B4/2P1P3/8/8 w - - 0 1");
 
             gameState.GenerateMoves(mode, 1, _moveData);
             var testMoves = gameState.Moves[1].Where(x => x.GetMovingPiece() == MoveUtility.WhiteBishop);
@@ -157,7 +157,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(27U, 6U, MoveGenerationMode.QuietMovesOnly)]
         public void Generates_Valid_Black_Bishop_Moves_When_Not_CaptureOnly(uint fromMove, uint toMove, MoveGenerationMode mode)
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/3b4/8/8/8 b - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/3b4/8/8/8 b - - 0 1");
             gameState.GenerateMoves(mode, 1, _moveData);
 
             var move = gameState.Moves[1].First(x => x.GetFromMove() == fromMove && x.GetToMove() == toMove);
@@ -187,7 +187,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(27U, 6U)]
         public void Generates_No_Valid_Black_Bishop_Moves_When_CaptureOnly(uint fromMove, uint toMove)
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/3b4/8/8/8 b - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/3b4/8/8/8 b - - 0 1");
             gameState.GenerateMoves(MoveGenerationMode.CaptureMovesOnly, 1, _moveData);
 
             var move = gameState.Moves[1].FirstOrDefault(x => x.GetFromMove() == fromMove && x.GetToMove() == toMove);
@@ -205,7 +205,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(27U, 9U, MoveGenerationMode.CaptureMovesOnly)]
         public void Generates_Valid_Black_Bishop_Captures_When_Not_QuietMovesOnly(uint fromMove, uint toMove, MoveGenerationMode mode)
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/1P3P2/8/3b4/8/1P3P2/8 b - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/1P3P2/8/3b4/8/1P3P2/8 b - - 0 1");
             gameState.GenerateMoves(mode, 1, _moveData);
 
             var move = gameState.Moves[1].First(x => x.GetFromMove() == fromMove && x.GetToMove() == toMove);
@@ -225,7 +225,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(27U, 13U)]
         public void Generates_No_Valid_Black_Bishop_Captures_When_QuietMovesOnly(uint fromMove, uint toMove)
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/1P3P2/8/3b4/8/1P3P2/8 b - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/1P3P2/8/3b4/8/1P3P2/8 b - - 0 1");
             gameState.GenerateMoves(MoveGenerationMode.QuietMovesOnly, 1, _moveData);
 
             var move = gameState.Moves[1].FirstOrDefault(x => x.GetFromMove() == fromMove && x.GetToMove() == toMove);
@@ -238,7 +238,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(MoveGenerationMode.QuietMovesOnly)]
         public void Does_Not_Generate_Invalid_Black_Bishop_Captures_Against_Own_Pieces(MoveGenerationMode mode)
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/2p1p3/3b4/2p1p3/8/8 b - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/2p1p3/3b4/2p1p3/8/8 b - - 0 1");
 
             gameState.GenerateMoves(mode, 1, _moveData);
             var testMoves = gameState.Moves[1].Where(x => x.GetMovingPiece() == MoveUtility.BlackBishop);

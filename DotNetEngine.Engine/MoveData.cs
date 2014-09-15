@@ -18,11 +18,11 @@
                 (byte)MoveUtility.BitStates[7]
             };
               
-        private readonly ulong[] _rankMask = new ulong[64];
-        private readonly ulong[] _fileMask = new ulong[64];
+        internal readonly ulong[] RankMask = new ulong[64];
+        internal readonly ulong[] FileMask = new ulong[64];
         
-        private readonly ulong[] _diagonalA1H8Mask = new ulong[64];
-        private readonly ulong[] _diagonalA8H1Mask = new ulong[64];
+        internal readonly ulong[] DiagonalA1H8Mask = new ulong[64];
+        internal readonly ulong[] DiagonalA8H1Mask = new ulong[64];
 
         internal ulong[] KnightAttacks { get; private set; }
         internal ulong[] KingAttacks { get; private set; }
@@ -148,8 +148,8 @@
                 {
                     for (var bit = 2; bit < 8; bit++)
                     {
-                        _rankMask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.GetBitStatesByBoardIndex(rank, bit);
-                        _fileMask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.GetBitStatesByBoardIndex(bit, file);
+                        RankMask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.GetBitStatesByBoardIndex(rank, bit);
+                        FileMask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.GetBitStatesByBoardIndex(bit, file);
                     }
 
                     var diagonalA8H1 = file + rank; // from 2 to 16, longest diagonal = 9
@@ -158,14 +158,14 @@
                     {
                         for (var square = 2; square < diagonalA8H1 - 1; square++)
                         {
-                            _diagonalA8H1Mask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.GetBitStatesByBoardIndex(diagonalA8H1 - square, square);
+                            DiagonalA8H1Mask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.GetBitStatesByBoardIndex(diagonalA8H1 - square, square);
                         }
                     }
                     else
                     {
                         for (var square = 2; square < 17 - diagonalA8H1; square++)
                         {
-                            _diagonalA8H1Mask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.GetBitStatesByBoardIndex(9 - square, diagonalA8H1 + square - 9);
+                            DiagonalA8H1Mask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.GetBitStatesByBoardIndex(9 - square, diagonalA8H1 + square - 9);
                         }
                     }
                    
@@ -175,14 +175,14 @@
                     {
                         for (var square = 2 ; square < 8 - diagonalA1H8 ; square ++)
                         {
-                            _diagonalA1H8Mask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.GetBitStatesByBoardIndex(square, diagonalA1H8 + square);
+                            DiagonalA1H8Mask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.GetBitStatesByBoardIndex(square, diagonalA1H8 + square);
                         }
                     }
                     else
                     {
                         for (var square = 2 ; square < 8 + diagonalA1H8 ; square ++)
                         {
-                            _diagonalA1H8Mask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.GetBitStatesByBoardIndex(square - diagonalA1H8, square );
+                            DiagonalA1H8Mask[MoveUtility.BoardIndex[rank][file]] |= MoveUtility.GetBitStatesByBoardIndex(square - diagonalA1H8, square );
                         }
                     }                    
                 }
@@ -606,23 +606,23 @@
     
         private ulong GetRankMoves(uint fromSquare, ulong occupiedSquares, ulong targetboard)
         {
-            return RankAttacks[fromSquare][(occupiedSquares & _rankMask[fromSquare]) >> MoveUtility.ShiftedRank[fromSquare]] & targetboard;
+            return RankAttacks[fromSquare][(occupiedSquares & RankMask[fromSquare]) >> MoveUtility.ShiftedRank[fromSquare]] & targetboard;
         }
 
         private ulong GetFileMoves(uint fromSquare, ulong occupiedSquares, ulong targetboard)
         {
 
-            return FileAttacks[fromSquare][(occupiedSquares & _fileMask[fromSquare]) * MoveUtility.FileMagicMultiplication[fromSquare] >> 57] & targetboard;
+            return FileAttacks[fromSquare][(occupiedSquares & FileMask[fromSquare]) * MoveUtility.FileMagicMultiplication[fromSquare] >> 57] & targetboard;
         }
 
         private ulong GetDiagonalA8H1Moves(uint fromSquare, ulong occupiedSquares, ulong targetboard)
         {
-            return DiagonalA8H1Attacks[fromSquare][(occupiedSquares & _diagonalA8H1Mask[fromSquare]) * MoveUtility.DiagonalA8H1MagicMultiplcation[fromSquare] >> 57] & targetboard;
+            return DiagonalA8H1Attacks[fromSquare][(occupiedSquares & DiagonalA8H1Mask[fromSquare]) * MoveUtility.DiagonalA8H1MagicMultiplication[fromSquare] >> 57] & targetboard;
         }
 
         private ulong GetDiagonalA1H8Moves(uint fromSquare, ulong occupiedSquares, ulong targetboard)
         {
-            return DiagonalA1H8Attacks[fromSquare][(occupiedSquares & _diagonalA1H8Mask[fromSquare]) * MoveUtility.DiagonalA1H8MagicMultiplcation[fromSquare] >> 57] & targetboard;
+            return DiagonalA1H8Attacks[fromSquare][(occupiedSquares & DiagonalA1H8Mask[fromSquare]) * MoveUtility.DiagonalA1H8MagicMultiplication[fromSquare] >> 57] & targetboard;
         }
     }
 }

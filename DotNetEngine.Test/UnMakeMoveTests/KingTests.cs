@@ -16,7 +16,7 @@ namespace DotNetEngine.Test.UnUnMakeMoveTests
         [Test]
         public void UnMakeMove_Sets_Kings_Bitboard_When_White_King_Moves()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/3K4/8/8 b - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/3K4/8/8 b - - 0 1");
             gameState.PreviousGameStateRecords.Push(new GameStateRecord());
 
             var move = 0U;
@@ -32,7 +32,7 @@ namespace DotNetEngine.Test.UnUnMakeMoveTests
         [Test]
         public void UnMakeMove_Sets_White_Bitboard_When_White_King_Moves()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/3K4/8/8 b - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/3K4/8/8 b - - 0 1");
             gameState.PreviousGameStateRecords.Push(new GameStateRecord());
 
             var move = 0U;
@@ -48,7 +48,7 @@ namespace DotNetEngine.Test.UnUnMakeMoveTests
         [Test]
         public void UnMakeMove_Sets_AllPieces_Bitboard_When_White_King_Moves()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/3K4/8/8 b - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/3K4/8/8 b - - 0 1");
             gameState.PreviousGameStateRecords.Push(new GameStateRecord());
 
             var move = 0U;
@@ -64,7 +64,7 @@ namespace DotNetEngine.Test.UnUnMakeMoveTests
         [Test]
         public void UnMakeMove_Sets_CastleStatus_When_White_King_Moves()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/4K3/R6R b - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/4K3/R6R b - - 0 1");
             gameState.PreviousGameStateRecords.Push(new GameStateRecord
                 {
                     CurrentWhiteCastleStatus = (int)CastleStatus.BothCastle
@@ -83,7 +83,7 @@ namespace DotNetEngine.Test.UnUnMakeMoveTests
         [Test]
         public void UnMakeMove_Sets_Rook_BitBoard_When_CastleOO()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/8/5RK1 b - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/8/5RK1 b - - 0 1");
             gameState.PreviousGameStateRecords.Push(new GameStateRecord());
 
             uint move = _moveData.WhiteCastleOOMove;
@@ -97,7 +97,7 @@ namespace DotNetEngine.Test.UnUnMakeMoveTests
         public void UnMakeMove_Sets_White_BitBoard_When_CastleOO()
         {
 
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/8/5RK1 b - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/8/5RK1 b - - 0 1");
             gameState.PreviousGameStateRecords.Push(new GameStateRecord());
 
             uint move = _moveData.WhiteCastleOOMove;
@@ -111,7 +111,7 @@ namespace DotNetEngine.Test.UnUnMakeMoveTests
         public void UnMakeMove_Sets_Rook_BitBoard_When_CastleOOO()
         {
 
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/8/2KR4 b - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/8/2KR4 b - - 0 1");
             gameState.PreviousGameStateRecords.Push(new GameStateRecord());
 
             uint move = _moveData.WhiteCastleOOOMove;
@@ -124,7 +124,7 @@ namespace DotNetEngine.Test.UnUnMakeMoveTests
         [Test]
         public void UnMakeMove_Sets_White_BitBoard_When_CastleOOO()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/8/8/2KR4 b - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/8/2KR4 b - - 0 1");
             gameState.PreviousGameStateRecords.Push(new GameStateRecord());
 
             uint move = _moveData.WhiteCastleOOOMove;
@@ -137,7 +137,7 @@ namespace DotNetEngine.Test.UnUnMakeMoveTests
         [Test]
         public void UnMakeMove_Sets_50_Move_Rules_When_White_King_Moves()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/3K4/8/8 b - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/3K4/8/8 b - - 0 1");
             gameState.PreviousGameStateRecords.Push(new GameStateRecord 
             {
                 FiftyMoveRuleCount = 10
@@ -156,7 +156,7 @@ namespace DotNetEngine.Test.UnUnMakeMoveTests
         [Test]
         public void UnMakeMove_Sets_50_Move_Rules_When_White_King_Captures()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/3K4/8/8 b - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/3K4/8/8 b - - 0 1");
             gameState.PreviousGameStateRecords.Push(new GameStateRecord
             {
                 FiftyMoveRuleCount = 10
@@ -178,7 +178,7 @@ namespace DotNetEngine.Test.UnUnMakeMoveTests
         [Test]
         public void UnMakeMove_Sets_Kings_Bitboard_When_Black_King_Moves()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/3k4/8/8 w - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/3k4/8/8 w - - 0 1");
             gameState.PreviousGameStateRecords.Push(new GameStateRecord());
 
             var move = 0U;
@@ -194,7 +194,7 @@ namespace DotNetEngine.Test.UnUnMakeMoveTests
         [Test]
         public void UnMakeMove_Sets_Black_Bitboard_When_Black_King_Moves()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/3k4/8/8 w - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/3k4/8/8 w - - 0 1");
             gameState.PreviousGameStateRecords.Push(new GameStateRecord());
 
             var move = 0U;
@@ -210,7 +210,7 @@ namespace DotNetEngine.Test.UnUnMakeMoveTests
         [Test]
         public void UnMakeMove_Sets_AllPieces_Bitboard_When_Black_King_Moves()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/3k4/8/8 w - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/3k4/8/8 w - - 0 1");
             gameState.PreviousGameStateRecords.Push(new GameStateRecord());
 
             var move = 0U;
@@ -226,7 +226,7 @@ namespace DotNetEngine.Test.UnUnMakeMoveTests
         [Test]
         public void UnMakeMove_Sets_CastleStatus_When_Black_King_Moves()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("r6r/4k3/8/8/8/8/8/8 w - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("r6r/4k3/8/8/8/8/8/8 w - - 0 1");
             gameState.PreviousGameStateRecords.Push(new GameStateRecord
             {
                 CurrentBlackCastleStatus = (int)CastleStatus.BothCastle
@@ -245,7 +245,7 @@ namespace DotNetEngine.Test.UnUnMakeMoveTests
         [Test]
         public void UnMakeMove_Sets_Rook_BitBoard_When_CastleOO_Black()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("5rk1/8/8/8/8/8/8/8 w - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("5rk1/8/8/8/8/8/8/8 w - - 0 1");
             gameState.PreviousGameStateRecords.Push(new GameStateRecord());
 
             uint move = _moveData.BlackCastleOOMove;
@@ -258,7 +258,7 @@ namespace DotNetEngine.Test.UnUnMakeMoveTests
         [Test]
         public void UnMakeMove_Sets_Black_BitBoard_When_CastleOO()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("5rk1/8/8/8/8/8/8/8 w - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("5rk1/8/8/8/8/8/8/8 w - - 0 1");
             gameState.PreviousGameStateRecords.Push(new GameStateRecord());
 
             uint move = _moveData.BlackCastleOOMove;
@@ -272,7 +272,7 @@ namespace DotNetEngine.Test.UnUnMakeMoveTests
         public void UnMakeMove_Sets_Rook_BitBoard_When_CastleOOO_Black()
         {
 
-            var gameState = GameStateUtility.LoadStateFromFen("2kr4/8/8/8/8/8/8/8 w - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("2kr4/8/8/8/8/8/8/8 w - - 0 1");
             gameState.PreviousGameStateRecords.Push(new GameStateRecord());
 
             uint move = _moveData.BlackCastleOOOMove;
@@ -285,7 +285,7 @@ namespace DotNetEngine.Test.UnUnMakeMoveTests
         [Test]
         public void UnMakeMove_Sets_Black_BitBoard_When_CastleOOO()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("2kr4/8/8/8/8/8/8/8 w - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("2kr4/8/8/8/8/8/8/8 w - - 0 1");
             gameState.PreviousGameStateRecords.Push(new GameStateRecord());
 
             uint move = _moveData.BlackCastleOOOMove;
@@ -298,7 +298,7 @@ namespace DotNetEngine.Test.UnUnMakeMoveTests
         [Test]
         public void UnMakeMove_Sets_50_Move_Rules_When_Black_King_Moves()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/3k4/8/8 b - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/3k4/8/8 b - - 0 1");
             gameState.PreviousGameStateRecords.Push(new GameStateRecord
             {
                 FiftyMoveRuleCount = 10
@@ -317,7 +317,7 @@ namespace DotNetEngine.Test.UnUnMakeMoveTests
         [Test]
         public void UnMakeMove_Sets_50_Move_Rules_When_Black_King_Captures()
         {
-            var gameState = GameStateUtility.LoadStateFromFen("8/8/8/8/8/3k4/8/8 b - - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/3k4/8/8 b - - 0 1");
             gameState.PreviousGameStateRecords.Push(new GameStateRecord
             {
                 FiftyMoveRuleCount = 10
@@ -340,7 +340,7 @@ namespace DotNetEngine.Test.UnUnMakeMoveTests
         [TestCase("8/8/8/8/8/8/8/3k4 w - - 0 1", 3U, 11U, MoveUtility.BlackKing)]
         public void UnMakeMove_Sets_Board_Array_From_Square(string initialFen, uint fromSquare, uint toSquare, uint movingPiece)
         {
-            var gameState = GameStateUtility.LoadStateFromFen(initialFen);
+            var gameState = GameStateUtility.LoadGameStateFromFen(initialFen);
             gameState.PreviousGameStateRecords.Push(new GameStateRecord());
 
             var move = 0U;
@@ -357,7 +357,7 @@ namespace DotNetEngine.Test.UnUnMakeMoveTests
         [TestCase("8/8/8/8/8/8/8/3k4 w - - 0 1", 3U, 11U, MoveUtility.BlackKing)]
         public void UnMakeMove_Sets_Board_Array_To_Square(string initialFen, uint fromSquare, uint toSquare, uint movingPiece)
         {
-            var gameState = GameStateUtility.LoadStateFromFen(initialFen);
+            var gameState = GameStateUtility.LoadGameStateFromFen(initialFen);
             gameState.PreviousGameStateRecords.Push(new GameStateRecord());
 
             var move = 0U;
@@ -374,7 +374,7 @@ namespace DotNetEngine.Test.UnUnMakeMoveTests
         [TestCase("5rk1/8/8/8/8/8/8/8 w - - 0 1", 61U, MoveUtility.BlackRook)]
         public void UnMakeMove_Sets_Board_Array_RookSquare_When_CastleOO(string initialFen, uint rookToSquare, uint movingPiece)
         {
-            var gameState = GameStateUtility.LoadStateFromFen(initialFen);
+            var gameState = GameStateUtility.LoadGameStateFromFen(initialFen);
             gameState.PreviousGameStateRecords.Push(new GameStateRecord());
 
             var move = movingPiece == MoveUtility.WhiteRook ? _moveData.WhiteCastleOOMove : _moveData.BlackCastleOOMove;
@@ -388,7 +388,7 @@ namespace DotNetEngine.Test.UnUnMakeMoveTests
         [TestCase("2kr4/8/8/8/8/8/8/8 w - - 0 1", 59U, MoveUtility.BlackRook)]
         public void UnMakeMove_Sets_Board_Array_RookSquare_When_CastleOOO(string initialFen, uint rookToSquare, uint movingPiece)
         {
-            var gameState = GameStateUtility.LoadStateFromFen(initialFen);
+            var gameState = GameStateUtility.LoadGameStateFromFen(initialFen);
             gameState.PreviousGameStateRecords.Push(new GameStateRecord());
 
             var move = movingPiece == MoveUtility.WhiteRook ? _moveData.WhiteCastleOOOMove : _moveData.BlackCastleOOOMove;
@@ -402,7 +402,7 @@ namespace DotNetEngine.Test.UnUnMakeMoveTests
         [TestCase("5rk1/8/8/8/8/8/8/8 w - - 0 1", 63U, MoveUtility.BlackRook)]
         public void UnMakeMove_Sets_Board_Array_Rook_From_Square_When_CastleOO(string initialFen, uint rookToSquare, uint movingPiece)
         {
-            var gameState = GameStateUtility.LoadStateFromFen(initialFen);
+            var gameState = GameStateUtility.LoadGameStateFromFen(initialFen);
             gameState.PreviousGameStateRecords.Push(new GameStateRecord());
 
             var move = movingPiece == MoveUtility.WhiteRook ? _moveData.WhiteCastleOOMove : _moveData.BlackCastleOOMove;
@@ -416,7 +416,7 @@ namespace DotNetEngine.Test.UnUnMakeMoveTests
         [TestCase("2kr4/8/8/8/8/8/8/8 w - - 0 1", 56U, MoveUtility.BlackRook)]
         public void UnMakeMove_Sets_Board_Array_Rook_From_Square_When_CastleOOO(string initialFen, uint rookToSquare, uint movingPiece)
         {
-            var gameState = GameStateUtility.LoadStateFromFen(initialFen);
+            var gameState = GameStateUtility.LoadGameStateFromFen(initialFen);
             gameState.PreviousGameStateRecords.Push(new GameStateRecord());
 
             var move = movingPiece == MoveUtility.WhiteRook ? _moveData.WhiteCastleOOOMove : _moveData.BlackCastleOOOMove;

@@ -209,7 +209,7 @@ namespace DotNetEngine.Engine
         /// </summary>
         /// <param name="fen"></param>
         /// <returns></returns>
-        internal static GameState LoadStateFromFen(string fen)
+        internal static GameState LoadGameStateFromFen(string fen)
         {
             fen = fen.Trim(' ');
 

@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="KingAttackedTests.cs" />
     <Compile Include="MakeMoveTests\BishopTests.cs" />
     <Compile Include="MakeMoveTests\CapturePieceTests.cs" />
     <Compile Include="MakeMoveTests\KingTests.cs" />
