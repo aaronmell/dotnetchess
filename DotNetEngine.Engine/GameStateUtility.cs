@@ -9,8 +9,9 @@ namespace DotNetEngine.Engine
 	/// <summary>
 	/// Helper methods that act on the GameState object and its properties
 	/// </summary>
-	internal static class GameStateUtility
+	public static class GameStateUtility
 	{
+        private static string DivideOutput = "Move Nodes" + Environment.NewLine;
         private static readonly char[] Files = new[]
 		{
 			'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'
@@ -203,13 +204,78 @@ namespace DotNetEngine.Engine
             }
             return sb.ToString();
         }
-              
+
+        public static ulong RunPerftRecursively(this GameState gameState, MoveData moveData, PerftData perftData, int ply, int depth)
+        {
+            if (depth == 0)
+            {
+                return 1;
+            }
+
+            ulong count = 0;
+
+            gameState.GenerateMoves(MoveGenerationMode.All, ply, moveData);
+
+            foreach (var move in gameState.Moves[ply])
+            {
+                gameState.MakeMove(move);
+
+                if (!gameState.IsOppositeSideKingAttacked(moveData))
+                {
+                    count += RunPerftRecursively(gameState, moveData, perftData, ply + 1, depth - 1);
+#if Debug
+                    if (depth == 1)
+                    {
+                        if (move.IsPieceCaptured())
+                            perftData.TotalCaptures++;
+                        if (move.IsEnPassant())
+                            perftData.TotalEnpassants++;
+                        if (move.IsPromotion())
+                            perftData.TotalPromotions++;
+                        if (move.IsCastleOO())
+                            perftData.TotalOOCastles++;
+                        if (move.IsCastleOOO())
+                            perftData.TotalOOOCastles++;
+                        if (gameState.IsCurrentSideKingAttacked(_moveData))
+                            perftData.TotalChecks++;
+                    }
+#endif
+                }
+                gameState.UnMakeMove(move);
+            }
+            return count;
+        }
+
+        public static string CalculateDivide(this GameState gameState, MoveData moveData, PerftData perftData, int ply, int depth)
+        {
+            var sb = new StringBuilder(DivideOutput);
+            ulong count = 0;
+
+            gameState.GenerateMoves(MoveGenerationMode.All, ply, moveData);
+
+            foreach (var move in gameState.Moves[ply])
+            {
+                gameState.MakeMove(move);
+
+                if (!gameState.IsOppositeSideKingAttacked(moveData))
+                {
+                    ulong moveCount = RunPerftRecursively(gameState, moveData, perftData, ply + 1, depth - 1);
+                    sb.AppendFormat("{0}{1} {2}{3}", MoveUtility.RankAndFile[move.GetFromMove()], MoveUtility.RankAndFile[move.GetToMove()], moveCount, Environment.NewLine);
+                    count += moveCount;
+                }
+                gameState.UnMakeMove(move);
+            }
+            sb.AppendFormat("Total Nodes: {0}", count);
+            return sb.ToString();
+
+        }
+
         /// <summary>
         /// Take a FEN string and converts it into a GameState object
         /// </summary>
         /// <param name="fen"></param>
         /// <returns></returns>
-        internal static GameState LoadGameStateFromFen(string fen)
+        public static GameState LoadGameStateFromFen(string fen)
         {
             fen = fen.Trim(' ');
 

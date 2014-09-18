@@ -48,6 +48,7 @@
     <Compile Include="MoveGeneratorUtility.cs" />
     <Compile Include="MoveData.cs" />
     <Compile Include="MoveUtility.cs" />
+    <Compile Include="PerfData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

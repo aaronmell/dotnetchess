@@ -5,7 +5,7 @@ namespace DotNetEngine.Engine
 	/// <summary>
 	/// An Object that contains the current game state.
 	/// </summary>
-	internal class GameState
+	public class GameState
 	{
 		//white bitboards
 		internal ulong WhitePawns { get; set; }
@@ -62,8 +62,8 @@ namespace DotNetEngine.Engine
         /// A stack containing all of the game state records, needed to unmake a move.
         /// </summary>
         internal Stack<GameStateRecord> PreviousGameStateRecords { get; set; }
-
-        internal GameState()
+              
+        public GameState()
 		{
 	        BoardArray = new uint[64];
 
@@ -783,8 +783,7 @@ namespace DotNetEngine.Engine
             }
         }
         
-
-            /// <summary>
+        /// <summary>
         /// Determines if the opposite side king is under attack
         /// </summary>
         /// <returns>A bool value indicating if the current sides king is under attack</returns>

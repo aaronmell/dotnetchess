@@ -14,16 +14,8 @@ namespace DotNetEngine.Test
     public class PerftTests
     {
         private MoveData _moveData = new MoveData();
-
-        private long numberOfCaptures = 0;
-        private long numberOfEnpassants = 0;
-        private long numberOfPromotions = 0;
-        private long numberOfOOCastles = 0;
-        private long numberOfOOOCastles = 0;
-        private long numberOfChecks = 0;
-        private long checkmates = 0;
-
-        private string DivideOutput = "Move Nodes" + Environment.NewLine;
+        
+      
 
         [TestCase("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", 0, 1)]
         [TestCase("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", 1, 20)]
@@ -35,8 +27,8 @@ namespace DotNetEngine.Test
         public void RunPerft(string fen, int depth, long moveCount)
         {
             var gameState = GameStateUtility.LoadGameStateFromFen(fen);
-
-            var count = RunPerftRecursively(gameState, 1, depth);
+            var perftData = new PerftData();
+            var count = gameState.RunPerftRecursively(_moveData, perftData, 1, depth);            
             Assert.That(count, Is.EqualTo(moveCount));
         }
 
@@ -48,77 +40,8 @@ namespace DotNetEngine.Test
         public void RunDivide(string fen, int depth)
         {
             var gameState = GameStateUtility.LoadGameStateFromFen(fen);
-
-            var result = CalculateDivide(gameState, 1, depth);            
-        }
-
-        private ulong RunPerftRecursively(GameState gameState, int ply, int depth)
-        {
-            if (depth == 0)
-            {
-                return 1;
-            }
-
-            ulong count = 0;
-
-            gameState.GenerateMoves(MoveGenerationMode.All, ply, _moveData);
-
-            foreach (var move in gameState.Moves[ply])
-            {
-                gameState.MakeMove(move);
-
-                if (!gameState.IsOppositeSideKingAttacked(_moveData))
-                {
-                    count += RunPerftRecursively(gameState, ply + 1, depth - 1);
-                    
-                    if (depth == 1)
-                    {
-                        if (move.IsPieceCaptured())
-                            numberOfCaptures++;
-                        if (move.IsEnPassant())
-                            numberOfEnpassants++;
-                        if (move.IsPromotion())
-                            numberOfPromotions++;
-                        if (move.IsCastleOO())
-                            numberOfOOCastles++;
-                        if (move.IsCastleOOO())
-                            numberOfOOOCastles++;
-                        if (gameState.IsCurrentSideKingAttacked(_moveData))
-                            numberOfChecks++;
-                    }
-                   
-                }                 
-
-                gameState.UnMakeMove(move);
-            }
-            return count;
-        }
-
-
-        private string CalculateDivide(GameState gameState, int ply, int depth)
-        {
-            var sb = new StringBuilder(DivideOutput);
-            ulong count = 0;
-
-            gameState.GenerateMoves(MoveGenerationMode.All, ply, _moveData);
-
-            foreach (var move in gameState.Moves[ply])
-            {
-                gameState.MakeMove(move);
-
-                if (!gameState.IsOppositeSideKingAttacked(_moveData))
-                {
-                    ulong moveCount = RunPerftRecursively(gameState, ply + 1, depth - 1);
-                    sb.AppendFormat("{0}{1} {2}{3}", MoveUtility.RankAndFile[move.GetFromMove()], MoveUtility.RankAndFile[move.GetToMove()], moveCount, Environment.NewLine);
-                    count += moveCount;                   
-                }
-                  
-
-                gameState.UnMakeMove(move);
-            }
-            sb.AppendFormat("Total Nodes: {0}", count);
-            return sb.ToString();
-            
+            var perftData = new PerftData();
+            var result = gameState.CalculateDivide(_moveData, perftData, 1, depth);         
         }
     }
 }

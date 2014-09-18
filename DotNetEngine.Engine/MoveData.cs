@@ -4,7 +4,7 @@
     /// <summary>
     /// Contains all of the move related data.
     /// </summary>
-    internal class MoveData
+    public class MoveData
     {
         private static readonly byte[] ByteBitStates = new []
             {
@@ -50,7 +50,7 @@
         //This should be private, but I wanted to write tests against it to ensure that it works correctly.
         internal byte[][] SlidingAttacks {get; private set;}      
 
-        internal MoveData()
+        public MoveData()
         {
             InitializeArrays();
 
@@ -199,7 +199,7 @@
                     {
                             
                         var slidingattackindex = 8 - MoveUtility.Ranks[square] < MoveUtility.Files[square] - 1 ? 8 - MoveUtility.Ranks[square] : MoveUtility.Files[square] - 1;
-                        if ((SlidingAttacks[slidingattackindex][attackState] & ByteBitStates[attackbit]) == ByteBitStates[attackbit])
+                        if ((SlidingAttacks[slidingattackindex][attackState] & ByteBitStates[attackbit]) > 0)
                         {
                             var diagonalLength = MoveUtility.Files[square] + MoveUtility.Ranks[square];
                             
@@ -237,7 +237,7 @@
                     {
 
                         var slidingattackindex = (MoveUtility.Ranks[square] - 1) < (MoveUtility.Files[square] - 1) ? (MoveUtility.Ranks[square] - 1) : (MoveUtility.Files[square] - 1);
-                        if ((SlidingAttacks[slidingattackindex][attackState] & ByteBitStates[attackbit]) == ByteBitStates[attackbit])
+                        if ((SlidingAttacks[slidingattackindex][attackState] & ByteBitStates[attackbit])  > 0)
                         {
                             var diagonalLength = MoveUtility.Files[square] - MoveUtility.Ranks[square];
 
@@ -288,7 +288,7 @@
                 {
                     for (var attackbit = 0; attackbit < 8; attackbit++)
                     {
-                        if ((SlidingAttacks[8 - MoveUtility.Ranks[square]][attackState] & ByteBitStates[attackbit]) == ByteBitStates[attackbit])
+                        if ((SlidingAttacks[8 - MoveUtility.Ranks[square]][attackState] & ByteBitStates[attackbit]) > 0)
                         {
                             var file = MoveUtility.Files[square];
                             var rank = 8 - attackbit;
@@ -331,7 +331,7 @@
                     var slide = position + 2;
                     while (slide <= 7)
                     {
-                        if ((~stateMask & ByteBitStates[slide - 1]) == ByteBitStates[slide - 1])
+                        if ((~stateMask & ByteBitStates[slide - 1]) > 0)
                         {
                             attackMask |= ByteBitStates[slide];
                         }
@@ -348,7 +348,7 @@
                     slide = position - 2;
                     while (slide >= 0)
                     {
-                        if ((~stateMask & ByteBitStates[slide + 1]) == ByteBitStates[slide + 1])
+                        if ((~stateMask & ByteBitStates[slide + 1]) > 0)
                         {
                             attackMask |= ByteBitStates[slide];
                         }
