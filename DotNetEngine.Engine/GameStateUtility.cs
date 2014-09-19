@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace DotNetEngine.Engine
 	/// <summary>
 	/// Helper methods that act on the GameState object and its properties
 	/// </summary>
-	public static class GameStateUtility
+	internal static class GameStateUtility
 	{
         private static string DivideOutput = "Move Nodes" + Environment.NewLine;
         private static readonly char[] Files = new[]
@@ -205,7 +206,7 @@ namespace DotNetEngine.Engine
             return sb.ToString();
         }
 
-        public static ulong RunPerftRecursively(this GameState gameState, MoveData moveData, PerftData perftData, int ply, int depth)
+        internal static ulong RunPerftRecursively(this GameState gameState, MoveData moveData, PerftData perftData, int ply, int depth)
         {
             if (depth == 0)
             {
@@ -218,12 +219,15 @@ namespace DotNetEngine.Engine
 
             foreach (var move in gameState.Moves[ply])
             {
+#if DEBUG
+                var oldGameState = gameState;
+#endif
                 gameState.MakeMove(move);
 
                 if (!gameState.IsOppositeSideKingAttacked(moveData))
                 {
                     count += RunPerftRecursively(gameState, moveData, perftData, ply + 1, depth - 1);
-#if Debug
+#if DEBUG
                     if (depth == 1)
                     {
                         if (move.IsPieceCaptured())
@@ -236,17 +240,49 @@ namespace DotNetEngine.Engine
                             perftData.TotalOOCastles++;
                         if (move.IsCastleOOO())
                             perftData.TotalOOOCastles++;
-                        if (gameState.IsCurrentSideKingAttacked(_moveData))
+                        if (gameState.IsCurrentSideKingAttacked(moveData))
                             perftData.TotalChecks++;
                     }
 #endif
                 }
+
                 gameState.UnMakeMove(move);
+#if DEBUG
+                Debug.Assert(gameState.AllPieces == oldGameState.AllPieces);
+                Debug.Assert(gameState.BlackBishops == oldGameState.BlackBishops);
+                Debug.Assert(gameState.BlackKing == oldGameState.BlackKing);
+                Debug.Assert(gameState.BlackKnights == oldGameState.BlackKnights);
+                Debug.Assert(gameState.BlackPawns == oldGameState.BlackPawns);
+                Debug.Assert(gameState.BlackPieces == oldGameState.BlackPieces);
+                Debug.Assert(gameState.BlackQueens == oldGameState.BlackQueens);
+                Debug.Assert(gameState.BlackRooks == oldGameState.BlackRooks);
+                Debug.Assert(gameState.CurrentBlackCastleStatus == oldGameState.CurrentBlackCastleStatus);
+
+                Debug.Assert(gameState.AllPieces == oldGameState.AllPieces);
+                Debug.Assert(gameState.WhiteBishops == oldGameState.WhiteBishops);
+                Debug.Assert(gameState.WhiteKing == oldGameState.WhiteKing);
+                Debug.Assert(gameState.WhiteKnights == oldGameState.WhiteKnights);
+                Debug.Assert(gameState.WhitePawns == oldGameState.WhitePawns);
+                Debug.Assert(gameState.WhitePieces == oldGameState.WhitePieces);
+                Debug.Assert(gameState.WhiteQueens == oldGameState.WhiteQueens);
+                Debug.Assert(gameState.WhiteRooks == oldGameState.WhiteRooks);
+                Debug.Assert(gameState.CurrentWhiteCastleStatus == oldGameState.CurrentWhiteCastleStatus);
+               
+                for (var i = 0; i < gameState.BoardArray.Length; i++)
+                {
+                    Debug.Assert(gameState.BoardArray[i] == oldGameState.BoardArray[i]);
+                }
+
+                Debug.Assert(gameState.BoardArray == oldGameState.BoardArray);
+                Debug.Assert(gameState.EnpassantTargetSquare == oldGameState.EnpassantTargetSquare);
+                Debug.Assert(gameState.FiftyMoveRuleCount == oldGameState.FiftyMoveRuleCount);   
+#endif
+
             }
             return count;
         }
 
-        public static string CalculateDivide(this GameState gameState, MoveData moveData, PerftData perftData, int ply, int depth)
+        internal static string CalculateDivide(this GameState gameState, MoveData moveData, PerftData perftData, int ply, int depth)
         {
             var sb = new StringBuilder(DivideOutput);
             ulong count = 0;
@@ -275,7 +311,7 @@ namespace DotNetEngine.Engine
         /// </summary>
         /// <param name="fen"></param>
         /// <returns></returns>
-        public static GameState LoadGameStateFromFen(string fen)
+        internal static GameState LoadGameStateFromFen(string fen)
         {
             fen = fen.Trim(' ');
 

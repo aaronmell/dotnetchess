@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace DotNetEngine.Engine
 {
-    public class PerftData
+    internal class PerftData
     {
-        public long TotalCaptures {get; set;}
-        public long TotalEnpassants { get; set; }
-        public long TotalPromotions { get; set; }
-        public long TotalOOCastles {get; set;}
-        public long TotalOOOCastles { get; set; }
-        public long TotalChecks { get; set; }
+        internal long TotalCaptures {get; set;}
+        internal long TotalEnpassants { get; set; }
+        internal long TotalPromotions { get; set; }
+        internal long TotalOOCastles {get; set;}
+        internal long TotalOOOCastles { get; set; }
+        internal long TotalChecks { get; set; }
     }
 }

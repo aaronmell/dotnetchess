@@ -5,7 +5,7 @@ namespace DotNetEngine.Engine
 	/// <summary>
 	/// An Object that contains the current game state.
 	/// </summary>
-	public class GameState
+	internal class GameState
 	{
 		//white bitboards
 		internal ulong WhitePawns { get; set; }
@@ -63,7 +63,7 @@ namespace DotNetEngine.Engine
         /// </summary>
         internal Stack<GameStateRecord> PreviousGameStateRecords { get; set; }
               
-        public GameState()
+        internal GameState()
 		{
 	        BoardArray = new uint[64];
 

@@ -5,13 +5,11 @@ namespace DotNetEngine.EngineRunner
 {
 	class Program
 	{
-        private static MoveData _moveData;
-        private static GameState _gameState;
+        private static Engine.Engine _engine;
 
 		private static void Main(string[] args)
 		{
-            _moveData = new MoveData();
-            var boardLoaded = false;
+            _engine= new Engine.Engine();            
 
 			while (true)
 			{
@@ -35,8 +33,7 @@ namespace DotNetEngine.EngineRunner
                     {
                         try
                         {
-                            _gameState = GameStateUtility.LoadGameStateFromFen(commandArguments);
-                            boardLoaded = true;
+                            _engine.SetBoard(commandArguments);                            
                         }
                         catch (Exception)
                         {
@@ -46,12 +43,6 @@ namespace DotNetEngine.EngineRunner
                     }
                     case "PERFT":
                     {
-                        if (!boardLoaded)
-                        {
-                            Console.WriteLine("Board Not Loaded");
-                            break;
-                        }
-
                         byte depth = 0;
                         var canParse = byte.TryParse(commandArguments, out depth);
 
@@ -61,18 +52,13 @@ namespace DotNetEngine.EngineRunner
                             break;
                         }
 
-                        var count = _gameState.RunPerftRecursively(_moveData, new PerftData(), 1, depth);
-                        Console.WriteLine("Total Nodes {0}", count);
+                        var output = _engine.Perft(depth);
+                        Console.WriteLine(output);
+                        
                         break;
                     }
                     case "DIVIDE":
-                    {
-                        if (!boardLoaded)
-                        {
-                            Console.WriteLine("Board Not Loaded");
-                            break;
-                        }
-
+                    {                       
                         byte depth = 0;
                         var canParse = byte.TryParse(commandArguments, out depth);
 
@@ -82,7 +68,7 @@ namespace DotNetEngine.EngineRunner
                             break;
                         }
 
-                        var output = _gameState.CalculateDivide(_moveData, new PerftData(), 1, depth);
+                        var output = _engine.Divide(depth);
                         Console.WriteLine(output);
                         break;
                     }

@@ -4,7 +4,7 @@
     /// <summary>
     /// Contains all of the move related data.
     /// </summary>
-    public class MoveData
+    internal class MoveData
     {
         private static readonly byte[] ByteBitStates = new []
             {
@@ -50,7 +50,7 @@
         //This should be private, but I wanted to write tests against it to ensure that it works correctly.
         internal byte[][] SlidingAttacks {get; private set;}      
 
-        public MoveData()
+        internal MoveData()
         {
             InitializeArrays();
 
@@ -104,7 +104,7 @@
             return GetDiagonalA8H1Moves(fromSquare, occupiedSquares, targetboard) | GetDiagonalA1H8Moves(fromSquare, occupiedSquares, targetboard);
         }
 
-        public ulong GetQueenMoves(uint fromSquare, ulong occupiedSquares, ulong targetboard)
+        internal ulong GetQueenMoves(uint fromSquare, ulong occupiedSquares, ulong targetboard)
         {
             return GetRookMoves(fromSquare, occupiedSquares, targetboard) | GetBishopMoves(fromSquare, occupiedSquares, targetboard);
         }
