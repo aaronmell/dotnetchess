@@ -544,7 +544,7 @@ namespace DotNetEngine.Engine
 
                         if (capturedPiece > 0)
                         {
-                            CapturePiece(toMove, capturedPiece, fromBitboard);
+                            UnCapturePiece(toMove, capturedPiece, fromBitboard);
                         }
                         else
                         {
@@ -595,7 +595,7 @@ namespace DotNetEngine.Engine
 
                         if (capturedPiece > 0)
                         {
-                            CapturePiece(toMove, capturedPiece, fromBitboard);
+                            UnCapturePiece(toMove, capturedPiece, fromBitboard);
                         }
                         else
                         {
@@ -692,7 +692,7 @@ namespace DotNetEngine.Engine
 
                         if (capturedPiece > 0)
                         {
-                            CapturePiece(toMove, capturedPiece, fromBitboard);
+                            UnCapturePiece(toMove, capturedPiece, fromBitboard);
                         }
                         else
                         {

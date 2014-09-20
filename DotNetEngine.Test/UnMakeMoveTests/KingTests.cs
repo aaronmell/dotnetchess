@@ -424,7 +424,25 @@ namespace DotNetEngine.Test.UnUnMakeMoveTests
             gameState.UnMakeMove(move);
 
             Assert.That(gameState.BoardArray[rookToSquare], Is.EqualTo(movingPiece));
-        }     
+        }
+
+        [TestCase("8/8/8/8/8/3K4/3q4/8 w - - 0 1", MoveUtility.BlackQueen, MoveUtility.WhiteKing)]
+        [TestCase("8/8/8/8/8/3k4/3Q4/8 w - - 0 1", MoveUtility.WhiteQueen, MoveUtility.BlackKing)]
+        public void UnMakeMove_Sets_Board_Array_To_Square_When_Capture(string initialFen, uint movingPiece, uint capturedPiece)
+        {
+            var gameState = GameStateUtility.LoadGameStateFromFen(initialFen);
+            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+
+            var move = 0U;
+            move = move.SetFromMove(11U);
+            move = move.SetToMove(19U);
+            move = move.SetMovingPiece(movingPiece);
+            move = move.SetCapturedPiece(capturedPiece);
+
+            gameState.UnMakeMove(move);
+
+            Assert.That(gameState.BoardArray[19U], Is.EqualTo(capturedPiece));
+        }
         #endregion
     }
 }

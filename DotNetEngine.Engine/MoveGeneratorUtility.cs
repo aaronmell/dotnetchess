@@ -12,9 +12,9 @@ namespace DotNetEngine.Engine
 			var freeSquares = ~gameState.AllPieces;
 
             if (!gameState.Moves.ContainsKey(ply))
-                gameState.Moves.Add(ply, new List<uint>(64));
+                gameState.Moves.Add(ply, new List<uint>(218));
             else
-                gameState.Moves[ply] = new List<uint>(64);
+                gameState.Moves[ply] = new List<uint>(218);
 
 			if (gameState.WhiteToMove)
 			{
