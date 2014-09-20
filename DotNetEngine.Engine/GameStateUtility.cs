@@ -219,9 +219,16 @@ namespace DotNetEngine.Engine
 
             foreach (var move in gameState.Moves[ply])
             {
+
 #if DEBUG
-                var oldGameState = gameState;
+                var boardArray = new uint[64];
+
+                for (var i = 0; i < boardArray.Length - 1; i++)
+                {
+                    boardArray[i] = gameState.BoardArray[i];
+                }
 #endif
+
                 gameState.MakeMove(move);
 
                 if (!gameState.IsOppositeSideKingAttacked(moveData))
@@ -247,37 +254,13 @@ namespace DotNetEngine.Engine
                 }
 
                 gameState.UnMakeMove(move);
+
 #if DEBUG
-                Debug.Assert(gameState.AllPieces == oldGameState.AllPieces);
-                Debug.Assert(gameState.BlackBishops == oldGameState.BlackBishops);
-                Debug.Assert(gameState.BlackKing == oldGameState.BlackKing);
-                Debug.Assert(gameState.BlackKnights == oldGameState.BlackKnights);
-                Debug.Assert(gameState.BlackPawns == oldGameState.BlackPawns);
-                Debug.Assert(gameState.BlackPieces == oldGameState.BlackPieces);
-                Debug.Assert(gameState.BlackQueens == oldGameState.BlackQueens);
-                Debug.Assert(gameState.BlackRooks == oldGameState.BlackRooks);
-                Debug.Assert(gameState.CurrentBlackCastleStatus == oldGameState.CurrentBlackCastleStatus);
-
-                Debug.Assert(gameState.AllPieces == oldGameState.AllPieces);
-                Debug.Assert(gameState.WhiteBishops == oldGameState.WhiteBishops);
-                Debug.Assert(gameState.WhiteKing == oldGameState.WhiteKing);
-                Debug.Assert(gameState.WhiteKnights == oldGameState.WhiteKnights);
-                Debug.Assert(gameState.WhitePawns == oldGameState.WhitePawns);
-                Debug.Assert(gameState.WhitePieces == oldGameState.WhitePieces);
-                Debug.Assert(gameState.WhiteQueens == oldGameState.WhiteQueens);
-                Debug.Assert(gameState.WhiteRooks == oldGameState.WhiteRooks);
-                Debug.Assert(gameState.CurrentWhiteCastleStatus == oldGameState.CurrentWhiteCastleStatus);
-               
-                for (var i = 0; i < gameState.BoardArray.Length; i++)
+                for (var i = 0; i < boardArray.Length - 1; i++)
                 {
-                    Debug.Assert(gameState.BoardArray[i] == oldGameState.BoardArray[i]);
+                    Debug.Assert(boardArray[i] == gameState.BoardArray[i]);
                 }
-
-                Debug.Assert(gameState.BoardArray == oldGameState.BoardArray);
-                Debug.Assert(gameState.EnpassantTargetSquare == oldGameState.EnpassantTargetSquare);
-                Debug.Assert(gameState.FiftyMoveRuleCount == oldGameState.FiftyMoveRuleCount);   
 #endif
-
             }
             return count;
         }
@@ -456,7 +439,7 @@ namespace DotNetEngine.Engine
                             }
                         case 'B':
                             {
-                                gameState.BoardArray[boardArrayPosition] = MoveUtility.BlackBishop;
+                                gameState.BoardArray[boardArrayPosition] = MoveUtility.WhiteBishop;
                                 gameState.WhiteBishops += currentPosition;
                                 gameState.WhitePieces += currentPosition;
                                 gameState.AllPieces += currentPosition;
