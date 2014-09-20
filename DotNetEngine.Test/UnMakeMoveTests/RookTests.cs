@@ -1,12 +1,7 @@
 ﻿using DotNetEngine.Engine;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace DotNetEngine.Test.UnUnMakeMoveTests
+namespace DotNetEngine.Test.UnMakeMoveTests
 {
     public class RookTests
     {

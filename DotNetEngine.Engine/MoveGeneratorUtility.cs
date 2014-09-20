@@ -39,12 +39,7 @@ namespace DotNetEngine.Engine
                   MoveUtility.BlackCastleOOMask, MoveUtility.BlackCastleOOOMask, moveData.BlackCastleOOMove, moveData.BlackCastleOOOMove, ply);
             }
 		}
-
-        /// <summary>
-        /// This method is used to determine if a bitboard is attacked by a piece. 
-        /// </summary>        
-        /// <param name="checkWhiteAttack">IS true, we are checking white attacks.</param>
-        /// <returns>Returns true as soon as an attack is found. Returns false if no attack was found.</returns>
+       
         internal static bool IsBitBoardAttacked(this GameState gamestate, MoveData moveData, ulong targetBoard, bool checkWhiteAttacks)
         {
             if (checkWhiteAttacks)

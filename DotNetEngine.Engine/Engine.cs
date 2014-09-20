@@ -5,7 +5,7 @@
 	/// </summary>
 	public class Engine
 	{
-        private static MoveData _moveData = new MoveData();
+        private static readonly MoveData _moveData = new MoveData();
         private GameState _gameState;
 
        	public Engine()

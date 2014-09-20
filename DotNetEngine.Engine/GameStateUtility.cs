@@ -12,7 +12,7 @@ namespace DotNetEngine.Engine
 	/// </summary>
 	internal static class GameStateUtility
 	{
-        private static string DivideOutput = "Move Nodes" + Environment.NewLine;
+        private static readonly string DivideOutput = "Move Nodes" + Environment.NewLine;
         private static readonly char[] Files = new[]
 		{
 			'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'

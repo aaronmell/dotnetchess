@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DotNetEngine.Engine
+﻿namespace DotNetEngine.Engine
 {
     /// <summary>
     /// A Record of GameState Information. This struct contains enough information to unmake a move

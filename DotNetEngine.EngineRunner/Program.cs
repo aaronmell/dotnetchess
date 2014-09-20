@@ -1,5 +1,4 @@
-﻿using DotNetEngine.Engine;
-using System;
+﻿using System;
 
 namespace DotNetEngine.EngineRunner
 {
@@ -15,7 +14,7 @@ namespace DotNetEngine.EngineRunner
 			{
 				var  rawCommand = Console.ReadLine();
                 var commandArguments = rawCommand.Substring(rawCommand.IndexOf(' ') + 1);
-                var command = string.Empty;
+                string command;
 
                 if (commandArguments.Length >= rawCommand.Length)
                 {
@@ -43,7 +42,7 @@ namespace DotNetEngine.EngineRunner
                     }
                     case "PERFT":
                     {
-                        byte depth = 0;
+                        byte depth;
                         var canParse = byte.TryParse(commandArguments, out depth);
 
                         if (!canParse)
@@ -59,7 +58,7 @@ namespace DotNetEngine.EngineRunner
                     }
                     case "DIVIDE":
                     {                       
-                        byte depth = 0;
+                        byte depth;
                         var canParse = byte.TryParse(commandArguments, out depth);
 
                         if (!canParse)

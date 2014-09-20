@@ -773,33 +773,19 @@ namespace DotNetEngine.Engine
         /// <returns>A bool value indicating if the current sides king is under attack</returns>
         internal bool IsCurrentSideKingAttacked(MoveData moveData)
         {
-            if (WhiteToMove)
-            {
-                return this.IsBitBoardAttacked(moveData, WhiteKing, !WhiteToMove);
-            }
-            else
-            {
-                return this.IsBitBoardAttacked(moveData, BlackKing, !WhiteToMove);
-            }
+	        return this.IsBitBoardAttacked(moveData, WhiteToMove ? WhiteKing : BlackKing, !WhiteToMove);
         }
-        
-        /// <summary>
+
+		/// <summary>
         /// Determines if the opposite side king is under attack
         /// </summary>
         /// <returns>A bool value indicating if the current sides king is under attack</returns>
         internal bool IsOppositeSideKingAttacked(MoveData moveData)
-        {
-            if (WhiteToMove)
-            {
-                return this.IsBitBoardAttacked(moveData, BlackKing, WhiteToMove);
-            }
-            else
-            {
-                return this.IsBitBoardAttacked(moveData, WhiteKing, WhiteToMove);
-            }
-        }
+		{
+			return this.IsBitBoardAttacked(moveData, WhiteToMove ? BlackKing : WhiteKing, WhiteToMove);
+		}
 
-        private void PromotePiece(uint promotedPiece, uint toMove)
+		private void PromotePiece(uint promotedPiece, uint toMove)
         {
             var toBitBoard = MoveUtility.BitStates[toMove];
             

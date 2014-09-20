@@ -1,10 +1,5 @@
 ﻿using DotNetEngine.Engine;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DotNetEngine.Test
 {
@@ -13,7 +8,7 @@ namespace DotNetEngine.Test
     /// </summary>
     public class PerftTests
     {
-        private MoveData _moveData = new MoveData();
+        private readonly MoveData _moveData = new MoveData();
         
       
 
@@ -22,7 +17,7 @@ namespace DotNetEngine.Test
         [TestCase("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", 2, 400)]
         [TestCase("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", 3, 8902)]
         [TestCase("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", 4, 197281)]
-        [TestCase("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", 5, 4865609)]
+        //[TestCase("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", 5, 4865609)]
         //[TestCase("rnbqkbnr/ppppp2p/8/5PpQ/8/8/PPPP1PPP/RNB1KBNR b KQkq - 0 3", 1, 1)]
         public void RunPerft(string fen, int depth, long moveCount)
         {
@@ -32,7 +27,7 @@ namespace DotNetEngine.Test
             Assert.That(count, Is.EqualTo(moveCount));
         }
 
-        [TestCase("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", 5)]
+        //[TestCase("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", 5)]
         //[TestCase("rnbqkbnr/pppppppp/8/8/8/2N5/PPPPPPPP/R1BQKBNR b KQkq - 1 1", 4)]
         //[TestCase("rnbqkbnr/p1pppppp/8/1p6/8/N7/PPPPPPPP/R1BQKBNR w KQkq b6 0 2", 4)] //B7B5 Divide
         //[TestCase("rnbqkbnr/p1pppppp/8/1p6/2N5/8/PPPPPPPP/R1BQKBNR b KQkq - 1 2", 5)] //A3C4 Divide

@@ -1,17 +1,12 @@
 ﻿using DotNetEngine.Engine;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DotNetEngine.Test
 {
     
     class KingAttackedTests
     {
-        private MoveData _moveData = new MoveData();
+        private readonly MoveData _moveData = new MoveData();
        
         [TestCase("8/8/8/8/3k4/PPPPPPPP/8/8 w - - 0 1", true)]
         [TestCase("8/8/8/3k4/8/PPPPPPPP/8/8 w - - 0 1", false)]
