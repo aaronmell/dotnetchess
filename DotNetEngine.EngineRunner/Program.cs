@@ -55,10 +55,7 @@ namespace DotNetEngine.EngineRunner
                             Console.WriteLine("Depth is not a valid value");
                             break;
                         }
-                        var output = _engine.Perft(depth);
-						
-                        Console.WriteLine(output);
-                        
+                        _engine.Perft(depth);
                         break;
                     }
                     case "DIVIDE":
@@ -72,8 +69,7 @@ namespace DotNetEngine.EngineRunner
                             break;
                         }
 
-                        var output = _engine.Divide(depth);
-                        Console.WriteLine(output);
+                        _engine.Divide(depth);
                         break;
                     }
                     default:

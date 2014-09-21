@@ -296,7 +296,7 @@ namespace DotNetEngine.Engine
             return count;
         }
 
-        internal static string CalculateDivide(this GameState gameState, MoveData moveData, PerftData perftData, int ply, int depth)
+        internal static void CalculateDivide(this GameState gameState, MoveData moveData, PerftData perftData, int ply, int depth)
         {
             var sb = new StringBuilder(DivideOutput);
             ulong count = 0;
@@ -316,7 +316,7 @@ namespace DotNetEngine.Engine
                 gameState.UnMakeMove(move);
             }
             sb.AppendFormat("Total Nodes: {0}", count);
-            return sb.ToString();
+            Logger.InfoFormat(sb.ToString());
 
         }
 
