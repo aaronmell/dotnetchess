@@ -36,7 +36,7 @@ namespace DotNetEngine.Test
         {
             var gameState = GameStateUtility.LoadGameStateFromFen(fen);
             var perftData = new PerftData();
-            var result = gameState.CalculateDivide(_moveData, perftData, 1, depth);         
+            gameState.CalculateDivide(_moveData, perftData, 1, depth);         
         }
     }
 }
