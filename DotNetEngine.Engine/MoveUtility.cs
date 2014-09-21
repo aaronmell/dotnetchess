@@ -150,7 +150,7 @@ namespace DotNetEngine.Engine
             18085043209519168, 9042521604759584, 4521260802379792, 2260630401189896, 0, 0
         };
 
-		internal static uint[] FirstPieceArray = 
+		internal static uint[] FirstPieceArray = new uint[]
             {
                 0, 47,  1, 56, 48, 27,  2, 60,
                 57, 49, 41, 37, 28, 16,  3, 61,

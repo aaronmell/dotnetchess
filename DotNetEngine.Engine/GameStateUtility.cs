@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -230,13 +231,13 @@ namespace DotNetEngine.Engine
                     boardArray[i] = gameState.BoardArray[i];
                 }
 
-	            if (Logger.IsTraceEnabled)
+				if (_logger.IsTraceEnabled)
 	            {
-					Logger.TraceFormat("MoveHash {0} GameState Move From {1} To {2} MovingPiece {3} CapturedPiece {4} PromotedPeice {5}", move.GetHashCode(), move.GetFromMove().ToRankAndFile(), move.GetToMove().ToRankAndFile(), move.GetMovingPiece(), move.GetCapturedPiece(), move.GetPromotedPiece());
+					_logger.TraceFormat("MoveHash {0} GameState Move From {1} To {2} MovingPiece {3} CapturedPiece {4} PromotedPeice {5}", move.GetHashCode(), move.GetFromMove().ToRankAndFile(), move.GetToMove().ToRankAndFile(), move.GetMovingPiece(), move.GetCapturedPiece(), move.GetPromotedPiece());
 
-		            Logger.TraceFormat("GameState All Bitboards Before Move {0} {1}", Environment.NewLine,
+					_logger.TraceFormat("GameState All Bitboards Before Move {0} {1}", Environment.NewLine,
 		                              gameState.ConvertBitBoardsToConsoleOutput());
-		            Logger.TraceFormat("GameState BoardArray Before Move {0} {1}", Environment.NewLine,
+					_logger.TraceFormat("GameState BoardArray Before Move {0} {1}", Environment.NewLine,
 		                              gameState.ConvertBoardArrayToConsoleOutput());
 	            }
 
@@ -244,11 +245,11 @@ namespace DotNetEngine.Engine
 				gameState.MakeMove(move);
 				
 #if DEBUG
-	            if (Logger.IsTraceEnabled)
+				if (_logger.IsTraceEnabled)
 	            {
-					Logger.TraceFormat("MoveHash {0} GameState All Bitboards After Move {1} {2}", move.GetHashCode(), Environment.NewLine,
+					_logger.TraceFormat("MoveHash {0} GameState All Bitboards After Move {1} {2}", move.GetHashCode(), Environment.NewLine,
 		                              gameState.ConvertBitBoardsToConsoleOutput());
-					Logger.TraceFormat("MoveHash {0} GameState BoardArray After Move {1} {2}", move.GetHashCode(), Environment.NewLine,
+					_logger.TraceFormat("MoveHash {0} GameState BoardArray After Move {1} {2}", move.GetHashCode(), Environment.NewLine,
 		                              gameState.ConvertBoardArrayToConsoleOutput());
 	            }
 #endif
@@ -278,11 +279,11 @@ namespace DotNetEngine.Engine
                 gameState.UnMakeMove(move);
 
 #if DEBUG
-	            if (Logger.IsTraceEnabled)
+				if (_logger.IsTraceEnabled)
 	            {
-					Logger.TraceFormat("MoveHash {0} GameState All Bitboards After UnMakeMove {1} {2}", move.GetHashCode(), Environment.NewLine,
+					_logger.TraceFormat("MoveHash {0} GameState All Bitboards After UnMakeMove {1} {2}", move.GetHashCode(), Environment.NewLine,
 		                              gameState.ConvertBitBoardsToConsoleOutput());
-					Logger.TraceFormat("MoveHash {0} GameState BoardArray After UnMakeMove {1} {2}", move.GetHashCode(), Environment.NewLine,
+					_logger.TraceFormat("MoveHash {0} GameState BoardArray After UnMakeMove {1} {2}", move.GetHashCode(), Environment.NewLine,
 		                              gameState.ConvertBoardArrayToConsoleOutput());
 	            }
 
