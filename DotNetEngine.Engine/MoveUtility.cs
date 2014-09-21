@@ -166,6 +166,10 @@ namespace DotNetEngine.Engine
         internal static ulong WhiteCastleOOOMask { get { return GetBitStatesByBoardIndex(1, 2) | GetBitStatesByBoardIndex(1, 3) | GetBitStatesByBoardIndex(1, 4); } }
         internal static ulong BlackCastleOOMask { get { return GetBitStatesByBoardIndex(8, 6) | GetBitStatesByBoardIndex(8, 7); } }
         internal static ulong BlackCastleOOOMask { get { return GetBitStatesByBoardIndex(8, 2) | GetBitStatesByBoardIndex(8, 3) | GetBitStatesByBoardIndex(8, 4); } }
+		internal static ulong WhiteCastleAttackOOMask { get { return GetBitStatesByBoardIndex(1, 5) | GetBitStatesByBoardIndex(1, 6) | GetBitStatesByBoardIndex(1, 7); } }
+		internal static ulong WhiteCastleAttackOOOMask { get { return GetBitStatesByBoardIndex(1, 3) | GetBitStatesByBoardIndex(1, 4) | GetBitStatesByBoardIndex(1, 5); } }
+		internal static ulong BlackCastleAttackOOMask { get { return GetBitStatesByBoardIndex(8, 5) | GetBitStatesByBoardIndex(8, 6) | GetBitStatesByBoardIndex(8, 7); } }
+		internal static ulong BlackCastleAttackOOOMask { get { return GetBitStatesByBoardIndex(8, 3) | GetBitStatesByBoardIndex(8, 4) | GetBitStatesByBoardIndex(8, 5); } }
 
         /// <summary>
         /// Implementation of bitscanforward.

@@ -23,9 +23,9 @@ namespace DotNetEngine.Engine
                 GenerateRookMoves(gameState, moveData, generationMode, freeSquares, gameState.WhiteRooks, MoveUtility.WhiteRook, gameState.BlackPieces, ply);
                 GenerateBishopMoves(gameState, moveData, generationMode, freeSquares, gameState.WhiteBishops, MoveUtility.WhiteBishop, gameState.BlackPieces, ply);
                 GenerateQueenMoves(gameState, moveData, generationMode, freeSquares, gameState.WhiteQueens, MoveUtility.WhiteQueen, gameState.BlackPieces, ply);
-                GenerateKingMoves(gameState, generationMode, freeSquares, gameState.WhiteKing, 
+                GenerateKingMoves(gameState, moveData, generationMode, freeSquares, gameState.WhiteKing, 
                     MoveUtility.WhiteKing, moveData.KingAttacks, gameState.BlackPieces, gameState.CurrentWhiteCastleStatus, 
-                    MoveUtility.WhiteCastleOOMask, MoveUtility.WhiteCastleOOOMask, moveData.WhiteCastleOOMove, moveData.WhiteCastleOOOMove, ply);
+                    MoveUtility.WhiteCastleOOMask, MoveUtility.WhiteCastleAttackOOMask, MoveUtility.WhiteCastleOOOMask, MoveUtility.WhiteCastleAttackOOOMask, moveData.WhiteCastleOOMove, moveData.WhiteCastleOOOMove, true, ply);
 			}
 		    else
             {
@@ -34,9 +34,9 @@ namespace DotNetEngine.Engine
                 GenerateRookMoves(gameState, moveData, generationMode, freeSquares, gameState.BlackRooks, MoveUtility.BlackRook, gameState.WhitePieces, ply);
                 GenerateBishopMoves(gameState, moveData, generationMode, freeSquares, gameState.BlackBishops, MoveUtility.BlackBishop, gameState.WhitePieces, ply);
                 GenerateQueenMoves(gameState, moveData, generationMode, freeSquares, gameState.BlackQueens, MoveUtility.BlackQueen, gameState.WhitePieces, ply);
-                GenerateKingMoves(gameState, generationMode, freeSquares, gameState.BlackKing,
+                GenerateKingMoves(gameState, moveData, generationMode, freeSquares, gameState.BlackKing,
                   MoveUtility.BlackKing, moveData.KingAttacks, gameState.WhitePieces, gameState.CurrentBlackCastleStatus,
-                  MoveUtility.BlackCastleOOMask, MoveUtility.BlackCastleOOOMask, moveData.BlackCastleOOMove, moveData.BlackCastleOOOMove, ply);
+                  MoveUtility.BlackCastleOOMask, MoveUtility.BlackCastleAttackOOMask, MoveUtility.BlackCastleOOOMask, MoveUtility.BlackCastleAttackOOOMask, moveData.BlackCastleOOMove, moveData.BlackCastleOOOMove, false, ply);
             }
 		}
        
@@ -122,9 +122,9 @@ namespace DotNetEngine.Engine
             return false;
         }
 
-        private static void GenerateKingMoves(GameState gameState, MoveGenerationMode generationMode, ulong freeSquares, 
-            ulong kingBoard, uint movingPiece, ulong[] attackSquares, ulong attackedBoard, int castleStatus,ulong castleMaskOO, 
-            ulong castleMaskOOO, uint castleOOMove, uint castleOOOMove, int ply)
+        private static void GenerateKingMoves(GameState gameState, MoveData moveData, MoveGenerationMode generationMode, ulong freeSquares, 
+            ulong kingBoard, uint movingPiece, ulong[] attackSquares, ulong attackedBoard, int castleStatus,ulong castleMaskOO,  ulong castleAttackMaskOO,
+            ulong castleMaskOOO, ulong castleAttackMaskOOO, uint castleOOMove, uint castleOOOMove, bool whitetoMove, int ply)
         {
             var move = 0U.SetMovingPiece(movingPiece);
 
@@ -143,7 +143,10 @@ namespace DotNetEngine.Engine
                     {
                         if ((castleMaskOO & gameState.AllPieces) == 0)
                         {
-                            gameState.Moves[ply].Add(castleOOMove);
+							if (!IsBitBoardAttacked(gameState, moveData, castleAttackMaskOO, !whitetoMove))
+							{
+								gameState.Moves[ply].Add(castleOOMove);
+							}
                         }
                     }
 
@@ -151,7 +154,10 @@ namespace DotNetEngine.Engine
                     {
                         if ((castleMaskOOO & gameState.AllPieces) == 0)
                         {
-                            gameState.Moves[ply].Add(castleOOOMove);
+							if (!IsBitBoardAttacked(gameState, moveData, castleAttackMaskOOO, !whitetoMove))
+							{
+								gameState.Moves[ply].Add(castleOOOMove);
+							}
                         }
                     }
                 }

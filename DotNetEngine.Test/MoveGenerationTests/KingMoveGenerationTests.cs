@@ -125,13 +125,13 @@ namespace DotNetEngine.Test.MoveGenerationTests
 
         }
 
-        [TestCase(2U, MoveGenerationMode.All)]
-        [TestCase(6U, MoveGenerationMode.All)]
-        [TestCase(2U, MoveGenerationMode.QuietMovesOnly)]
-        [TestCase(6U, MoveGenerationMode.QuietMovesOnly)]
-        public void Generates_Valid_White_King_Castling_When_Not_Capture_Only(uint toMove, MoveGenerationMode mode)
+		[TestCase(2U, "8/8/8/8/8/8/8/R3K3 w Q - 0 1", MoveGenerationMode.All)]
+		[TestCase(6U, "8/8/8/8/8/8/8/4K2R w K - 0 1", MoveGenerationMode.All)]
+		[TestCase(2U, "8/8/8/8/8/8/8/R3K3 w Q - 0 1", MoveGenerationMode.QuietMovesOnly)]
+		[TestCase(6U, "8/8/8/8/8/8/8/4K2R w K - 0 1", MoveGenerationMode.QuietMovesOnly)]
+        public void Generates_Valid_White_King_Castling_When_Not_Capture_Only(uint toMove, string fen, MoveGenerationMode mode)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/8/R3K2R w KQ - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen(fen);
             gameState.GenerateMoves(mode, 1, _moveData);
 
             var move = gameState.Moves[1].First(x => x.GetFromMove() == 4U && x.GetToMove() == toMove);
@@ -167,12 +167,29 @@ namespace DotNetEngine.Test.MoveGenerationTests
         public void Generates_No_Valid_White_King_Castling_When_Castling_Blocked(uint toMove, string fen)
         {
             var gameState = GameStateUtility.LoadGameStateFromFen(fen);
-            gameState.GenerateMoves(MoveGenerationMode.CaptureMovesOnly, 1, _moveData);
+            gameState.GenerateMoves(MoveGenerationMode.All, 1, _moveData);
 
             var move = gameState.Moves[1].FirstOrDefault(x => x.GetFromMove() == 4U && x.GetToMove() == toMove);
 
             Assert.That(move, Is.EqualTo(0));
         }
+
+		[TestCase(2U, "r3K2R/8/8/8/8/8/1r6/8 w kq - 0 1")]
+		[TestCase(2U, "r3K2R/8/8/8/8/8/2r5/8 w kq - 0 1")]
+		[TestCase(2U, "r3K2R/8/8/8/8/8/3r4/8 w kq - 0 1")]
+		[TestCase(2U, "r3K2R/8/8/8/8/8/4r3/8 w kq - 0 1")]
+		[TestCase(6U, "r3K2R/8/8/8/8/8/4r3/8 w kq - 0 1")]
+		[TestCase(6U, "r3K2R/8/8/8/8/8/5r2/8 w kq - 0 1")]
+		[TestCase(6U, "r3K2R/8/8/8/8/8/6r1/8 w kq - 0 1")]
+		public void Generates_No_Valid_White_King_Castling_When_Castling_Attacked(uint toMove, string fen)
+		{
+			var gameState = GameStateUtility.LoadGameStateFromFen(fen);
+			gameState.GenerateMoves(MoveGenerationMode.All, 1, _moveData);
+
+			var move = gameState.Moves[1].FirstOrDefault(x => x.GetFromMove() == 4U && x.GetToMove() == toMove);
+
+			Assert.That(move, Is.EqualTo(0));
+		}
         #endregion
 
         #region Black King
@@ -292,26 +309,25 @@ namespace DotNetEngine.Test.MoveGenerationTests
 
         }
 
-        [TestCase(58U, MoveGenerationMode.All)]
-        [TestCase(62U, MoveGenerationMode.All)]
-        [TestCase(58U, MoveGenerationMode.QuietMovesOnly)]
-        [TestCase(62U, MoveGenerationMode.QuietMovesOnly)]
-        public void Generates_Valid_Black_King_Castling_When_Not_Capture_Only(uint toMove, MoveGenerationMode mode)
-        {
-            var gameState = GameStateUtility.LoadGameStateFromFen("r3k2r/8/8/8/8/8/8/8 b kq - 0 1");
-            gameState.GenerateMoves(mode, 1, _moveData);
+		[TestCase(58U, "r3k3/8/8/8/8/8/8/8 b q - 0 1", MoveGenerationMode.All)]
+		[TestCase(62U, "4k2r/8/8/8/8/8/8/8 b k - 0 1", MoveGenerationMode.All)]
+		[TestCase(58U, "r3k3/8/8/8/8/8/8/8 b q - 0 1", MoveGenerationMode.QuietMovesOnly)]
+		[TestCase(62U, "4k2r/8/8/8/8/8/8/8 b k - 0 1", MoveGenerationMode.QuietMovesOnly)]
+		public void Generates_Valid_Black_King_Castling_When_Not_Capture_Only(uint toMove, string fen, MoveGenerationMode mode)
+		{
+			var gameState = GameStateUtility.LoadGameStateFromFen(fen);
+			gameState.GenerateMoves(mode, 1, _moveData);
 
-            var move = gameState.Moves[1].First(x => x.GetFromMove() == 60U && x.GetToMove() == toMove);
+			var move = gameState.Moves[1].First(x => x.GetFromMove() == 60U && x.GetToMove() == toMove);
 
-            var capturedPiece = move.GetCapturedPiece();
-            var movingPiece = move.GetMovingPiece();
-            var promotedPiece = move.GetPromotedPiece();
+			var capturedPiece = move.GetCapturedPiece();
+			var movingPiece = move.GetMovingPiece();
+			var promotedPiece = move.GetPromotedPiece();
 
-
-            Assert.That(movingPiece, Is.EqualTo(MoveUtility.BlackKing), "Moving Piece");
-            Assert.That(capturedPiece, Is.EqualTo(MoveUtility.Empty), "Captured Piece");
-            Assert.That(promotedPiece, Is.EqualTo(MoveUtility.BlackKing), "Promoted Piece");
-        }
+			Assert.That(movingPiece, Is.EqualTo(MoveUtility.BlackKing), "Moving Piece");
+			Assert.That(capturedPiece, Is.EqualTo(MoveUtility.Empty), "Captured Piece");
+			Assert.That(promotedPiece, Is.EqualTo(MoveUtility.BlackKing), "Promoted Piece");
+		}
 
         [TestCase(58U)]
         [TestCase(62U)]
@@ -334,12 +350,29 @@ namespace DotNetEngine.Test.MoveGenerationTests
         public void Generates_No_Valid_Black_King_Castling_When_Castling_Blocked(uint toMove, string fen)
         {
             var gameState = GameStateUtility.LoadGameStateFromFen(fen);
-            gameState.GenerateMoves(MoveGenerationMode.CaptureMovesOnly, 1, _moveData);
+            gameState.GenerateMoves(MoveGenerationMode.All, 1, _moveData);
 
             var move = gameState.Moves[1].FirstOrDefault(x => x.GetFromMove() == 4U && x.GetToMove() == toMove);
 
             Assert.That(move, Is.EqualTo(0));
         }
+
+		[TestCase(58U, "r3k2r/8/8/8/8/8/1R6/8 b kq - 0 1")]
+		[TestCase(58U, "r3k2r/8/8/8/8/8/2R5/8 b kq - 0 1")]
+		[TestCase(58U, "r3k2r/8/8/8/8/8/3R4/8 b kq - 0 1")]
+		[TestCase(58U, "r3k2r/8/8/8/8/8/4R3/8 b kq - 0 1")]
+		[TestCase(62U, "r3k2r/8/8/8/8/8/4R3/8 b kq - 0 1")]
+		[TestCase(62U, "r3k2r/8/8/8/8/8/5R2/8 b kq - 0 1")]
+		[TestCase(62U, "r3k2r/8/8/8/8/8/6R1/8 b kq - 0 1")]
+		public void Generates_No_Valid_Black_King_Castling_When_Castling_Attacked(uint toMove, string fen)
+		{
+			var gameState = GameStateUtility.LoadGameStateFromFen(fen);
+			gameState.GenerateMoves(MoveGenerationMode.All, 1, _moveData);
+
+			var move = gameState.Moves[1].FirstOrDefault(x => x.GetFromMove() == 4U && x.GetToMove() == toMove);
+
+			Assert.That(move, Is.EqualTo(0));
+		}
         #endregion
     }
        

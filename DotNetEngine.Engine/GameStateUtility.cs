@@ -504,12 +504,12 @@ namespace DotNetEngine.Engine
 
         internal static bool CanCastleOO(this int castleStatus)
         {
-            return castleStatus == 1 || castleStatus == 3;
+            return castleStatus == 2 || castleStatus == 3;
         }
 
         internal static bool CanCastleOOO(this int castleStatus)
         {
-            return castleStatus == 2 || castleStatus == 3;
+            return castleStatus == 1 || castleStatus == 3;
         }
    
         internal static GameStateRecord CreateGameStateRecord(this GameState gameState, uint move)
