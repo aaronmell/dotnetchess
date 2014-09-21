@@ -338,14 +338,15 @@ namespace DotNetEngine.Engine
 
                     if (gameState.EnpassantTargetSquare > 0)
                     {
-                        if ((moveData.WhitePawnAttacks[fromSquare] & MoveUtility.BitStates[gameState.EnpassantTargetSquare]) == MoveUtility.BitStates[gameState.EnpassantTargetSquare])
+                        if ((moveData.WhitePawnAttacks[fromSquare] & MoveUtility.BitStates[gameState.EnpassantTargetSquare]) > 0)
                         {
-                            if ((gameState.BlackPawns & MoveUtility.BitStates[gameState.EnpassantTargetSquare - 8]) == MoveUtility.BitStates[gameState.EnpassantTargetSquare - 8])
+                            if ((gameState.BlackPawns & MoveUtility.BitStates[gameState.EnpassantTargetSquare - 8]) > 0)
                             {
                                 move = move.SetPromotionPiece(MoveUtility.WhitePawn);
                                 move = move.SetCapturedPiece(MoveUtility.BlackPawn);
                                 move = move.SetToMove(gameState.EnpassantTargetSquare);
                                 gameState.Moves[ply].Add(move);
+								move = move.SetPromotionPiece(MoveUtility.Empty);
                             }
                         }
                     }
@@ -388,7 +389,6 @@ namespace DotNetEngine.Engine
                     pawnMoves ^= MoveUtility.BitStates[toSquare];
                 } 
                 pawnBoard ^= MoveUtility.BitStates[fromSquare];
-                move = move.SetPromotionPiece(MoveUtility.Empty);
             }
         }
 
@@ -425,14 +425,15 @@ namespace DotNetEngine.Engine
 
                     if (gameState.EnpassantTargetSquare > 0)
                     {
-                        if ((moveData.BlackPawnAttacks[fromSquare] & MoveUtility.BitStates[gameState.EnpassantTargetSquare]) == MoveUtility.BitStates[gameState.EnpassantTargetSquare])
+                        if ((moveData.BlackPawnAttacks[fromSquare] & MoveUtility.BitStates[gameState.EnpassantTargetSquare]) > 0)
                         {
-                            if ((gameState.WhitePawns & MoveUtility.BitStates[gameState.EnpassantTargetSquare + 8]) == MoveUtility.BitStates[gameState.EnpassantTargetSquare + 8])
+                            if ((gameState.WhitePawns & MoveUtility.BitStates[gameState.EnpassantTargetSquare + 8]) > 0)
                             {
                                 move = move.SetPromotionPiece(MoveUtility.BlackPawn);
                                 move = move.SetCapturedPiece(MoveUtility.WhitePawn);
                                 move = move.SetToMove(gameState.EnpassantTargetSquare);
                                 gameState.Moves[ply].Add(move);
+								move = move.SetPromotionPiece(MoveUtility.Empty);
                             }
                         }
                     }
@@ -475,7 +476,6 @@ namespace DotNetEngine.Engine
                     pawnMoves ^= MoveUtility.BitStates[toSquare];
                 }
                 pawnBoard ^= MoveUtility.BitStates[fromSquare];
-                move = move.SetPromotionPiece(MoveUtility.Empty);
             }
         }
     }
