@@ -388,6 +388,9 @@ namespace DotNetEngine.Engine
             return (move >> 20) & 0x0000000f;
         } 
 
-        
+        internal static string ToRankAndFile(this uint moveIndex)
+        {
+			return RankAndFile[moveIndex];
+        }
 	}
 }

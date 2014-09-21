@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
+using System.IO;
+using log4net.Config;
 
 namespace DotNetEngine.EngineRunner
 {
@@ -8,7 +11,7 @@ namespace DotNetEngine.EngineRunner
 
 		private static void Main(string[] args)
 		{
-            _engine= new Engine.Engine();            
+			_engine= new Engine.Engine();            
 
 			while (true)
 			{
@@ -41,7 +44,9 @@ namespace DotNetEngine.EngineRunner
                         break;
                     }
                     case "PERFT":
-                    {
+	                {
+		               
+						
                         byte depth;
                         var canParse = byte.TryParse(commandArguments, out depth);
 
@@ -50,8 +55,8 @@ namespace DotNetEngine.EngineRunner
                             Console.WriteLine("Depth is not a valid value");
                             break;
                         }
-
                         var output = _engine.Perft(depth);
+						
                         Console.WriteLine(output);
                         
                         break;

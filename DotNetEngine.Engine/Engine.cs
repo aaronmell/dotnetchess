@@ -1,4 +1,7 @@
-﻿namespace DotNetEngine.Engine
+﻿using System;
+using System.Diagnostics;
+
+namespace DotNetEngine.Engine
 {
 	/// <summary>
 	/// The Chess Engine
@@ -19,9 +22,13 @@
         }
 
         public string Perft(int depth)
-        {
-            var count = _gameState.RunPerftRecursively(_moveData, new PerftData(), 1, depth);
-            return string.Format("Total Nodes: {0}", count);
+		{
+			var stopwatch = new Stopwatch();
+	        stopwatch.Start();
+			var count = _gameState.RunPerftRecursively(_moveData, new PerftData(), 1, depth);
+			stopwatch.Stop();
+
+			return string.Format(string.Format("Total Nodes: {0} {1} mS Elapsed: {2}", count, Environment.NewLine, stopwatch.ElapsedMilliseconds));
         }
 
         public string Divide(int depth)
