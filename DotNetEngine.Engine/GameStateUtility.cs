@@ -344,14 +344,14 @@ namespace DotNetEngine.Engine
             var blackCastleStatus = 0;
 
             if (castleStatus.Contains("Q"))
-                whiteCastleStatus += 1;
-            if (castleStatus.Contains("K"))
                 whiteCastleStatus += 2;
+            if (castleStatus.Contains("K"))
+                whiteCastleStatus += 1;
 
             if (castleStatus.Contains("q"))
-                blackCastleStatus += 1;
-            if (castleStatus.Contains("k"))
                 blackCastleStatus += 2;
+            if (castleStatus.Contains("k"))
+                blackCastleStatus += 1;
 
             var gameState = new GameState
             {
@@ -504,12 +504,12 @@ namespace DotNetEngine.Engine
 
         internal static bool CanCastleOO(this int castleStatus)
         {
-            return castleStatus == 2 || castleStatus == 3;
+            return castleStatus == 1 || castleStatus == 3;
         }
 
         internal static bool CanCastleOOO(this int castleStatus)
         {
-            return castleStatus == 1 || castleStatus == 3;
+            return castleStatus == 2 || castleStatus == 3;
         }
    
         internal static GameStateRecord CreateGameStateRecord(this GameState gameState, uint move)

@@ -361,11 +361,11 @@ namespace DotNetEngine.Engine
 
                         if (fromMove == 56)
                         {
-                            CurrentWhiteCastleStatus &= ~(int)CastleStatus.OOOCastle;
+                            CurrentBlackCastleStatus &= ~(int)CastleStatus.OOOCastle;
                         }
                         if (fromMove == 63)
                         {
-                            CurrentWhiteCastleStatus &= ~(int)CastleStatus.OOCastle;
+                            CurrentBlackCastleStatus &= ~(int)CastleStatus.OOCastle;
                         }
 
                         if (capturedPiece > 0)
@@ -1048,11 +1048,11 @@ namespace DotNetEngine.Engine
 
                     if (toMove == 56)
                     {
-                        CurrentWhiteCastleStatus &= ~(int)CastleStatus.OOOCastle;
+                        CurrentBlackCastleStatus &= ~(int)CastleStatus.OOOCastle;
                     }
                     if (toMove == 63)
                     {
-                        CurrentWhiteCastleStatus &= ~(int)CastleStatus.OOCastle;
+                        CurrentBlackCastleStatus &= ~(int)CastleStatus.OOCastle;
                     }
 
                     break;
