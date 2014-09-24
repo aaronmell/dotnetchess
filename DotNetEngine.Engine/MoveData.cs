@@ -6,7 +6,7 @@
     /// </summary>
     internal class MoveData
     {
-        private static readonly byte[] ByteBitStates = new []
+        private static readonly byte[] _byteBitStates = 
             {
                 (byte)MoveUtility.BitStates[0],
                 (byte)MoveUtility.BitStates[1],
@@ -199,7 +199,7 @@
                     {
                             
                         var slidingattackindex = 8 - MoveUtility.Ranks[square] < MoveUtility.Files[square] - 1 ? 8 - MoveUtility.Ranks[square] : MoveUtility.Files[square] - 1;
-                        if ((SlidingAttacks[slidingattackindex][attackState] & ByteBitStates[attackbit]) > 0)
+                        if ((SlidingAttacks[slidingattackindex][attackState] & _byteBitStates[attackbit]) > 0)
                         {
                             var diagonalLength = MoveUtility.Files[square] + MoveUtility.Ranks[square];
                             
@@ -237,7 +237,7 @@
                     {
 
                         var slidingattackindex = (MoveUtility.Ranks[square] - 1) < (MoveUtility.Files[square] - 1) ? (MoveUtility.Ranks[square] - 1) : (MoveUtility.Files[square] - 1);
-                        if ((SlidingAttacks[slidingattackindex][attackState] & ByteBitStates[attackbit])  > 0)
+                        if ((SlidingAttacks[slidingattackindex][attackState] & _byteBitStates[attackbit])  > 0)
                         {
                             var diagonalLength = MoveUtility.Files[square] - MoveUtility.Ranks[square];
 
@@ -288,7 +288,7 @@
                 {
                     for (var attackbit = 0; attackbit < 8; attackbit++)
                     {
-                        if ((SlidingAttacks[8 - MoveUtility.Ranks[square]][attackState] & ByteBitStates[attackbit]) > 0)
+                        if ((SlidingAttacks[8 - MoveUtility.Ranks[square]][attackState] & _byteBitStates[attackbit]) > 0)
                         {
                             var file = MoveUtility.Files[square];
                             var rank = 8 - attackbit;
@@ -325,15 +325,15 @@
 
                     if (position < 7)
                     {
-                        attackMask |= ByteBitStates[position + 1];
+                        attackMask |= _byteBitStates[position + 1];
                     }
 
                     var slide = position + 2;
                     while (slide <= 7)
                     {
-                        if ((~stateMask & ByteBitStates[slide - 1]) > 0)
+                        if ((~stateMask & _byteBitStates[slide - 1]) > 0)
                         {
-                            attackMask |= ByteBitStates[slide];
+                            attackMask |= _byteBitStates[slide];
                         }
                         else
                         {
@@ -343,14 +343,14 @@
                     }
                     if (position > 0)
                     {
-                        attackMask |= ByteBitStates[position - 1];
+                        attackMask |= _byteBitStates[position - 1];
                     }
                     slide = position - 2;
                     while (slide >= 0)
                     {
-                        if ((~stateMask & ByteBitStates[slide + 1]) > 0)
+                        if ((~stateMask & _byteBitStates[slide + 1]) > 0)
                         {
-                            attackMask |= ByteBitStates[slide];
+                            attackMask |= _byteBitStates[slide];
                         }
                         else
                         {

@@ -18,7 +18,7 @@ namespace DotNetEngine.Engine
             'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'
         };
 
-		private static readonly ILog Logger = LogManager.GetCurrentClassLogger();
+		private static readonly ILog _logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>
 		/// A helper method that converts the current game state to a easy to read console output
@@ -315,7 +315,7 @@ namespace DotNetEngine.Engine
                 gameState.UnMakeMove(move);
             }
             sb.AppendFormat("Total Nodes: {0}", count);
-            Logger.InfoFormat(sb.ToString());
+            _logger.InfoFormat(sb.ToString());
 
         }
 
