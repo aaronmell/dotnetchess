@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
-using System.IO;
-using log4net.Config;
 
 namespace DotNetEngine.EngineRunner
 {

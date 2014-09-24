@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -13,11 +12,11 @@ namespace DotNetEngine.Engine
 	/// </summary>
 	internal static class GameStateUtility
 	{
-        private static readonly string DivideOutput = "Move Nodes" + Environment.NewLine;
-        private static readonly char[] Files = new[]
-		{
-			'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'
-		};
+        private static readonly string _divideOutput = "Move Nodes" + Environment.NewLine;
+        private static readonly char[] _files =
+        {
+            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'
+        };
 
 		private static readonly ILog Logger = LogManager.GetCurrentClassLogger();
 
@@ -298,7 +297,7 @@ namespace DotNetEngine.Engine
 
         internal static void CalculateDivide(this GameState gameState, MoveData moveData, PerftData perftData, int ply, int depth)
         {
-            var sb = new StringBuilder(DivideOutput);
+            var sb = new StringBuilder(_divideOutput);
             ulong count = 0;
 
             gameState.GenerateMoves(MoveGenerationMode.All, ply, moveData);
@@ -331,8 +330,8 @@ namespace DotNetEngine.Engine
 
             var splitFen = fen.Split(' ');
 
-            if (splitFen.Count() != 6)
-                throw new InvalidDataException(string.Format("The number of fields in the FEN string were incorrect. Expected 6, Received {0}", splitFen.Count()));
+            if (splitFen.Count() < 4)
+                throw new InvalidDataException(string.Format("The number of fields in the FEN string were incorrect. Expected 4, Received {0}", splitFen.Count()));
 
             var ranks = splitFen[0].Split('/');
 
@@ -355,8 +354,8 @@ namespace DotNetEngine.Engine
 
             var gameState = new GameState
             {
-                FiftyMoveRuleCount = int.Parse(splitFen[4]),
-                TotalMoveCount = int.Parse((splitFen[5])),
+                FiftyMoveRuleCount = splitFen.Length > 4 ? int.Parse(splitFen[4]) : 0,
+                TotalMoveCount = splitFen.Length > 5 ? int.Parse(splitFen[5]) : 0,
                 WhiteToMove = splitFen[1].ToLower() == "w",
                 CurrentWhiteCastleStatus = whiteCastleStatus,
                 CurrentBlackCastleStatus = blackCastleStatus,
@@ -497,7 +496,7 @@ namespace DotNetEngine.Engine
             var file = char.Parse(enpassant.Substring(0, 1));
             var rank = int.Parse(enpassant.Substring(1, 1)) - 1;
 
-            var fileNumber = Array.IndexOf(Files, file);
+            var fileNumber = Array.IndexOf(_files, file);
 
             return (uint)((rank * 8) + fileNumber);
         }

@@ -9,7 +9,8 @@ namespace DotNetEngine.Engine
 	/// </summary>
 	public class Engine
 	{
-		private ILog Logger = LogManager.GetCurrentClassLogger();
+// ReSharper disable once FieldCanBeMadeReadOnly.Local
+		private ILog _logger = LogManager.GetCurrentClassLogger();
         private static readonly MoveData _moveData = new MoveData();
         private GameState _gameState;
 
@@ -31,8 +32,8 @@ namespace DotNetEngine.Engine
 			var count = _gameState.RunPerftRecursively(_moveData, perftData, 1, depth);
 			stopwatch.Stop();
 
-			Logger.InfoFormat("Total Nodes: {0} {1} mS Elapsed: {2}", count, Environment.NewLine, stopwatch.ElapsedMilliseconds);
-			Logger.DebugFormat("Total Nodes: {0} Total Captures {1} Total Checks {2} Total EnPassants {3} Total OO Castles {4} Total OOO Castles {5} Total Promotions {6}", count, perftData.TotalCaptures, perftData.TotalChecks, perftData.TotalEnpassants, perftData.TotalOOCastles, perftData.TotalOOOCastles, perftData.TotalPromotions);
+			_logger.InfoFormat("Total Nodes: {0} {1} mS Elapsed: {2}", count, Environment.NewLine, stopwatch.ElapsedMilliseconds);
+			_logger.DebugFormat("Total Nodes: {0} Total Captures {1} Total Checks {2} Total EnPassants {3} Total OO Castles {4} Total OOO Castles {5} Total Promotions {6}", count, perftData.TotalCaptures, perftData.TotalChecks, perftData.TotalEnpassants, perftData.TotalOOCastles, perftData.TotalOOOCastles, perftData.TotalPromotions);
         }
 
         public void Divide(int depth)
