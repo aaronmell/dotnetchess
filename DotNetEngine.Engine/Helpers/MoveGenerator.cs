@@ -94,7 +94,7 @@ namespace DotNetEngine.Engine.Helpers
             if (!gameState.Moves.ContainsKey(ply))
                 gameState.Moves.Add(ply, new List<uint>(218));
             else
-                gameState.Moves[ply] = new List<uint>(218);
+                gameState.Moves[ply].Clear();
 
             if (gameState.WhiteToMove)
             {
