@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using DotNetEngine.Engine;
 
 namespace DotNetEngine.EngineRunner
@@ -11,7 +10,7 @@ namespace DotNetEngine.EngineRunner
 
         private static Engine.Engine _engine;
 
-		private static void Main(string[] args)
+		private static void Main()
 		{
 			_engine= new Engine.Engine();
             _engine.BestMoveFound += _engine_BestMoveFound;
@@ -26,6 +25,10 @@ namespace DotNetEngine.EngineRunner
 			{
 
 				var  rawCommand = Console.ReadLine();
+
+			    if (string.IsNullOrEmpty(rawCommand))
+			        continue;
+
                 var commandArguments = rawCommand.Substring(rawCommand.IndexOf(' ') + 1);
                 string command;
 

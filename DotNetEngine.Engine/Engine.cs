@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices;
 using Common.Logging;
 
 namespace DotNetEngine.Engine
@@ -16,7 +15,7 @@ namespace DotNetEngine.Engine
         private static readonly MoveData _moveData = new MoveData();
         private GameState _gameState;
         private const string DefaultFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-        private static Random _random = new Random();
+        private static readonly Random _random = new Random();
 
         public event EventHandler<BestMoveFoundEventArgs> BestMoveFound;
 

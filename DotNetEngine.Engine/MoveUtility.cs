@@ -151,17 +151,17 @@ namespace DotNetEngine.Engine
             18085043209519168, 9042521604759584, 4521260802379792, 2260630401189896, 0, 0
         };
 
-		internal static uint[] FirstPieceArray = new uint[]
-            {
-                0, 47,  1, 56, 48, 27,  2, 60,
-                57, 49, 41, 37, 28, 16,  3, 61,
-                54, 58, 35, 52, 50, 42, 21, 44,
-                38, 32, 29, 23, 17, 11,  4, 62,
-                46, 55, 26, 59, 40, 36, 15, 53,
-                34, 51, 20, 43, 31, 22, 10, 45,
-                25, 39, 14, 33, 19, 30,  9, 24,
-                13, 18,  8, 12,  7,  6,  5, 63
-            };
+		internal static uint[] FirstPieceArray =
+		{
+		    0, 47,  1, 56, 48, 27,  2, 60,
+		    57, 49, 41, 37, 28, 16,  3, 61,
+		    54, 58, 35, 52, 50, 42, 21, 44,
+		    38, 32, 29, 23, 17, 11,  4, 62,
+		    46, 55, 26, 59, 40, 36, 15, 53,
+		    34, 51, 20, 43, 31, 22, 10, 45,
+		    25, 39, 14, 33, 19, 30,  9, 24,
+		    13, 18,  8, 12,  7,  6,  5, 63
+		};
 
         internal static ulong WhiteCastleOOMask { get { return GetBitStatesByBoardIndex(1, 6) | GetBitStatesByBoardIndex(1, 7); } }
         internal static ulong WhiteCastleOOOMask { get { return GetBitStatesByBoardIndex(1, 2) | GetBitStatesByBoardIndex(1, 3) | GetBitStatesByBoardIndex(1, 4); } }
