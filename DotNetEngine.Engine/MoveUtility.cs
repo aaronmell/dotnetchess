@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 namespace DotNetEngine.Engine
 {
     	/// <summary>
@@ -396,5 +397,53 @@ namespace DotNetEngine.Engine
         {
 			return RankAndFile[moveIndex];
         }
-	}
+
+        internal static bool TryConvertStringToMove(string moveText, bool whiteToMove, out uint move)
+        {
+            move = uint.MinValue;
+            if (moveText.Length < 4 || moveText.Length > 5)
+                return false;
+
+            var fromMove = Array.IndexOf(RankAndFile, moveText.Substring(0, 2));
+            var toMove =  Array.IndexOf(RankAndFile,  moveText.Substring(2, 2));
+            var promotion = Empty;
+
+            //Promotions
+            if (moveText.Length == 5)
+            {
+               
+                switch (moveText.Substring(3, 1).ToUpper())
+                {
+
+                    case "Q":
+                    {
+                        promotion = whiteToMove ? WhiteQueen : BlackQueen;
+                        break;
+
+                    }
+                    case "R":
+                    {
+                        promotion = whiteToMove ? WhiteRook : BlackRook;
+                        break;
+                    }
+                    case "B":
+                    {
+                        promotion = whiteToMove ? WhiteBishop : BlackBishop;
+                        break;
+                    }
+                    case "N":
+                    {
+                        promotion = whiteToMove ? WhiteKnight : BlackKnight;
+                        break;
+                    }
+                }
+               
+            }
+            move = move.SetToMove((uint)toMove);
+            move = move.SetFromMove((uint)fromMove);
+            move = move.SetPromotionPiece(promotion);
+
+            return true;
+        }
+    }
 }

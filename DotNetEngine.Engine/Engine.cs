@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
+using System.Runtime.InteropServices;
 using Common.Logging;
 
 namespace DotNetEngine.Engine
@@ -13,13 +15,22 @@ namespace DotNetEngine.Engine
 		private ILog _logger = LogManager.GetCurrentClassLogger();
         private static readonly MoveData _moveData = new MoveData();
         private GameState _gameState;
+        private const string DefaultFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+        private static Random _random = new Random();
 
-       	public Engine()
-        {
-            SetBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-        }
+        public event EventHandler<BestMoveFoundEventArgs> BestMoveFound;
 
-        public void SetBoard(string initialFen)
+	    protected virtual void OnBestMoveFound(BestMoveFoundEventArgs e)
+	    {
+	        var handler = BestMoveFound;
+
+	        if (handler != null)
+	        {
+	            handler(this, e);
+	        }
+	    }
+
+       	public void SetBoard(string initialFen)
         {
             _gameState = GameStateUtility.LoadGameStateFromFen(initialFen);
         }
@@ -40,5 +51,62 @@ namespace DotNetEngine.Engine
         {
             _gameState.CalculateDivide(_moveData, new PerftData(), 1, depth);
         }
-	}
+
+        public void NewGame(string fen)
+        {
+            SetBoard(fen);
+        }
+
+	    public void NewGame() 
+	    {
+          NewGame(DefaultFen);
+	    }
+
+        public void TryMakeMove(string moveText)
+        {   
+            _logger.InfoFormat("Making Other Side Move");
+            _gameState.GenerateMoves(MoveGenerationMode.All, 1, _moveData);
+
+            uint move;
+            var canParse = MoveUtility.TryConvertStringToMove(moveText.ToUpper(), _gameState.WhiteToMove, out move);
+
+            if (!canParse)
+            {
+                _logger.ErrorFormat("Unable to Parse Move Text");
+            }
+
+            var foundMove = _gameState.Moves[1].FirstOrDefault(
+                x =>
+                    x.GetFromMove() == move.GetFromMove() && x.GetToMove() == move.GetToMove() &&
+                    x.GetPromotedPiece() == move.GetPromotedPiece());
+
+            if (foundMove == uint.MinValue)
+            {
+                _logger.ErrorFormat("Unable to Locate Move in Move Generator");
+                return;
+            }
+
+            _gameState.MakeMove(foundMove);
+            _gameState.TotalMoveCount++;
+            _logger.InfoFormat("Other Side Move Made");
+        }
+
+        public void Calculate()
+        {
+            _gameState.GenerateMoves(MoveGenerationMode.All, _gameState.TotalMoveCount, _moveData);
+
+            var move = _gameState.Moves[_gameState.TotalMoveCount][_random.Next(_gameState.Moves[_gameState.TotalMoveCount].Count)];
+            _gameState.MakeMove(move);
+
+            OnBestMoveFound(new BestMoveFoundEventArgs
+            {
+                BestMove = string.Format("{0}{1}", move.GetFromMove().ToRankAndFile(), move.GetToMove().ToRankAndFile()).ToLower()
+            });
+        }
+
+        public void Stop()
+        {
+            //Do nothing for now.
+        }
+    }
 }

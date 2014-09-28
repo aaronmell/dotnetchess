@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BestMoveFoundEventArgs.cs" />
     <Compile Include="CastleStatus.cs" />
     <Compile Include="GameStateRecord.cs" />
     <Compile Include="GameStateUtility.cs" />
