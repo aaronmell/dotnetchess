@@ -1,9 +1,8 @@
-﻿using DotNetEngine.Engine;
+﻿using DotNetEngine.Engine.Helpers;
 using NUnit.Framework;
 
 namespace DotNetEngine.Test.MakeMoveTests
 {
-   
     public class CapturePieceTests
     {   
         [TestCase("8/8/8/8/8/4p3/3P4/8 w - - 0 1", 11U, 20U, MoveUtility.WhitePawn, MoveUtility.BlackPawn)]
@@ -31,7 +30,7 @@ namespace DotNetEngine.Test.MakeMoveTests
             gameState.MakeMove(move);
 
 	        Assert.That(movingPiece < 8 ? gameState.BlackPawns : gameState.WhitePawns,
-	                    Is.EqualTo(MoveUtility.Empty));
+	                    Is.EqualTo(MoveUtility.EmptyPiece));
         }
 
         [TestCase("8/8/8/8/8/4r3/3P4/8 w - - 0 1", 11U, 20U, MoveUtility.WhitePawn, MoveUtility.BlackRook)]
@@ -59,7 +58,7 @@ namespace DotNetEngine.Test.MakeMoveTests
             gameState.MakeMove(move);
 
 	        Assert.That(movingPiece < 8 ? gameState.BlackRooks : gameState.WhiteRooks,
-	                    Is.EqualTo(MoveUtility.Empty));
+	                    Is.EqualTo(MoveUtility.EmptyPiece));
         }
 
         [TestCase("8/8/8/8/8/4b3/3P4/8 w - - 0 1", 11U, 20U, MoveUtility.WhitePawn, MoveUtility.BlackBishop)]
@@ -87,7 +86,7 @@ namespace DotNetEngine.Test.MakeMoveTests
             gameState.MakeMove(move);
 
 	        Assert.That(movingPiece < 8 ? gameState.BlackBishops : gameState.WhiteBishops,
-	                    Is.EqualTo(MoveUtility.Empty));
+	                    Is.EqualTo(MoveUtility.EmptyPiece));
         }
 
         [TestCase("8/8/8/8/8/4n3/3P4/8 w - - 0 1", 11U, 20U, MoveUtility.WhitePawn, MoveUtility.BlackKnight)]
@@ -115,7 +114,7 @@ namespace DotNetEngine.Test.MakeMoveTests
             gameState.MakeMove(move);
 
 	        Assert.That(movingPiece < 8 ? gameState.BlackKnights : gameState.WhiteKnights,
-	                    Is.EqualTo(MoveUtility.Empty));
+	                    Is.EqualTo(MoveUtility.EmptyPiece));
         }
 
         [TestCase("8/8/8/8/8/4q3/3P4/8 w - - 0 1", 11U, 20U, MoveUtility.WhitePawn, MoveUtility.BlackQueen)]
@@ -143,7 +142,7 @@ namespace DotNetEngine.Test.MakeMoveTests
             gameState.MakeMove(move);
 
 	        Assert.That(movingPiece < 8 ? gameState.BlackQueens : gameState.WhiteQueens,
-	                    Is.EqualTo(MoveUtility.Empty));
+	                    Is.EqualTo(MoveUtility.EmptyPiece));
         }
 
         [TestCase("8/8/8/8/8/4k3/3P4/8 w - - 0 1", 11U, 20U, MoveUtility.WhitePawn, MoveUtility.BlackKing)]
@@ -171,7 +170,7 @@ namespace DotNetEngine.Test.MakeMoveTests
             gameState.MakeMove(move);
 
 	        Assert.That(movingPiece < 8 ? gameState.BlackKing : gameState.WhiteKing,
-	                    Is.EqualTo(MoveUtility.Empty));
+	                    Is.EqualTo(MoveUtility.EmptyPiece));
         }
 
         [TestCase("8/8/8/8/8/4p3/3P4/8 w - - 0 1", 11U, 20U, MoveUtility.WhitePawn, MoveUtility.BlackPawn)]
@@ -271,7 +270,7 @@ namespace DotNetEngine.Test.MakeMoveTests
             gameState.MakeMove(move);
 
 	        Assert.That(movingPiece < 8 ? gameState.BlackPieces : gameState.WhitePieces,
-	                    Is.EqualTo(MoveUtility.Empty));
+	                    Is.EqualTo(MoveUtility.EmptyPiece));
         }       
     }
 }

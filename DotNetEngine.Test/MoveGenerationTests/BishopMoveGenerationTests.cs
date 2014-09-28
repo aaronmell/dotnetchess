@@ -1,4 +1,6 @@
-﻿using DotNetEngine.Engine;
+﻿using DotNetEngine.Engine.Enums;
+using DotNetEngine.Engine.Helpers;
+using DotNetEngine.Engine.Objects;
 using NUnit.Framework;
 using System.Linq;
 
@@ -48,8 +50,8 @@ namespace DotNetEngine.Test.MoveGenerationTests
 
 
             Assert.That(movingPiece, Is.EqualTo(MoveUtility.WhiteBishop), "Moving Piece");
-            Assert.That(capturedPiece, Is.EqualTo(MoveUtility.Empty), "Captured Piece");
-            Assert.That(promotedPiece, Is.EqualTo(MoveUtility.Empty), "Promoted Piece");
+            Assert.That(capturedPiece, Is.EqualTo(MoveUtility.EmptyPiece), "Captured Piece");
+            Assert.That(promotedPiece, Is.EqualTo(MoveUtility.EmptyPiece), "Promoted Piece");
         }
 
         [TestCase(27U, 0U)]
@@ -96,7 +98,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
 
             Assert.That(movingPiece, Is.EqualTo(MoveUtility.WhiteBishop), "Moving Piece");
             Assert.That(capturedPiece, Is.EqualTo(MoveUtility.BlackPawn), "Captured Piece");
-            Assert.That(promotedPiece, Is.EqualTo(MoveUtility.Empty), "Promoted Piece");
+            Assert.That(promotedPiece, Is.EqualTo(MoveUtility.EmptyPiece), "Promoted Piece");
         }
 
         [TestCase(27U, 9U)]
@@ -168,8 +170,8 @@ namespace DotNetEngine.Test.MoveGenerationTests
 
 
             Assert.That(movingPiece, Is.EqualTo(MoveUtility.BlackBishop), "Moving Piece");
-            Assert.That(capturedPiece, Is.EqualTo(MoveUtility.Empty), "Captured Piece");
-            Assert.That(promotedPiece, Is.EqualTo(MoveUtility.Empty), "Promoted Piece");
+            Assert.That(capturedPiece, Is.EqualTo(MoveUtility.EmptyPiece), "Captured Piece");
+            Assert.That(promotedPiece, Is.EqualTo(MoveUtility.EmptyPiece), "Promoted Piece");
         }
 
         [TestCase(27U, 0U)]
@@ -216,7 +218,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
 
             Assert.That(movingPiece, Is.EqualTo(MoveUtility.BlackBishop), "Moving Piece");
             Assert.That(capturedPiece, Is.EqualTo(MoveUtility.WhitePawn), "Captured Piece");
-            Assert.That(promotedPiece, Is.EqualTo(MoveUtility.Empty), "Promoted Piece");
+            Assert.That(promotedPiece, Is.EqualTo(MoveUtility.EmptyPiece), "Promoted Piece");
         }
 
         [TestCase(27U, 9U)]

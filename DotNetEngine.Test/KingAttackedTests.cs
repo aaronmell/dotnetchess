@@ -1,4 +1,5 @@
-﻿using DotNetEngine.Engine;
+﻿using DotNetEngine.Engine.Helpers;
+using DotNetEngine.Engine.Objects;
 using NUnit.Framework;
 
 namespace DotNetEngine.Test

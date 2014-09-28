@@ -1,4 +1,4 @@
-﻿namespace DotNetEngine.Engine
+﻿namespace DotNetEngine.Engine.Enums
 {
     /// <summary>
     /// 0 - Cannot Castle 

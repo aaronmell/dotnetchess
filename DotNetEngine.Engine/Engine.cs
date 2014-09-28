@@ -2,11 +2,14 @@
 using System.Diagnostics;
 using System.Linq;
 using Common.Logging;
+using DotNetEngine.Engine.Enums;
+using DotNetEngine.Engine.Helpers;
+using DotNetEngine.Engine.Objects;
 
 namespace DotNetEngine.Engine
 {
 	/// <summary>
-	/// The Chess Engine
+	/// The Chess Engine, This class handles actually playing the game.
 	/// </summary>
 	public class Engine
 	{

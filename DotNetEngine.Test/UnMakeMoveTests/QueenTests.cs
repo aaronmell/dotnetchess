@@ -1,4 +1,5 @@
-﻿using DotNetEngine.Engine;
+﻿using DotNetEngine.Engine.Helpers;
+using DotNetEngine.Engine.Objects;
 using NUnit.Framework;
 
 namespace DotNetEngine.Test.UnMakeMoveTests
@@ -215,7 +216,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
 
             gameState.UnMakeMove(move);
 
-            Assert.That(gameState.BoardArray[19U], Is.EqualTo(MoveUtility.Empty));
+            Assert.That(gameState.BoardArray[19U], Is.EqualTo(MoveUtility.EmptyPiece));
         }
 
 

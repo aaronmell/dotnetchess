@@ -48,17 +48,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BestMoveFoundEventArgs.cs" />
-    <Compile Include="CastleStatus.cs" />
-    <Compile Include="GameStateRecord.cs" />
-    <Compile Include="GameStateUtility.cs" />
+    <Compile Include="Objects\BestMoveFoundEventArgs.cs" />
+    <Compile Include="Enums\CastleStatus.cs" />
+    <Compile Include="Objects\GameStateRecord.cs" />
+    <Compile Include="Helpers\GameStateUtility.cs" />
     <Compile Include="Engine.cs" />
-    <Compile Include="GameState.cs" />
-    <Compile Include="MoveGenerationMode.cs" />
-    <Compile Include="MoveGeneratorUtility.cs" />
-    <Compile Include="MoveData.cs" />
-    <Compile Include="MoveUtility.cs" />
-    <Compile Include="PerfData.cs" />
+    <Compile Include="Objects\GameState.cs" />
+    <Compile Include="Enums\MoveGenerationMode.cs" />
+    <Compile Include="Helpers\MoveGenerator.cs" />
+    <Compile Include="Objects\MoveData.cs" />
+    <Compile Include="Helpers\MoveUtility.cs" />
+    <Compile Include="Objects\PerfData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,10 +1,10 @@
-﻿namespace DotNetEngine.Engine
+﻿namespace DotNetEngine.Engine.Objects
 {
     /// <summary>
     /// A Record of GameState Information. This struct contains enough information to unmake a move
     /// </summary>
     internal struct GameStateRecord
-    {   
+    {
         /// <summary>
         /// The move associated with this gameState
         /// </summary>

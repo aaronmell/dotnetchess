@@ -1,4 +1,4 @@
-﻿using DotNetEngine.Engine;
+﻿using DotNetEngine.Engine.Helpers;
 using NUnit.Framework;
 
 namespace DotNetEngine.Test.MakeMoveTests
@@ -179,7 +179,7 @@ namespace DotNetEngine.Test.MakeMoveTests
 
             gameState.MakeMove(move);
 
-            Assert.That(gameState.BoardArray[11U], Is.EqualTo(MoveUtility.Empty));
+            Assert.That(gameState.BoardArray[11U], Is.EqualTo(MoveUtility.EmptyPiece));
         }
 
         [TestCase("8/8/8/8/8/8/3N4/8 w - - 0 1", MoveUtility.WhiteKnight)]

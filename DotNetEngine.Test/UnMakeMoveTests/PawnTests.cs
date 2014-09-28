@@ -1,4 +1,5 @@
-﻿using DotNetEngine.Engine;
+﻿using DotNetEngine.Engine.Helpers;
+using DotNetEngine.Engine.Objects;
 using NUnit.Framework;
 
 namespace DotNetEngine.Test.UnMakeMoveTests
@@ -309,7 +310,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
 
             gameState.UnMakeMove(move);
 
-            Assert.That(gameState.BoardArray[toSquare], Is.EqualTo(MoveUtility.Empty));
+            Assert.That(gameState.BoardArray[toSquare], Is.EqualTo(MoveUtility.EmptyPiece));
         }
 
         [TestCase("8/8/P7/8/8/8/8/8 w - - 0 1", 33U, 40U, MoveUtility.WhitePawn, MoveUtility.BlackPawn)]
@@ -345,7 +346,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
             move = move.SetCapturedPiece(capturedPiece);
 
             gameState.UnMakeMove(move);
-            Assert.That(gameState.BoardArray[toSquare], Is.EqualTo(MoveUtility.Empty));
+            Assert.That(gameState.BoardArray[toSquare], Is.EqualTo(MoveUtility.EmptyPiece));
         }
 
         [TestCase("pppppppp/pppppppp/Pppppppp/p1pppppp/pppppppp/pppppppp/pppppppp/pppppppp b - - 0 1", 33U, 40U, 32U, MoveUtility.WhitePawn, MoveUtility.BlackPawn)]
@@ -411,7 +412,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
 
             gameState.UnMakeMove(move);
 
-            Assert.That(gameState.BoardArray[moveTo], Is.EqualTo(MoveUtility.Empty));
+            Assert.That(gameState.BoardArray[moveTo], Is.EqualTo(MoveUtility.EmptyPiece));
         }
 
         [TestCase("8/8/8/8/8/3P4/3q4/8 w - - 0 1", MoveUtility.BlackQueen, MoveUtility.WhitePawn)]

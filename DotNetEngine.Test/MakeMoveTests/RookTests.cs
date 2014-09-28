@@ -1,4 +1,5 @@
-﻿using DotNetEngine.Engine;
+﻿using DotNetEngine.Engine.Enums;
+using DotNetEngine.Engine.Helpers;
 using NUnit.Framework;
 
 namespace DotNetEngine.Test.MakeMoveTests
@@ -168,7 +169,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         [TestCase(63U, 62U, CastleStatus.OOOCastle)]
         public void MakeMove_Sets_Can_Castle_When_Black_Rook_Moves(uint fromMove, uint toMove, CastleStatus castleStatus)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/8/R3K2R w KQ - 0 1");
+            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/8/R3K2R w KQkq - 0 1");
 
             var move = 0U;
             move = move.SetFromMove(fromMove);
@@ -177,7 +178,7 @@ namespace DotNetEngine.Test.MakeMoveTests
 
             gameState.MakeMove(move);
 
-            Assert.That(gameState.CurrentWhiteCastleStatus, Is.EqualTo((int)castleStatus), "All Pieces Bitboard");
+            Assert.That(gameState.CurrentBlackCastleStatus, Is.EqualTo((int)castleStatus), "All Pieces Bitboard");
         }
 
         [TestCase(0U, 56U, CastleStatus.OOCastle)]
@@ -194,7 +195,7 @@ namespace DotNetEngine.Test.MakeMoveTests
 
             gameState.MakeMove(move);
 
-            Assert.That(gameState.CurrentWhiteCastleStatus, Is.EqualTo((int)castleStatus), "All Pieces Bitboard");
+            Assert.That(gameState.CurrentBlackCastleStatus, Is.EqualTo((int)castleStatus), "All Pieces Bitboard");
         }
 
         [Test]
@@ -245,7 +246,7 @@ namespace DotNetEngine.Test.MakeMoveTests
 
             gameState.MakeMove(move);
 
-            Assert.That(gameState.BoardArray[11U], Is.EqualTo(MoveUtility.Empty));
+            Assert.That(gameState.BoardArray[11U], Is.EqualTo(MoveUtility.EmptyPiece));
         }
 
         [TestCase("8/8/8/8/8/8/3R4/8 w - - 0 1", MoveUtility.WhiteRook)]

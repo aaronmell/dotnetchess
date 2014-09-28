@@ -1,4 +1,4 @@
-﻿using DotNetEngine.Engine;
+﻿using DotNetEngine.Engine.Helpers;
 using NUnit.Framework;
 using System.IO;
 
@@ -32,7 +32,7 @@ namespace DotNetEngine.Test
         [ExpectedException(typeof(InvalidDataException))]
         public void Throws_Exception_If_Invalid_Number_Of_Fields()
         {
-            GameStateUtility.LoadGameStateFromFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 ");
+            GameStateUtility.LoadGameStateFromFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w ");
         }
 
         [Test]

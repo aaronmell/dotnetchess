@@ -1,4 +1,6 @@
-﻿using DotNetEngine.Engine;
+﻿using DotNetEngine.Engine.Enums;
+using DotNetEngine.Engine.Helpers;
+using DotNetEngine.Engine.Objects;
 using NUnit.Framework;
 
 namespace DotNetEngine.Test.MakeMoveTests
@@ -313,7 +315,7 @@ namespace DotNetEngine.Test.MakeMoveTests
 
             gameState.MakeMove(move);
 
-            Assert.That(gameState.BoardArray[fromSquare], Is.EqualTo(MoveUtility.Empty));
+            Assert.That(gameState.BoardArray[fromSquare], Is.EqualTo(MoveUtility.EmptyPiece));
         }
 
         [TestCase("8/8/8/8/8/8/3K4/8 w - - 0 1", 3U, 11U, MoveUtility.WhiteKing)]
@@ -368,7 +370,7 @@ namespace DotNetEngine.Test.MakeMoveTests
 
             gameState.MakeMove(move);
 
-            Assert.That(gameState.BoardArray[rookToSquare], Is.EqualTo(MoveUtility.Empty));
+            Assert.That(gameState.BoardArray[rookToSquare], Is.EqualTo(MoveUtility.EmptyPiece));
         }
 
         [TestCase("8/8/8/8/8/8/8/R3K3 w K - 0 1", 0U, MoveUtility.WhiteRook)]
@@ -381,7 +383,7 @@ namespace DotNetEngine.Test.MakeMoveTests
 
             gameState.MakeMove(move);
 
-            Assert.That(gameState.BoardArray[rookToSquare], Is.EqualTo(MoveUtility.Empty));
+            Assert.That(gameState.BoardArray[rookToSquare], Is.EqualTo(MoveUtility.EmptyPiece));
         }     
         #endregion
     }
