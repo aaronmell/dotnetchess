@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Common.Logging;
 using DotNetEngine.Engine.Enums;
 using DotNetEngine.Engine.Helpers;
@@ -19,6 +21,7 @@ namespace DotNetEngine.Engine
         private GameState _gameState;
         private const string DefaultFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
         private static readonly Random _random = new Random();
+	   
 
         public event EventHandler<BestMoveFoundEventArgs> BestMoveFound;
 
@@ -95,9 +98,7 @@ namespace DotNetEngine.Engine
 
         public void Calculate()
         {
-            _gameState.GenerateMoves(MoveGenerationMode.All, _gameState.TotalMoveCount, _moveData);
-
-            var move = _gameState.Moves[_gameState.TotalMoveCount][_random.Next(_gameState.Moves[_gameState.TotalMoveCount].Count)];
+            var move = GetBestMove(_gameState.TotalMoveCount, 4);
             _gameState.MakeMove(move);
 
             OnBestMoveFound(new BestMoveFoundEventArgs
@@ -110,5 +111,60 @@ namespace DotNetEngine.Engine
         {
             //Do nothing for now.
         }
+
+	    public uint GetBestMove(int ply, int depth)
+	    {
+            _gameState.GenerateMoves(MoveGenerationMode.All, ply, _moveData);
+            var bestValue = int.MinValue;
+	        var bestMove = 0U;
+
+            foreach (var move in _gameState.Moves[ply])
+            {
+                _gameState.MakeMove(move);
+
+                if (!_gameState.IsOppositeSideKingAttacked(_moveData))
+                {
+                    var value = Think(ply + 1, depth - 1, true) * -1;
+
+
+                    if (value > bestValue)
+                    {
+                        bestValue = value;
+                        bestMove = move;
+                    }
+                }
+                _gameState.UnMakeMove(move);
+            }
+	        return bestMove;
+	    }
+
+        private int Think(int ply, int depth, bool side)
+	    {
+            if (depth == 0)
+            {
+                return _gameState.Evaluate() * (side ? 1 : -1);
+            }
+
+            var bestValue = int.MinValue;
+
+            _gameState.GenerateMoves(MoveGenerationMode.All, ply, _moveData);
+
+            foreach (var move in _gameState.Moves[ply])
+            {
+                _gameState.MakeMove(move);
+
+                if (!_gameState.IsOppositeSideKingAttacked(_moveData))
+                {
+
+                    var value = Think(ply + 1, depth - 1, !side) * -1;
+
+                    if (value > bestValue)
+                        bestValue = value;
+                }
+
+               _gameState.UnMakeMove(move);
+            }
+            return bestValue;
+	    }
     }
 }

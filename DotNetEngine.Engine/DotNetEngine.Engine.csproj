@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\EvaluationHelper.cs" />
     <Compile Include="Objects\BestMoveFoundEventArgs.cs" />
     <Compile Include="Enums\CastleStatus.cs" />
     <Compile Include="Objects\GameStateRecord.cs" />
