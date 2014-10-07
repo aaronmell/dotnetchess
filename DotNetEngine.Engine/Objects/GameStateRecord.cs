@@ -29,5 +29,10 @@
         /// The target square of a pawn that can be captured via an en-passant
         /// </summary>
         internal uint EnpassantTargetSquare { get; set; }
+
+        /// <summary>
+        /// The hash associated with this gameState
+        /// </summary>
+        internal ulong HashKey { get; set; }
     }
 }

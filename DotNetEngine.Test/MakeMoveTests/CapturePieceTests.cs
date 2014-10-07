@@ -1,10 +1,13 @@
 ﻿using DotNetEngine.Engine.Helpers;
+using DotNetEngine.Engine.Objects;
 using NUnit.Framework;
 
 namespace DotNetEngine.Test.MakeMoveTests
 {
     public class CapturePieceTests
-    {   
+    {
+        private static readonly ZobristHash _zobristHash = new ZobristHash();
+
         [TestCase("8/8/8/8/8/4p3/3P4/8 w - - 0 1", 11U, 20U, MoveUtility.WhitePawn, MoveUtility.BlackPawn)]
         [TestCase("8/8/8/8/8/4p3/3B4/8 w - - 0 1", 11U, 20U, MoveUtility.WhiteBishop, MoveUtility.BlackPawn)]
         [TestCase("8/8/8/8/8/4p3/3Q4/8 w - - 0 1", 11U, 20U, MoveUtility.WhiteQueen, MoveUtility.BlackPawn)]
@@ -19,7 +22,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         [TestCase("8/8/8/8/8/3P4/3r4/8 b - - 0 1", 11U, 19U, MoveUtility.BlackRook, MoveUtility.WhitePawn)]
         public void Pawn_Bitboard_Correct_After_Capture(string initialFen, uint fromMove, uint toMove, uint movingPiece, uint capturedPiece)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen(initialFen);
+            var gameState = new GameState(initialFen, _zobristHash);
 
             var move = 0U;
             move = move.SetFromMove(fromMove);
@@ -27,7 +30,7 @@ namespace DotNetEngine.Test.MakeMoveTests
             move = move.SetMovingPiece(movingPiece);
             move = move.SetCapturedPiece(capturedPiece);
 
-            gameState.MakeMove(move);
+            gameState.MakeMove(move, _zobristHash);
 
 	        Assert.That(movingPiece < 8 ? gameState.BlackPawns : gameState.WhitePawns,
 	                    Is.EqualTo(MoveUtility.EmptyPiece));
@@ -47,7 +50,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         [TestCase("8/8/8/8/8/3R4/3r4/8 b - - 0 1", 11U, 19U, MoveUtility.BlackRook, MoveUtility.WhiteRook)]
         public void Rook_Bitboard_Correct_After_Capture(string initialFen, uint fromMove, uint toMove, uint movingPiece, uint capturedPiece)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen(initialFen);
+            var gameState = new GameState(initialFen, _zobristHash);
 
             var move = 0U;
             move = move.SetFromMove(fromMove);
@@ -55,7 +58,7 @@ namespace DotNetEngine.Test.MakeMoveTests
             move = move.SetMovingPiece(movingPiece);
             move = move.SetCapturedPiece(capturedPiece);
 
-            gameState.MakeMove(move);
+            gameState.MakeMove(move, _zobristHash);
 
 	        Assert.That(movingPiece < 8 ? gameState.BlackRooks : gameState.WhiteRooks,
 	                    Is.EqualTo(MoveUtility.EmptyPiece));
@@ -75,7 +78,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         [TestCase("8/8/8/8/8/3B4/3r4/8 b - - 0 1", 11U, 19U, MoveUtility.BlackRook, MoveUtility.WhiteBishop)]
         public void Bishop_Bitboard_Correct_After_Capture(string initialFen, uint fromMove, uint toMove, uint movingPiece, uint capturedPiece)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen(initialFen);
+            var gameState = new GameState(initialFen, _zobristHash);
 
             var move = 0U;
             move = move.SetFromMove(fromMove);
@@ -83,7 +86,7 @@ namespace DotNetEngine.Test.MakeMoveTests
             move = move.SetMovingPiece(movingPiece);
             move = move.SetCapturedPiece(capturedPiece);
 
-            gameState.MakeMove(move);
+            gameState.MakeMove(move, _zobristHash);
 
 	        Assert.That(movingPiece < 8 ? gameState.BlackBishops : gameState.WhiteBishops,
 	                    Is.EqualTo(MoveUtility.EmptyPiece));
@@ -103,7 +106,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         [TestCase("8/8/8/8/8/3N4/3r4/8 b - - 0 1", 11U, 19U, MoveUtility.BlackRook, MoveUtility.WhiteKnight)]
         public void Knights_Bitboard_Correct_After_Capture(string initialFen, uint fromMove, uint toMove, uint movingPiece, uint capturedPiece)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen(initialFen);
+            var gameState = new GameState(initialFen, _zobristHash);
 
             var move = 0U;
             move = move.SetFromMove(fromMove);
@@ -111,7 +114,7 @@ namespace DotNetEngine.Test.MakeMoveTests
             move = move.SetMovingPiece(movingPiece);
             move = move.SetCapturedPiece(capturedPiece);
 
-            gameState.MakeMove(move);
+            gameState.MakeMove(move, _zobristHash);
 
 	        Assert.That(movingPiece < 8 ? gameState.BlackKnights : gameState.WhiteKnights,
 	                    Is.EqualTo(MoveUtility.EmptyPiece));
@@ -131,7 +134,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         [TestCase("8/8/8/8/8/3Q4/3r4/8 b - - 0 1", 11U, 19U, MoveUtility.BlackRook, MoveUtility.WhiteQueen)]
         public void Queens_Bitboard_Correct_After_Capture(string initialFen, uint fromMove, uint toMove, uint movingPiece, uint capturedPiece)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen(initialFen);
+            var gameState = new GameState(initialFen, _zobristHash);
 
             var move = 0U;
             move = move.SetFromMove(fromMove);
@@ -139,7 +142,7 @@ namespace DotNetEngine.Test.MakeMoveTests
             move = move.SetMovingPiece(movingPiece);
             move = move.SetCapturedPiece(capturedPiece);
 
-            gameState.MakeMove(move);
+            gameState.MakeMove(move, _zobristHash);
 
 	        Assert.That(movingPiece < 8 ? gameState.BlackQueens : gameState.WhiteQueens,
 	                    Is.EqualTo(MoveUtility.EmptyPiece));
@@ -159,7 +162,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         [TestCase("8/8/8/8/8/3K4/3r4/8 b - - 0 1", 11U, 19U, MoveUtility.BlackRook, MoveUtility.WhiteKing)]
         public void King_Bitboard_Correct_After_Capture(string initialFen, uint fromMove, uint toMove, uint movingPiece, uint capturedPiece)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen(initialFen);
+            var gameState = new GameState(initialFen, _zobristHash);
 
             var move = 0U;
             move = move.SetFromMove(fromMove);
@@ -167,7 +170,7 @@ namespace DotNetEngine.Test.MakeMoveTests
             move = move.SetMovingPiece(movingPiece);
             move = move.SetCapturedPiece(capturedPiece);
 
-            gameState.MakeMove(move);
+            gameState.MakeMove(move, _zobristHash);
 
 	        Assert.That(movingPiece < 8 ? gameState.BlackKing : gameState.WhiteKing,
 	                    Is.EqualTo(MoveUtility.EmptyPiece));
@@ -259,7 +262,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         [TestCase("8/8/8/8/8/3K4/3r4/8 b - - 0 1", 11U, 19U, MoveUtility.BlackRook, MoveUtility.WhiteKing)]
         public void Color_Bitboard_Correct_After_Capture(string initialFen, uint fromMove, uint toMove, uint movingPiece, uint capturedPiece)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen(initialFen);
+            var gameState = new GameState(initialFen, _zobristHash);
 
             var move = 0U;
             move = move.SetFromMove(fromMove);
@@ -267,7 +270,7 @@ namespace DotNetEngine.Test.MakeMoveTests
             move = move.SetMovingPiece(movingPiece);
             move = move.SetCapturedPiece(capturedPiece);
 
-            gameState.MakeMove(move);
+            gameState.MakeMove(move, _zobristHash);
 
 	        Assert.That(movingPiece < 8 ? gameState.BlackPieces : gameState.WhitePieces,
 	                    Is.EqualTo(MoveUtility.EmptyPiece));

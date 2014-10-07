@@ -1,4 +1,5 @@
 ﻿using DotNetEngine.Engine.Helpers;
+using DotNetEngine.Engine.Objects;
 using NUnit.Framework;
 using System.IO;
 
@@ -6,13 +7,15 @@ namespace DotNetEngine.Test
 {
 	public class GameStateUtilityTests
 	{
+        private static readonly ZobristHash _zobristHash = new ZobristHash();
+
         /// <summary>
 		/// This test is only useful for checking the output of the converter.
 		/// </summary>
 		[Test]
 		public void BitBoardOutput()
         {
-	        var gameState = GameStateUtility.LoadGameStateFromFen("rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2");
+	        var gameState = new GameState("rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2", _zobristHash);
 
 	        gameState.ConvertBitBoardsToConsoleOutput();
         }
@@ -23,7 +26,7 @@ namespace DotNetEngine.Test
 		[Test]
 		public void ArrayBoardOutput()
 		{
-			var gameState = GameStateUtility.LoadGameStateFromFen("rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2");
+            var gameState = new GameState("rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2", _zobristHash);
 
             gameState.ConvertBoardArrayToConsoleOutput();
 		}
@@ -32,13 +35,14 @@ namespace DotNetEngine.Test
         [ExpectedException(typeof(InvalidDataException))]
         public void Throws_Exception_If_Invalid_Number_Of_Fields()
         {
-            GameStateUtility.LoadGameStateFromFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w ");
+// ReSharper disable once ObjectCreationAsStatement
+            new GameState("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w ", _zobristHash);
         }
 
-        [Test]
+	    [Test]
         public void Sets_Number_Of_Half_Moves_Correctly()
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+            var gameState = new GameState("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", _zobristHash);
 
             Assert.That(gameState.FiftyMoveRuleCount, Is.EqualTo(0));
         }
@@ -46,7 +50,7 @@ namespace DotNetEngine.Test
         [Test]
         public void Sets_Number_Of_Total_Moves_Correctly()
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+            var gameState = new GameState("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", _zobristHash);
 
             Assert.That(gameState.TotalMoveCount, Is.EqualTo(1));
         }
@@ -55,7 +59,7 @@ namespace DotNetEngine.Test
         [TestCase("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1", false)]
         public void Sets_WhiteToMove_Correctly(string input, bool result)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen(input);
+            var gameState = new GameState(input, _zobristHash);
 
             Assert.That(gameState.WhiteToMove, Is.EqualTo(result));
         }
@@ -69,7 +73,7 @@ namespace DotNetEngine.Test
         [TestCase("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b - - 0 1", 0)]
         public void Sets_CanCastle_Correctly(string input, int result)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen(input);
+            var gameState = new GameState(input, _zobristHash);
 
             Assert.That(gameState.CurrentWhiteCastleStatus, Is.EqualTo(result));
             Assert.That(gameState.CurrentBlackCastleStatus, Is.EqualTo(result));
@@ -80,7 +84,7 @@ namespace DotNetEngine.Test
         [TestCase("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b - h8 0 1", 63)]
         public void Sets_EnPassant_Correctly(string input, int result)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen(input);
+            var gameState = new GameState(input, _zobristHash);
             Assert.That(gameState.EnpassantTargetSquare, Is.EqualTo(result));
         }
 	}

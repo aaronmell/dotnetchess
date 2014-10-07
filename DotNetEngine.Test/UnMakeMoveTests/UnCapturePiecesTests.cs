@@ -6,6 +6,8 @@ namespace DotNetEngine.Test.UnMakeMoveTests
 {
     public class UnCapturePiecesTests
     {
+        private static readonly ZobristHash _zobristHash = new ZobristHash();
+
         [TestCase("8/8/8/8/8/4P3/8/8 b - - 0 1", 11U, 20U, MoveUtility.WhitePawn, MoveUtility.BlackPawn)]
         [TestCase("8/8/8/8/8/4B3/8/8 b - - 0 1", 11U, 20U, MoveUtility.WhiteBishop, MoveUtility.BlackPawn)]
         [TestCase("8/8/8/8/8/4Q3/8/8 b - - 0 1", 11U, 20U, MoveUtility.WhiteQueen, MoveUtility.BlackPawn)]
@@ -20,7 +22,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         [TestCase("8/8/8/8/8/3r4/8/8 w - - 0 1", 11U, 19U, MoveUtility.BlackRook, MoveUtility.WhitePawn)]
         public void Pawn_Bitboard_Correct_After_Capture(string initialFen, uint fromMove, uint toMove, uint movingPiece, uint capturedPiece)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen(initialFen);
+            var gameState = new GameState(initialFen, _zobristHash);
             gameState.PreviousGameStateRecords.Push(new GameStateRecord());
 
             var move = 0U;
@@ -49,7 +51,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         [TestCase("8/8/8/8/8/3r4/8/8 w - - 0 1", 11U, 19U, MoveUtility.BlackRook, MoveUtility.WhiteRook)]
         public void Rook_Bitboard_Correct_After_Capture(string initialFen, uint fromMove, uint toMove, uint movingPiece, uint capturedPiece)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen(initialFen);
+            var gameState = new GameState(initialFen, _zobristHash);
             gameState.PreviousGameStateRecords.Push(new GameStateRecord());
 
             var move = 0U;
@@ -78,7 +80,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         [TestCase("8/8/8/8/8/3r4/8/8 w - - 0 1", 11U, 19U, MoveUtility.BlackRook, MoveUtility.WhiteBishop)]
         public void Bishop_Bitboard_Correct_After_Capture(string initialFen, uint fromMove, uint toMove, uint movingPiece, uint capturedPiece)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen(initialFen);
+            var gameState = new GameState(initialFen, _zobristHash);
             gameState.PreviousGameStateRecords.Push(new GameStateRecord());
 
             var move = 0U;
@@ -107,7 +109,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         [TestCase("8/8/8/8/8/3r4/8/8 w - - 0 1", 11U, 19U, MoveUtility.BlackRook, MoveUtility.WhiteKnight)]
         public void Knights_Bitboard_Correct_After_Capture(string initialFen, uint fromMove, uint toMove, uint movingPiece, uint capturedPiece)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen(initialFen);
+            var gameState = new GameState(initialFen, _zobristHash);
             gameState.PreviousGameStateRecords.Push(new GameStateRecord());
 
             var move = 0U;
@@ -136,7 +138,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         [TestCase("8/8/8/8/8/3r4/8/8 w - - 0 1", 11U, 19U, MoveUtility.BlackRook, MoveUtility.WhiteQueen)]
         public void Queens_Bitboard_Correct_After_Capture(string initialFen, uint fromMove, uint toMove, uint movingPiece, uint capturedPiece)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen(initialFen);
+            var gameState = new GameState(initialFen, _zobristHash);
             gameState.PreviousGameStateRecords.Push(new GameStateRecord());
 
             var move = 0U;
@@ -165,7 +167,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         [TestCase("8/8/8/8/8/3r4/8/8 w - - 0 1", 11U, 19U, MoveUtility.BlackRook, MoveUtility.WhiteKing)]
         public void King_Bitboard_Correct_After_Capture(string initialFen, uint fromMove, uint toMove, uint movingPiece, uint capturedPiece)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen(initialFen);
+            var gameState = new GameState(initialFen, _zobristHash);
             gameState.PreviousGameStateRecords.Push(new GameStateRecord());
 
             var move = 0U;
@@ -242,7 +244,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         [TestCase("8/8/8/8/8/3r4/8/8 w - - 0 1", 11U, 19U, MoveUtility.BlackRook, MoveUtility.WhiteKing)]
         public void Color_Bitboard_Correct_After_Capture(string initialFen, uint fromMove, uint toMove, uint movingPiece, uint capturedPiece)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen(initialFen);
+            var gameState = new GameState(initialFen, _zobristHash);
             gameState.PreviousGameStateRecords.Push(new GameStateRecord());
 
             var move = 0U;
@@ -251,7 +253,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
             move = move.SetMovingPiece(movingPiece);
             move = move.SetCapturedPiece(capturedPiece);
 
-            gameState.MakeMove(move);
+            gameState.MakeMove(move, _zobristHash);
 
             Assert.That(movingPiece < 8 ? gameState.BlackPieces : gameState.WhitePieces,
                         Is.EqualTo(MoveUtility.BitStates[toMove]));

@@ -9,6 +9,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
     public class KingMoveGenerationTests
     {
         private readonly MoveData _moveData = new MoveData();
+        private static readonly ZobristHash _zobristHash = new ZobristHash();
 
         #region White King Moves
         [TestCase(27U, 26U, MoveGenerationMode.All)]
@@ -29,7 +30,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(27U, 20U, MoveGenerationMode.QuietMovesOnly)]
         public void Generates_Valid_White_King_Moves_When_Not_CaptureOnly(uint fromMove, uint toMove, MoveGenerationMode mode)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/3K4/8/8/8 w - - 0 1");
+            var gameState = new GameState("8/8/8/8/3K4/8/8/8 w - - 0 1", _zobristHash);
             gameState.GenerateMoves(mode, 1, _moveData);
 
             var move = gameState.Moves[1].First(x => x.GetFromMove() == fromMove && x.GetToMove() == toMove);
@@ -54,7 +55,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(27U, 20U)]
         public void Generates_No_Valid_White_King_Moves_When_CaptureOnly(uint fromMove, uint toMove)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/3K4/8/8/8 w - - 0 1");
+            var gameState = new GameState("8/8/8/8/3K4/8/8/8 w - - 0 1", _zobristHash);
             gameState.GenerateMoves(MoveGenerationMode.CaptureMovesOnly, 1, _moveData);
 
             var move = gameState.Moves[1].FirstOrDefault(x => x.GetFromMove() == fromMove && x.GetToMove() == toMove);
@@ -80,7 +81,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(27U, 20U, MoveGenerationMode.CaptureMovesOnly)]
         public void Generates_Valid_White_King_Captures_When_Not_QuietMovesOnly(uint fromMove, uint toMove, MoveGenerationMode mode)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/2ppp3/2pKp3/2ppp3/8/8 w - - 0 1");
+            var gameState = new GameState("8/8/8/2ppp3/2pKp3/2ppp3/8/8 w - - 0 1", _zobristHash);
             gameState.GenerateMoves(mode, 1, _moveData);
 
             var move = gameState.Moves[1].First(x => x.GetFromMove() == fromMove && x.GetToMove() == toMove);
@@ -105,7 +106,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(27U, 20U)]
         public void Generates_No_Valid_White_King_Captures_When_QuietMovesOnly(uint fromMove, uint toMove)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/2ppp3/2pKp3/2ppp3/8/8 w - - 0 1");
+            var gameState = new GameState("8/8/8/2ppp3/2pKp3/2ppp3/8/8 w - - 0 1", _zobristHash);
             gameState.GenerateMoves(MoveGenerationMode.QuietMovesOnly, 1, _moveData);
 
             var move = gameState.Moves[1].FirstOrDefault(x => x.GetFromMove() == fromMove && x.GetToMove() == toMove);
@@ -118,7 +119,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(MoveGenerationMode.QuietMovesOnly)]
         public void Does_Not_Generate_Invalid_White_King_Captures_Against_Own_Pieces(MoveGenerationMode mode)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/2PPP3/2PKP3/2PPP3/8/8 w - - 0 1");
+            var gameState = new GameState("8/8/8/2PPP3/2PKP3/2PPP3/8/8 w - - 0 1", _zobristHash);
 
             gameState.GenerateMoves(mode, 1, _moveData);
             var testMoves = gameState.Moves[1].Where(x => x.GetMovingPiece() == MoveUtility.WhiteRook);
@@ -133,7 +134,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
 		[TestCase(6U, "8/8/8/8/8/8/8/4K2R w K - 0 1", MoveGenerationMode.QuietMovesOnly)]
         public void Generates_Valid_White_King_Castling_When_Not_Capture_Only(uint toMove, string fen, MoveGenerationMode mode)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen(fen);
+            var gameState = new GameState(fen, _zobristHash);
             gameState.GenerateMoves(mode, 1, _moveData);
 
             var move = gameState.Moves[1].First(x => x.GetFromMove() == 4U && x.GetToMove() == toMove);
@@ -152,7 +153,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(6U)]       
         public void Generates_No_Valid_White_King_Castling_When_Capture_Only(uint toMove)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/8/R3K2R w KQ - 0 1");
+            var gameState = new GameState("8/8/8/8/8/8/8/R3K2R w KQ - 0 1", _zobristHash);
             gameState.GenerateMoves(MoveGenerationMode.CaptureMovesOnly, 1, _moveData);
 
             var move = gameState.Moves[1].FirstOrDefault(x => x.GetFromMove() == 4U && x.GetToMove() == toMove);
@@ -168,7 +169,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(6U, "8/8/8/8/8/8/8/R2PKP1R w KQ - 0 1")]
         public void Generates_No_Valid_White_King_Castling_When_Castling_Blocked(uint toMove, string fen)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen(fen);
+            var gameState = new GameState(fen, _zobristHash);
             gameState.GenerateMoves(MoveGenerationMode.All, 1, _moveData);
 
             var move = gameState.Moves[1].FirstOrDefault(x => x.GetFromMove() == 4U && x.GetToMove() == toMove);
@@ -185,7 +186,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
 		[TestCase(6U, "r3K2R/8/8/8/8/8/6r1/8 w kq - 0 1")]
 		public void Generates_No_Valid_White_King_Castling_When_Castling_Attacked(uint toMove, string fen)
 		{
-			var gameState = GameStateUtility.LoadGameStateFromFen(fen);
+            var gameState = new GameState(fen, _zobristHash);
 			gameState.GenerateMoves(MoveGenerationMode.All, 1, _moveData);
 
 			var move = gameState.Moves[1].FirstOrDefault(x => x.GetFromMove() == 4U && x.GetToMove() == toMove);
@@ -213,7 +214,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(27U, 20U, MoveGenerationMode.QuietMovesOnly)]
         public void Generates_Valid_Black_King_Moves_When_Not_CaptureOnly(uint fromMove, uint toMove, MoveGenerationMode mode)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/3k4/8/8/8 b - - 0 1");
+            var gameState = new GameState("8/8/8/8/3k4/8/8/8 b - - 0 1", _zobristHash);
             gameState.GenerateMoves(mode, 1, _moveData);
 
             var move = gameState.Moves[1].First(x => x.GetFromMove() == fromMove && x.GetToMove() == toMove);
@@ -238,7 +239,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(27U, 20U)]
         public void Generates_No_Valid_Black_King_Moves_When_CaptureOnly(uint fromMove, uint toMove)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/3k4/8/8/8 b - - 0 1");
+            var gameState = new GameState("8/8/8/8/3k4/8/8/8 b - - 0 1", _zobristHash);
             gameState.GenerateMoves(MoveGenerationMode.CaptureMovesOnly, 1, _moveData);
 
             var move = gameState.Moves[1].FirstOrDefault(x => x.GetFromMove() == fromMove && x.GetToMove() == toMove);
@@ -264,7 +265,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(27U, 20U, MoveGenerationMode.CaptureMovesOnly)]
         public void Generates_Valid_Black_King_Captures_When_Not_QuietMovesOnly(uint fromMove, uint toMove, MoveGenerationMode mode)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/2PPP3/2PkP3/2PPP3/8/8 b - - 0 1");
+            var gameState = new GameState("8/8/8/2PPP3/2PkP3/2PPP3/8/8 b - - 0 1", _zobristHash);
             gameState.GenerateMoves(mode, 1, _moveData);
 
             var move = gameState.Moves[1].First(x => x.GetFromMove() == fromMove && x.GetToMove() == toMove);
@@ -289,7 +290,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(27U, 20U)]
         public void Generates_No_Valid_Black_King_Captures_When_QuietMovesOnly(uint fromMove, uint toMove)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/2PPP3/2PkP3/2PPP3/8/8 b - - 0 1");
+            var gameState = new GameState("8/8/8/2PPP3/2PkP3/2PPP3/8/8 b - - 0 1", _zobristHash);
             gameState.GenerateMoves(MoveGenerationMode.QuietMovesOnly, 1, _moveData);
 
             var move = gameState.Moves[1].FirstOrDefault(x => x.GetFromMove() == fromMove && x.GetToMove() == toMove);
@@ -302,7 +303,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(MoveGenerationMode.QuietMovesOnly)]
         public void Does_Not_Generate_Invalid_Black_King_Captures_Against_Own_Pieces(MoveGenerationMode mode)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/2ppp3/2pkp3/2ppp3/8/8 b - - 0 1");
+            var gameState = new GameState("8/8/8/2ppp3/2pkp3/2ppp3/8/8 b - - 0 1", _zobristHash);
 
             gameState.GenerateMoves(mode, 1, _moveData);
             var testMoves = gameState.Moves[1].Where(x => x.GetMovingPiece() == MoveUtility.WhiteRook);
@@ -317,7 +318,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
 		[TestCase(62U, "4k2r/8/8/8/8/8/8/8 b k - 0 1", MoveGenerationMode.QuietMovesOnly)]
 		public void Generates_Valid_Black_King_Castling_When_Not_Capture_Only(uint toMove, string fen, MoveGenerationMode mode)
 		{
-			var gameState = GameStateUtility.LoadGameStateFromFen(fen);
+            var gameState = new GameState(fen, _zobristHash);
 			gameState.GenerateMoves(mode, 1, _moveData);
 
 			var move = gameState.Moves[1].First(x => x.GetFromMove() == 60U && x.GetToMove() == toMove);
@@ -335,7 +336,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(62U)]
         public void Generates_No_Valid_Black_King_Castling_When_Capture_Only(uint toMove)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("r3k2r/8/8/8/8/8/8/8 b kq - 0 1");
+            var gameState = new GameState("r3k2r/8/8/8/8/8/8/8 b kq - 0 1", _zobristHash);
             gameState.GenerateMoves(MoveGenerationMode.CaptureMovesOnly, 1, _moveData);
 
             var move = gameState.Moves[1].FirstOrDefault(x => x.GetFromMove() == 4U && x.GetToMove() == toMove);
@@ -351,7 +352,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(62U, "r2pkp1r/8/8/8/8/8/8/8 b kq - 0 1")]
         public void Generates_No_Valid_Black_King_Castling_When_Castling_Blocked(uint toMove, string fen)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen(fen);
+            var gameState = new GameState(fen, _zobristHash);
             gameState.GenerateMoves(MoveGenerationMode.All, 1, _moveData);
 
             var move = gameState.Moves[1].FirstOrDefault(x => x.GetFromMove() == 4U && x.GetToMove() == toMove);
@@ -368,7 +369,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
 		[TestCase(62U, "r3k2r/8/8/8/8/8/6R1/8 b kq - 0 1")]
 		public void Generates_No_Valid_Black_King_Castling_When_Castling_Attacked(uint toMove, string fen)
 		{
-			var gameState = GameStateUtility.LoadGameStateFromFen(fen);
+            var gameState = new GameState(fen, _zobristHash);
 			gameState.GenerateMoves(MoveGenerationMode.All, 1, _moveData);
 
 			var move = gameState.Moves[1].FirstOrDefault(x => x.GetFromMove() == 4U && x.GetToMove() == toMove);

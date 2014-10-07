@@ -1,5 +1,4 @@
-﻿using System.Data;
-using DotNetEngine.Engine.Objects;
+﻿using DotNetEngine.Engine.Objects;
 
 namespace DotNetEngine.Engine.Helpers
 {

@@ -9,6 +9,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
     public class PawnGenerationTests
     {
         private readonly MoveData _moveData = new MoveData();
+        private static readonly ZobristHash _zobristHash = new ZobristHash();
 
         #region White Pawn Moves
         
@@ -30,7 +31,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(15U, 23U, MoveGenerationMode.QuietMovesOnly)]
         public void Generates_Valid_WhiteSinglePawn_Moves_When_Not_CapturesOnly(uint fromMove, uint toMove, MoveGenerationMode mode)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+            var gameState = new GameState("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", _zobristHash);
 
             gameState.GenerateMoves(mode, 1, _moveData);
 
@@ -56,7 +57,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(15U, 23U)]
         public void Generates_No_WhiteSinglePawn_Moves_When_CapturesOnly(uint fromMove, uint toMove)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+            var gameState = new GameState("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", _zobristHash);
 
             gameState.GenerateMoves(MoveGenerationMode.CaptureMovesOnly, 1, _moveData);
 
@@ -83,7 +84,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(15U, 31U, MoveGenerationMode.QuietMovesOnly)]
         public void Generates_Valid_WhiteDoublePawn_Moves_When_Not_CapturesOnly(uint fromMove, uint toMove, MoveGenerationMode mode)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+            var gameState = new GameState("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", _zobristHash);
 
             gameState.GenerateMoves(mode, 1, _moveData);
 
@@ -109,7 +110,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(15U, 31U)]
         public void Generates_No_WhiteDoubleePawn_Moves_When_CapturesOnly(uint fromMove, uint toMove)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+            var gameState = new GameState("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", _zobristHash);
 
             gameState.GenerateMoves(MoveGenerationMode.CaptureMovesOnly, 1, _moveData);
 
@@ -148,7 +149,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(15U, 22U, MoveGenerationMode.CaptureMovesOnly)]
         public void Generates_Valid_White_Pawn_Capture_Moves_When_Not_QuietMovesOnly(uint fromMove, uint toMove, MoveGenerationMode mode)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/pppppppp/PPPPPPPP/8 w KQkq - 0 1");
+            var gameState = new GameState("8/8/8/8/8/pppppppp/PPPPPPPP/8 w KQkq - 0 1", _zobristHash);
 
             gameState.GenerateMoves(mode, 1, _moveData);
 
@@ -179,7 +180,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(15U, 22U)]
         public void Generates_No_Valid_White_Pawn_Capture_Moves_When_QuietMovesOnly(uint fromMove, uint toMove)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/pppppppp/PPPPPPPP/8 w KQkq - 0 1");
+            var gameState = new GameState("8/8/8/8/8/pppppppp/PPPPPPPP/8 w KQkq - 0 1", _zobristHash);
 
             gameState.GenerateMoves(MoveGenerationMode.QuietMovesOnly, 1, _moveData);
 
@@ -222,7 +223,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(55U, 63U, MoveUtility.WhiteQueen)]
         public void Generates_Valid_White_Pawn_Promotion_Moves_When_All(uint fromMove, uint toMove, uint promotedPiece)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("8/PPPPPPPP/8/8/8/8/8/8 w KQkq - 0 1");
+            var gameState = new GameState("8/PPPPPPPP/8/8/8/8/8/8 w KQkq - 0 1", _zobristHash);
 
             gameState.GenerateMoves(MoveGenerationMode.All, 1, _moveData);
 
@@ -253,7 +254,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(55U, 63U, MoveUtility.WhiteQueen)]
         public void Generates_Valid_White_Pawn_Promotion_Moves_When_QuietMovesOnly(uint fromMove, uint toMove, uint promotedPiece)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("8/PPPPPPPP/8/8/8/8/8/8 w KQkq - 0 1");
+            var gameState = new GameState("8/PPPPPPPP/8/8/8/8/8/8 w KQkq - 0 1", _zobristHash);
 
             gameState.GenerateMoves(MoveGenerationMode.QuietMovesOnly, 1, _moveData);
 
@@ -284,7 +285,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(55U, 63U, MoveUtility.WhiteRook)]
         public void Generates_No_Rook_Or_Bishop_Valid_White_Pawn_Promotion_Moves_When_QuietMovesOnly(uint fromMove, uint toMove, uint promotedPiece)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("8/PPPPPPPP/8/8/8/8/8/8 w KQkq - 0 1");
+            var gameState = new GameState("8/PPPPPPPP/8/8/8/8/8/8 w KQkq - 0 1", _zobristHash);
 
             gameState.GenerateMoves(MoveGenerationMode.QuietMovesOnly, 1, _moveData);
 
@@ -323,7 +324,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(49U, 56U, MoveUtility.WhiteQueen)]
         public void Generates_Valid_White_Pawn_Promotion_Moves_When_CaptureMovesOnly(uint fromMove, uint toMove, uint promotedPiece)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("pppppppp/PPPPPPPP/8/8/8/8/8/8 w KQkq - 0 1");
+            var gameState = new GameState("pppppppp/PPPPPPPP/8/8/8/8/8/8 w KQkq - 0 1", _zobristHash);
 
             gameState.GenerateMoves(MoveGenerationMode.CaptureMovesOnly, 1, _moveData);
 
@@ -366,7 +367,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(49U, 56U, MoveUtility.WhiteRook)]
         public void Generates_No_Rook_Or_Bishop_White_Pawn_Promotion_Moves_When_CaptureMovesOnly(uint fromMove, uint toMove, uint promotedPiece)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("pppppppp/PPPPPPPP/8/8/8/8/8/8 w KQkq - 0 1");
+            var gameState = new GameState("pppppppp/PPPPPPPP/8/8/8/8/8/8 w KQkq - 0 1", _zobristHash);
 
             gameState.GenerateMoves(MoveGenerationMode.CaptureMovesOnly, 1, _moveData);
 
@@ -405,9 +406,11 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(33U, 40U, MoveGenerationMode.CaptureMovesOnly)]
         public void Generates_Valid_White_Pawn_EnPassant_Moves_When_Not_QuietMovesOnly(uint fromMove, uint toMove, MoveGenerationMode mode)
         {
-	        GameState gameState = GameStateUtility.LoadGameStateFromFen(fromMove % 2 == 0 ? "8/8/8/PpPpPpPp/8/8/8/8 w - - 0 1" : "8/8/8/pPpPpPpP/8/8/8/8 w - - 0 1");
+	        var gameState = new GameState(fromMove % 2 == 0 ? "8/8/8/PpPpPpPp/8/8/8/8 w - - 0 1" : "8/8/8/pPpPpPpP/8/8/8/8 w - - 0 1", _zobristHash)
+	        {
+	            EnpassantTargetSquare = toMove
+	        };
 
-	        gameState.EnpassantTargetSquare = toMove;
             gameState.GenerateMoves(mode, 1, _moveData);
 
             var move = gameState.Moves[1].First(x => x.GetFromMove() == fromMove && x.GetToMove() == toMove);
@@ -438,9 +441,11 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(33U, 40U)]
         public void Generates_No_Valid_White_Pawn_EnPassant_Moves_When_QuietMovesOnly(uint fromMove, uint toMove)
         {
-	        var gameState = GameStateUtility.LoadGameStateFromFen(fromMove % 2 == 0 ? "8/8/8/PpPpPpPp/8/8/8/8 w - - 0 1" : "8/8/8/pPpPpPpP/8/8/8/8 w - - 0 1");
+	        var gameState = new GameState(fromMove % 2 == 0 ? "8/8/8/PpPpPpPp/8/8/8/8 w - - 0 1" : "8/8/8/pPpPpPpP/8/8/8/8 w - - 0 1", _zobristHash)
+	        {
+	            EnpassantTargetSquare = toMove
+	        };
 
-	        gameState.EnpassantTargetSquare = toMove;
             gameState.GenerateMoves(MoveGenerationMode.QuietMovesOnly, 1, _moveData);
 
             var move = gameState.Moves[1].FirstOrDefault(x => x.GetFromMove() == fromMove && x.GetToMove() == toMove);
@@ -453,7 +458,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(MoveGenerationMode.QuietMovesOnly)]
         public void Does_Not_Generate_Invalid_White_Pawn_Captures(MoveGenerationMode  mode)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/RRRRRRRR/PPPPPPPP/8/8/8/8 w - - 0 1");           
+            var gameState = new GameState("8/8/RRRRRRRR/PPPPPPPP/8/8/8/8 w - - 0 1", _zobristHash);           
                        
             gameState.GenerateMoves(mode, 1, _moveData);
             var moves = gameState.Moves[1].Where(x => x.GetMovingPiece() == MoveUtility.WhitePawn);
@@ -482,7 +487,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(55U, 47U, MoveGenerationMode.QuietMovesOnly)]
         public void Generates_Valid_BlackSinglePawn_Moves_When_Not_CapturesOnly(uint fromMove, uint toMove, MoveGenerationMode mode)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1");
+            var gameState = new GameState("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1", _zobristHash);
 
             gameState.GenerateMoves(mode, 1, _moveData);
 
@@ -508,7 +513,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(55U, 47U)]
         public void Generates_No_BlackSinglePawn_Moves_When_CapturesOnly(uint fromMove, uint toMove)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1");
+            var gameState = new GameState("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1", _zobristHash);
 
             gameState.GenerateMoves(MoveGenerationMode.CaptureMovesOnly, 1, _moveData);
 
@@ -535,7 +540,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(55U, 39U, MoveGenerationMode.QuietMovesOnly)]
         public void Generates_Valid_BlackDoublePawn_Moves_When_Not_CapturesOnly(uint fromMove, uint toMove, MoveGenerationMode mode)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1");
+            var gameState = new GameState("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1", _zobristHash);
 
             gameState.GenerateMoves(mode, 1, _moveData);
 
@@ -561,7 +566,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(55U, 39U)]
         public void Generates_No_BlackDoubleePawn_Moves_When_CapturesOnly(uint fromMove, uint toMove)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1");
+            var gameState = new GameState("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1", _zobristHash);
 
             gameState.GenerateMoves(MoveGenerationMode.CaptureMovesOnly, 1, _moveData);
 
@@ -600,7 +605,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(55U, 46U, MoveGenerationMode.CaptureMovesOnly)]
          public void Generates_Valid_Black_PawnCapture_Moves_When_Not_QuietMovesOnly(uint fromMove, uint toMove, MoveGenerationMode mode)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("8/pppppppp/PPPPPPPP/8/8/8/8/8 b KQkq - 0 1");
+            var gameState = new GameState("8/pppppppp/PPPPPPPP/8/8/8/8/8 b KQkq - 0 1", _zobristHash);
 
             gameState.GenerateMoves(MoveGenerationMode.All, 1, _moveData);
 
@@ -631,7 +636,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(55U, 46U)]
         public void Generates_No_Valid_Black_Pawn_Capture_Moves_When_QuietMovesOnly(uint fromMove, uint toMove)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/pppppppp/PPPPPPPP/8 b KQkq - 0 1");
+            var gameState = new GameState("8/8/8/8/8/pppppppp/PPPPPPPP/8 b KQkq - 0 1", _zobristHash);
 
             gameState.GenerateMoves(MoveGenerationMode.QuietMovesOnly, 1, _moveData);
 
@@ -674,7 +679,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(15U, 7U, MoveUtility.BlackQueen)]
         public void Generates_Valid_Black_PawnPromotion_Moves_When_All(uint fromMove, uint toMove, uint promotedPiece)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/pppppppp/8 b KQkq - 0 1");
+            var gameState = new GameState("8/8/8/8/8/8/pppppppp/8 b KQkq - 0 1", _zobristHash);
 
             gameState.GenerateMoves(MoveGenerationMode.All, 1, _moveData);
 
@@ -706,7 +711,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(15U, 7U, MoveUtility.BlackQueen)]
         public void Generates_Valid_Black_Pawn_Promotion_Moves_When_QuietMovesOnly(uint fromMove, uint toMove, uint promotedPiece)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/pppppppp/8 b KQkq - 0 1");
+            var gameState = new GameState("8/8/8/8/8/8/pppppppp/8 b KQkq - 0 1", _zobristHash);
 
             gameState.GenerateMoves(MoveGenerationMode.All, 1, _moveData);
 
@@ -737,7 +742,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(15U, 7U, MoveUtility.BlackRook)]
         public void Generates_No_Valid_Rook_Or_Bishop_Black_Pawn_Promotion_Moves_When_QuietMovesOnly(uint fromMove, uint toMove, uint promotedPiece)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/pppppppp/8 b KQkq - 0 1");
+            var gameState = new GameState("8/8/8/8/8/8/pppppppp/8 b KQkq - 0 1", _zobristHash);
 
             gameState.GenerateMoves(MoveGenerationMode.QuietMovesOnly, 1, _moveData);
 
@@ -776,7 +781,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(9U, 0U, MoveUtility.BlackKnight)]    
         public void Generates_Valid_Black_Pawn_Promotion_Moves_When_CaptureMovesOnly(uint fromMove, uint toMove, uint promotedPiece)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/pppppppp/PPPPPPPP b KQkq - 0 1");
+            var gameState = new GameState("8/8/8/8/8/8/pppppppp/PPPPPPPP b KQkq - 0 1", _zobristHash);
 
             gameState.GenerateMoves(MoveGenerationMode.CaptureMovesOnly, 1, _moveData);
 
@@ -819,7 +824,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(9U, 0U, MoveUtility.BlackRook)]    
         public void Generates_No_Valid_Rook_Or_Bishop_Promotions_From_Black_Pawn_When_CaptureMovesOnly(uint fromMove, uint toMove, uint promotedPiece)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/pppppppp/PPPPPPPP b KQkq - 0 1");
+            var gameState = new GameState("8/8/8/8/8/8/pppppppp/PPPPPPPP b KQkq - 0 1", _zobristHash);
 
             gameState.GenerateMoves(MoveGenerationMode.CaptureMovesOnly, 1, _moveData);
 
@@ -858,9 +863,11 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(25U, 16U, MoveGenerationMode.CaptureMovesOnly)]
         public void Generates_Valid_Black_Pawn_EnPassant_Moves_When_Not_QuietMovesOnly(uint fromMove, uint toMove, MoveGenerationMode mode)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen(fromMove % 2 == 0 ? "8/8/8/8/pPpPpPpP/8/8/8 b - - 0 1" : "8/8/8/8/PpPpPpPp/8/8/8 b - - 0 1");
+            var gameState = new GameState(fromMove % 2 == 0 ? "8/8/8/8/pPpPpPpP/8/8/8 b - - 0 1" : "8/8/8/8/PpPpPpPp/8/8/8 b - - 0 1", _zobristHash)
+            {
+                EnpassantTargetSquare = toMove
+            };
 
-	        gameState.EnpassantTargetSquare = toMove;
             gameState.GenerateMoves(MoveGenerationMode.All, 1, _moveData);
 
             var move = gameState.Moves[1].First(x => x.GetFromMove() == fromMove && x.GetToMove() == toMove);
@@ -890,9 +897,11 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(25U, 16U)]
         public void Generates_No_Valid_Black_Pawn_EnPassant_Moves_When_QuietMovesOnly(uint fromMove, uint toMove)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen(fromMove % 2 == 0 ? "8/8/8/8/pPpPpPpP/8/8/8 b - - 0 1" : "8/8/8/8/PpPpPpPp/8/8/8 b - - 0 1");
+            var gameState = new GameState(fromMove % 2 == 0 ? "8/8/8/8/pPpPpPpP/8/8/8 b - - 0 1" : "8/8/8/8/PpPpPpPp/8/8/8 b - - 0 1", _zobristHash)
+            {
+                EnpassantTargetSquare = toMove
+            };
 
-	        gameState.EnpassantTargetSquare = toMove;
             gameState.GenerateMoves(MoveGenerationMode.QuietMovesOnly, 1, _moveData);
 
             var move = gameState.Moves[1].FirstOrDefault(x => x.GetFromMove() == fromMove && x.GetToMove() == toMove);
@@ -905,7 +914,7 @@ namespace DotNetEngine.Test.MoveGenerationTests
         [TestCase(MoveGenerationMode.QuietMovesOnly)]
         public void Does_Not_Generate_Invalid_Black_PawnCaptures(MoveGenerationMode mode)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/pppppppp/rrrrrrrr/8/8/8/8 w - - 0 1");
+            var gameState = new GameState("8/8/pppppppp/rrrrrrrr/8/8/8/8 w - - 0 1", _zobristHash);
 
             gameState.GenerateMoves(mode, 1, _moveData);
 

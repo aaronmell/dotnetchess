@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Common.Logging;
 using DotNetEngine.Engine.Enums;
 using DotNetEngine.Engine.Helpers;
@@ -19,9 +17,7 @@ namespace DotNetEngine.Engine
 		private ILog _logger = LogManager.GetCurrentClassLogger();
         private static readonly MoveData _moveData = new MoveData();
         private GameState _gameState;
-        private const string DefaultFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-        private static readonly Random _random = new Random();
-	   
+	    private static readonly ZobristHash _zobristHash = new ZobristHash();
 
         public event EventHandler<BestMoveFoundEventArgs> BestMoveFound;
 
@@ -37,7 +33,7 @@ namespace DotNetEngine.Engine
 
        	public void SetBoard(string initialFen)
         {
-            _gameState = GameStateUtility.LoadGameStateFromFen(initialFen);
+            _gameState = new GameState(initialFen, _zobristHash);
         }
 
         public void Perft(int depth)
@@ -45,7 +41,7 @@ namespace DotNetEngine.Engine
 	        var perftData = new PerftData();
 			var stopwatch = new Stopwatch();
 			stopwatch.Start();
-			var count = _gameState.RunPerftRecursively(_moveData, perftData, 1, depth);
+			var count = _gameState.RunPerftRecursively(_moveData, _zobristHash, perftData, 1, depth);
 			stopwatch.Stop();
 
 			_logger.InfoFormat("Total Nodes: {0} {1} mS Elapsed: {2}", count, Environment.NewLine, stopwatch.ElapsedMilliseconds);
@@ -54,17 +50,17 @@ namespace DotNetEngine.Engine
 
         public void Divide(int depth)
         {
-            _gameState.CalculateDivide(_moveData, new PerftData(), 1, depth);
+            _gameState.CalculateDivide(_moveData, _zobristHash, new PerftData(), 1, depth);
         }
 
         public void NewGame(string fen)
         {
-            SetBoard(fen);
+            _gameState = new GameState(fen, _zobristHash);
         }
 
 	    public void NewGame() 
 	    {
-          NewGame(DefaultFen);
+            _gameState = new GameState(_zobristHash);
 	    }
 
         public void TryMakeMove(string moveText)
@@ -91,15 +87,15 @@ namespace DotNetEngine.Engine
                 return;
             }
 
-            _gameState.MakeMove(foundMove);
+            _gameState.MakeMove(foundMove, _zobristHash);
             _gameState.TotalMoveCount++;
             _logger.InfoFormat("Other Side Move Made");
         }
 
         public void Calculate()
         {
-            var move = NegaMaxAlpaBeta(_gameState.TotalMoveCount, 4);
-            _gameState.MakeMove(move);
+            var move = NegaMaxAlpaBeta(_gameState.TotalMoveCount, 6);
+            _gameState.MakeMove(move, _zobristHash);
 
             OnBestMoveFound(new BestMoveFoundEventArgs
             {
@@ -120,7 +116,7 @@ namespace DotNetEngine.Engine
 
             foreach (var move in _gameState.Moves[ply])
             {
-                _gameState.MakeMove(move);
+                _gameState.MakeMove(move, _zobristHash);
 
                 if (!_gameState.IsOppositeSideKingAttacked(_moveData))
                 {
@@ -151,7 +147,7 @@ namespace DotNetEngine.Engine
 
             foreach (var move in _gameState.Moves[ply])
             {
-                _gameState.MakeMove(move);
+                _gameState.MakeMove(move, _zobristHash);
 
                 if (!_gameState.IsOppositeSideKingAttacked(_moveData))
                 {

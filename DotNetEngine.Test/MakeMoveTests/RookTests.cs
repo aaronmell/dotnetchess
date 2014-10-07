@@ -1,23 +1,26 @@
 ﻿using DotNetEngine.Engine.Enums;
 using DotNetEngine.Engine.Helpers;
+using DotNetEngine.Engine.Objects;
 using NUnit.Framework;
 
 namespace DotNetEngine.Test.MakeMoveTests
 {
     public class RookTests
     {
+        private static readonly ZobristHash _zobristHash = new ZobristHash();
+
         #region White Rook
         [Test]
         public void MakeMove_Sets_Rook_Bitboard_When_White_Rook_Moves()
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/3R4/8 w - - 0 1");
+            var gameState = new GameState("8/8/8/8/8/8/3R4/8 w - - 0 1", _zobristHash);
 
             var move = 0U;
             move = move.SetFromMove(11U);
             move = move.SetToMove(19U);
             move = move.SetMovingPiece(MoveUtility.WhiteRook);
 
-            gameState.MakeMove(move);
+            gameState.MakeMove(move, _zobristHash);
 
             Assert.That(gameState.WhiteRooks, Is.EqualTo(MoveUtility.BitStates[19]), "Piece Bitboard");
         }
@@ -25,14 +28,14 @@ namespace DotNetEngine.Test.MakeMoveTests
         [Test]
         public void MakeMove_Sets_White_Bitboard_When_White_Rook_Moves()
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/3R4/8 w - - 0 1");
+            var gameState = new GameState("8/8/8/8/8/8/3R4/8 w - - 0 1", _zobristHash);
 
             var move = 0U;
             move = move.SetFromMove(11U);
             move = move.SetToMove(19U);
             move = move.SetMovingPiece(MoveUtility.WhiteRook);
 
-            gameState.MakeMove(move);
+            gameState.MakeMove(move, _zobristHash);
 
             Assert.That(gameState.WhitePieces, Is.EqualTo(MoveUtility.BitStates[19]), "Piece Bitboard");
         }
@@ -40,14 +43,14 @@ namespace DotNetEngine.Test.MakeMoveTests
         [Test]
         public void MakeMove_Sets_AllPieces_Bitboard_When_White_Rook_Moves()
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/3R4/8 w - - 0 1");
+            var gameState = new GameState("8/8/8/8/8/8/3R4/8 w - - 0 1", _zobristHash);
 
             var move = 0U;
             move = move.SetFromMove(11U);
             move = move.SetToMove(19U);
             move = move.SetMovingPiece(MoveUtility.WhiteRook);
 
-            gameState.MakeMove(move);
+            gameState.MakeMove(move, _zobristHash);
 
             Assert.That(gameState.AllPieces, Is.EqualTo(MoveUtility.BitStates[19]), "All Pieces Bitboard");
         }
@@ -56,14 +59,14 @@ namespace DotNetEngine.Test.MakeMoveTests
         [TestCase(7U, 6U, CastleStatus.OOOCastle)]
         public void MakeMove_Sets_Can_Castle_When_White_Rook_Moves(uint fromMove, uint toMove, CastleStatus castleStatus)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/8/R3K2R w KQ - 0 1");
+            var gameState = new GameState("8/8/8/8/8/8/8/R3K2R w KQ - 0 1", _zobristHash);
 
             var move = 0U;
             move = move.SetFromMove(fromMove);
             move = move.SetToMove(toMove);
             move = move.SetMovingPiece(MoveUtility.WhiteRook);
 
-            gameState.MakeMove(move);
+            gameState.MakeMove(move, _zobristHash);
 
             Assert.That(gameState.CurrentWhiteCastleStatus, Is.EqualTo((int)castleStatus), "All Pieces Bitboard");
         }
@@ -72,7 +75,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         [TestCase(63U, 7U, CastleStatus.OOOCastle)]
         public void MakeMove_Sets_Can_Castle_When_White_Rook_Captured(uint fromMove, uint toMove, CastleStatus castleStatus)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("r3k2r/8/8/8/8/8/8/R3K2R b KQkq - 0 1");
+            var gameState = new GameState("r3k2r/8/8/8/8/8/8/R3K2R b KQkq - 0 1", _zobristHash);
 
             var move = 0U;
             move = move.SetFromMove(fromMove);
@@ -80,7 +83,7 @@ namespace DotNetEngine.Test.MakeMoveTests
             move = move.SetMovingPiece(MoveUtility.BlackRook);
             move = move.SetCapturedPiece(MoveUtility.WhiteRook);
 
-            gameState.MakeMove(move);
+            gameState.MakeMove(move, _zobristHash);
 
             Assert.That(gameState.CurrentWhiteCastleStatus, Is.EqualTo((int)castleStatus), "All Pieces Bitboard");
         }
@@ -88,15 +91,14 @@ namespace DotNetEngine.Test.MakeMoveTests
         [Test]
         public void MakeMove_Sets_50_Move_Rules_When_White_Rook_Moves()
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/3R4/8 w - - 0 1");
-            gameState.FiftyMoveRuleCount = 10;
+            var gameState = new GameState("8/8/8/8/8/8/3R4/8 w - - 0 1", _zobristHash) {FiftyMoveRuleCount = 10};
 
             var move = 0U;
             move = move.SetFromMove(11U);
             move = move.SetToMove(19U);
             move = move.SetMovingPiece(MoveUtility.WhiteRook);
 
-            gameState.MakeMove(move);
+            gameState.MakeMove(move, _zobristHash);
 
             Assert.That(gameState.FiftyMoveRuleCount, Is.EqualTo(11));
         }
@@ -104,8 +106,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         [Test]
         public void MakeMove_Sets_50_Move_Rules_When_White_Rook_Captures()
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/4p3/3R4/8 w - - 0 1");
-            gameState.FiftyMoveRuleCount = 10;
+            var gameState = new GameState("8/8/8/8/8/4p3/3R4/8 w - - 0 1", _zobristHash) {FiftyMoveRuleCount = 10};
 
             var move = 0U;
             move = move.SetFromMove(11U);
@@ -113,7 +114,7 @@ namespace DotNetEngine.Test.MakeMoveTests
             move = move.SetMovingPiece(MoveUtility.WhiteRook);
             move = move.SetCapturedPiece(MoveUtility.BlackPawn);
 
-            gameState.MakeMove(move);
+            gameState.MakeMove(move, _zobristHash);
 
             Assert.That(gameState.FiftyMoveRuleCount, Is.EqualTo(0));
         }
@@ -123,14 +124,14 @@ namespace DotNetEngine.Test.MakeMoveTests
         [Test]
         public void MakeMove_Sets_Rook_Bitboard_When_Black_Rook_Moves()
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/3r4/8 b - - 0 1");
+            var gameState = new GameState("8/8/8/8/8/8/3r4/8 b - - 0 1", _zobristHash);
 
             var move = 0U;
             move = move.SetFromMove(11U);
             move = move.SetToMove(19U);
             move = move.SetMovingPiece(MoveUtility.BlackRook);
 
-            gameState.MakeMove(move);
+            gameState.MakeMove(move, _zobristHash);
 
             Assert.That(gameState.BlackRooks, Is.EqualTo(MoveUtility.BitStates[19]), "Piece Bitboard");
         }
@@ -138,14 +139,14 @@ namespace DotNetEngine.Test.MakeMoveTests
         [Test]
         public void MakeMove_Sets_Black_Bitboard_When_Black_Rook_Moves()
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/3r4/8 b - - 0 1");
+            var gameState = new GameState("8/8/8/8/8/8/3r4/8 b - - 0 1", _zobristHash);
 
             var move = 0U;
             move = move.SetFromMove(11U);
             move = move.SetToMove(19U);
             move = move.SetMovingPiece(MoveUtility.BlackRook);
 
-            gameState.MakeMove(move);
+            gameState.MakeMove(move, _zobristHash);
 
             Assert.That(gameState.BlackPieces, Is.EqualTo(MoveUtility.BitStates[19]), "Piece Bitboard");
         }
@@ -153,14 +154,14 @@ namespace DotNetEngine.Test.MakeMoveTests
         [Test]
         public void MakeMove_Sets_AllPieces_Bitboard_When_Black_Rook_Moves()
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/3r4/8 b - - 0 1");
+            var gameState = new GameState("8/8/8/8/8/8/3r4/8 b - - 0 1", _zobristHash);
 
             var move = 0U;
             move = move.SetFromMove(11U);
             move = move.SetToMove(19U);
             move = move.SetMovingPiece(MoveUtility.BlackRook);
 
-            gameState.MakeMove(move);
+            gameState.MakeMove(move, _zobristHash);
 
             Assert.That(gameState.AllPieces, Is.EqualTo(MoveUtility.BitStates[19]), "All Pieces Bitboard");
         }
@@ -169,14 +170,14 @@ namespace DotNetEngine.Test.MakeMoveTests
         [TestCase(63U, 62U, CastleStatus.OOOCastle)]
         public void MakeMove_Sets_Can_Castle_When_Black_Rook_Moves(uint fromMove, uint toMove, CastleStatus castleStatus)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/8/R3K2R w KQkq - 0 1");
+            var gameState = new GameState("8/8/8/8/8/8/8/R3K2R w KQkq - 0 1", _zobristHash);
 
             var move = 0U;
             move = move.SetFromMove(fromMove);
             move = move.SetToMove(toMove);
             move = move.SetMovingPiece(MoveUtility.BlackRook);
 
-            gameState.MakeMove(move);
+            gameState.MakeMove(move, _zobristHash);
 
             Assert.That(gameState.CurrentBlackCastleStatus, Is.EqualTo((int)castleStatus), "All Pieces Bitboard");
         }
@@ -185,7 +186,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         [TestCase(7U, 63U, CastleStatus.OOOCastle)]
         public void MakeMove_Sets_Can_Castle_When_Black_Rook_Captured(uint fromMove, uint toMove, CastleStatus castleStatus)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1");
+            var gameState = new GameState("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1", _zobristHash);
 
             var move = 0U;
             move = move.SetFromMove(fromMove);
@@ -193,7 +194,7 @@ namespace DotNetEngine.Test.MakeMoveTests
             move = move.SetMovingPiece(MoveUtility.WhiteRook);
             move = move.SetCapturedPiece(MoveUtility.BlackRook);
 
-            gameState.MakeMove(move);
+            gameState.MakeMove(move, _zobristHash);
 
             Assert.That(gameState.CurrentBlackCastleStatus, Is.EqualTo((int)castleStatus), "All Pieces Bitboard");
         }
@@ -201,15 +202,14 @@ namespace DotNetEngine.Test.MakeMoveTests
         [Test]
         public void MakeMove_Sets_50_Move_Rules_When_Black_Rook_Moves()
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/8/3r4/8 b - - 0 1");
-            gameState.FiftyMoveRuleCount = 10;
+            var gameState = new GameState("8/8/8/8/8/8/3r4/8 b - - 0 1", _zobristHash) {FiftyMoveRuleCount = 10};
 
             var move = 0U;
             move = move.SetFromMove(11U);
             move = move.SetToMove(19U);
             move = move.SetMovingPiece(MoveUtility.BlackRook);
 
-            gameState.MakeMove(move);
+            gameState.MakeMove(move, _zobristHash);
 
             Assert.That(gameState.FiftyMoveRuleCount, Is.EqualTo(11));
         }
@@ -217,8 +217,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         [Test]
         public void MakeMove_Sets_50_Move_Rules_When_Black_Rook_Captures()
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen("8/8/8/8/8/4p3/3r4/8 b - - 0 1");
-            gameState.FiftyMoveRuleCount = 10;
+            var gameState = new GameState("8/8/8/8/8/4p3/3r4/8 b - - 0 1", _zobristHash) {FiftyMoveRuleCount = 10};
 
             var move = 0U;
             move = move.SetFromMove(11U);
@@ -226,7 +225,7 @@ namespace DotNetEngine.Test.MakeMoveTests
             move = move.SetMovingPiece(MoveUtility.BlackRook);
             move = move.SetCapturedPiece(MoveUtility.WhitePawn);
 
-            gameState.MakeMove(move);
+            gameState.MakeMove(move, _zobristHash);
 
             Assert.That(gameState.FiftyMoveRuleCount, Is.EqualTo(0));
         }
@@ -237,14 +236,14 @@ namespace DotNetEngine.Test.MakeMoveTests
         [TestCase("8/8/8/8/8/8/3r4/8 b - - 0 1", MoveUtility.BlackRook)]
         public void MakeMove_Sets_Board_Array_From_Square(string initialFen, uint movingPiece)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen(initialFen);
+            var gameState = new GameState(initialFen, _zobristHash);
 
             var move = 0U;
             move = move.SetFromMove(11U);
             move = move.SetToMove(19U);
             move = move.SetMovingPiece(movingPiece);
 
-            gameState.MakeMove(move);
+            gameState.MakeMove(move, _zobristHash);
 
             Assert.That(gameState.BoardArray[11U], Is.EqualTo(MoveUtility.EmptyPiece));
         }
@@ -253,14 +252,14 @@ namespace DotNetEngine.Test.MakeMoveTests
         [TestCase("8/8/8/8/8/8/3r4/8 b - - 0 1", MoveUtility.BlackRook)]
         public void MakeMove_Sets_Board_Array_To_Square(string initialFen, uint movingPiece)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen(initialFen);
+            var gameState = new GameState(initialFen, _zobristHash);
 
             var move = 0U;
             move = move.SetFromMove(11U);
             move = move.SetToMove(19U);
             move = move.SetMovingPiece(movingPiece);
 
-            gameState.MakeMove(move);
+            gameState.MakeMove(move, _zobristHash);
 
             Assert.That(gameState.BoardArray[19U], Is.EqualTo(movingPiece));
         }

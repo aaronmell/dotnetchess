@@ -10,7 +10,8 @@ namespace DotNetEngine.Test
     public class PerftTests
     {
         private readonly MoveData _moveData = new MoveData();
-	  
+        private static readonly ZobristHash _zobristHash = new ZobristHash();
+
         [TestCase("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", 0, 1)]
         [TestCase("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", 1, 20)]
         [TestCase("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", 2, 400)]
@@ -53,9 +54,9 @@ namespace DotNetEngine.Test
 
         public void RunPerft(string fen, int depth, long moveCount)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen(fen);
+            var gameState = new GameState(fen, _zobristHash);
             var perftData = new PerftData();
-            var count = gameState.RunPerftRecursively(_moveData, perftData, 1, depth);            
+            var count = gameState.RunPerftRecursively(_moveData, _zobristHash, perftData, 1, depth);            
             Assert.That(count, Is.EqualTo(moveCount));
         }
     }

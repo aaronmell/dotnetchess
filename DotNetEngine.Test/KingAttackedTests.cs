@@ -1,5 +1,4 @@
-﻿using DotNetEngine.Engine.Helpers;
-using DotNetEngine.Engine.Objects;
+﻿using DotNetEngine.Engine.Objects;
 using NUnit.Framework;
 
 namespace DotNetEngine.Test
@@ -8,7 +7,8 @@ namespace DotNetEngine.Test
     class KingAttackedTests
     {
         private readonly MoveData _moveData = new MoveData();
-       
+        private static readonly ZobristHash _zobristHash = new ZobristHash();
+
         [TestCase("8/8/8/8/3k4/PPPPPPPP/8/8 w - - 0 1", true)]
         [TestCase("8/8/8/3k4/8/PPPPPPPP/8/8 w - - 0 1", false)]
         [TestCase("8/8/8/8/8/PPPPPPPP/3k4/8 w - - 0 1", false)]
@@ -41,7 +41,7 @@ namespace DotNetEngine.Test
         [TestCase("8/8/4K3/1r6/8/8/5q2/8 b - - 0 1", false)]
         public void Returns_Opposite_Side_Correctly_When_White_Attacking(string fen, bool expectedResult)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen(fen);
+            var gameState = new GameState(fen, _zobristHash);
 
             var result = gameState.IsOppositeSideKingAttacked(_moveData);            
 
@@ -80,7 +80,7 @@ namespace DotNetEngine.Test
         [TestCase("8/8/4K3/1r6/8/8/5q2/8 w - - 0 1", false)]
         public void Returns_Current_Side_Correctly_When_Black_Attacking(string fen, bool expectedResult)
         {
-            var gameState = GameStateUtility.LoadGameStateFromFen(fen);
+            var gameState = new GameState(fen, _zobristHash);
 
             var result = gameState.IsCurrentSideKingAttacked(_moveData);        
 

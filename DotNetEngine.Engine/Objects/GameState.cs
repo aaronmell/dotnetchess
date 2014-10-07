@@ -1,6 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using DotNetEngine.Engine.Enums;
 using DotNetEngine.Engine.Helpers;
+using System.Linq;
 
 namespace DotNetEngine.Engine.Objects
 {
@@ -9,6 +13,11 @@ namespace DotNetEngine.Engine.Objects
     /// </summary>
     internal class GameState
     {
+        private static readonly char[] _files =
+        {
+            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'
+        };
+
         #region Internal Properties
 
         /// <summary>
@@ -128,20 +137,30 @@ namespace DotNetEngine.Engine.Objects
         internal uint[] BoardArray { get; private set; }
 
         /// <summary>
+        /// A Zobrist HashKey That uniquely identifies a position
+        /// </summary>
+        internal ulong HashKey { get; set; }
+
+        /// <summary>
         /// A stack containing all of the game state records, needed to unmake a move.
         /// </summary>
         internal Stack<GameStateRecord> PreviousGameStateRecords { get; set; }
-
         #endregion
 
         #region Constructor
 
-        internal GameState()
+        internal GameState(ZobristHash zobristHash)
+            : this("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", zobristHash)
+        {}
+
+        internal GameState(string fen, ZobristHash zobristHash)
         {
             BoardArray = new uint[64];
 
             Moves = new Dictionary<int, List<uint>>();
             PreviousGameStateRecords = new Stack<GameStateRecord>();
+
+            LoadGameStateFromFen(fen, zobristHash);
         }
 
         #endregion
@@ -152,7 +171,8 @@ namespace DotNetEngine.Engine.Objects
         /// Updates the gamestate to reflect a move being made
         /// </summary>
         /// <param name="move">The move to make</param>
-        internal void MakeMove(uint move)
+        /// <param name="zobristHash">The zobrist hash data to use</param>
+        internal void MakeMove(uint move, ZobristHash zobristHash)
         {
             var fromMove = move.GetFromMove();
             var toMove = move.GetToMove();
@@ -165,23 +185,31 @@ namespace DotNetEngine.Engine.Objects
             ulong fromAndToBitboard = fromBitboard | MoveUtility.BitStates[toMove];
 
             BoardArray[fromMove] = MoveUtility.EmptyPiece;
+
+            if (EnpassantTargetSquare > 0)
+                HashKey ^= zobristHash.EnPassantSquares[EnpassantTargetSquare];
+
             EnpassantTargetSquare = 0;
             FiftyMoveRuleCount++;
+            
+            HashKey ^= (zobristHash.PieceArray[fromMove][movingPiece] ^ zobristHash.PieceArray[toMove][movingPiece]);
 
             switch (movingPiece)
             {
                 case MoveUtility.WhitePawn:
                 {
+                    FiftyMoveRuleCount = 0;
                     WhitePawns ^= fromAndToBitboard;
                     WhitePieces ^= fromAndToBitboard;
 
                     BoardArray[toMove] = MoveUtility.WhitePawn;
-                    EnpassantTargetSquare = (MoveUtility.Ranks[fromMove] == 2 && MoveUtility.Ranks[toMove] == 4)
-                        ? fromMove + 8
-                        : 0;
-                    FiftyMoveRuleCount = 0;
 
-
+                    if (MoveUtility.Ranks[fromMove] == 2 && MoveUtility.Ranks[toMove] == 4)
+                    {
+                        EnpassantTargetSquare = fromMove + 8;
+                        HashKey ^= zobristHash.EnPassantSquares[fromMove + 8];
+                    }
+                    
                     if (capturedPiece > 0)
                     {
                         if (move.IsEnPassant())
@@ -190,11 +218,11 @@ namespace DotNetEngine.Engine.Objects
                             BlackPieces ^= MoveUtility.BitStates[toMove - 8];
                             AllPieces ^= fromAndToBitboard | MoveUtility.BitStates[toMove - 8];
                             BoardArray[toMove - 8] = MoveUtility.EmptyPiece;
+                            HashKey ^= zobristHash.PieceArray[toMove - 8][MoveUtility.BlackPawn];
                         }
                         else
                         {
-                            CapturePiece(toMove, capturedPiece, fromBitboard);
-
+                           CapturePiece(zobristHash, toMove, capturedPiece, fromBitboard);
                         }
                     }
                     else
@@ -204,7 +232,7 @@ namespace DotNetEngine.Engine.Objects
 
                     if (move.IsPromotion())
                     {
-                        PromotePiece(move.GetPromotedPiece(), toMove);
+                        PromotePiece(zobristHash, move.GetPromotedPiece(), toMove);
                         BoardArray[toMove] = move.GetPromotedPiece();
                     }
                     break;
@@ -213,14 +241,19 @@ namespace DotNetEngine.Engine.Objects
                 {
                     WhiteKing ^= fromAndToBitboard;
                     WhitePieces ^= fromAndToBitboard;
-
                     BoardArray[toMove] = MoveUtility.WhiteKing;
 
-                    CurrentWhiteCastleStatus = (int) CastleStatus.CannotCastle;
+                    if (CurrentWhiteCastleStatus == 1 || CurrentWhiteCastleStatus == 3) 
+                        HashKey ^= zobristHash.WhiteCanCastleOO;
+
+                    if (CurrentWhiteCastleStatus == 2 || CurrentWhiteCastleStatus == 3)
+                        HashKey ^= zobristHash.WhiteCanCastleOOO;
+
+                    CurrentWhiteCastleStatus = (int)CastleStatus.CannotCastle;
 
                     if (capturedPiece > 0)
                     {
-                        CapturePiece(toMove, capturedPiece, fromBitboard);
+                       CapturePiece(zobristHash, toMove, capturedPiece, fromBitboard);
                     }
                     else
                     {
@@ -236,6 +269,9 @@ namespace DotNetEngine.Engine.Objects
                             AllPieces ^= MoveUtility.BitStates[5] | MoveUtility.BitStates[7];
                             BoardArray[7] = MoveUtility.EmptyPiece;
                             BoardArray[5] = MoveUtility.WhiteRook;
+
+                            HashKey ^= (zobristHash.PieceArray[5][MoveUtility.WhiteRook] ^
+                                        zobristHash.PieceArray[7][MoveUtility.WhiteRook]);
                         }
                         else
                         {
@@ -244,6 +280,9 @@ namespace DotNetEngine.Engine.Objects
                             AllPieces ^= MoveUtility.BitStates[0] | MoveUtility.BitStates[3];
                             BoardArray[0] = MoveUtility.EmptyPiece;
                             BoardArray[3] = MoveUtility.WhiteRook;
+
+                            HashKey ^= (zobristHash.PieceArray[0][MoveUtility.WhiteRook] ^
+                                       zobristHash.PieceArray[3][MoveUtility.WhiteRook]);
                         }
                     }
                     break;
@@ -257,7 +296,7 @@ namespace DotNetEngine.Engine.Objects
 
                     if (capturedPiece > 0)
                     {
-                        CapturePiece(toMove, capturedPiece, fromBitboard);
+                       CapturePiece(zobristHash, toMove, capturedPiece, fromBitboard);
                     }
                     else
                     {
@@ -274,7 +313,7 @@ namespace DotNetEngine.Engine.Objects
 
                     if (capturedPiece > 0)
                     {
-                        CapturePiece(toMove, capturedPiece, fromBitboard);
+                       CapturePiece(zobristHash, toMove, capturedPiece, fromBitboard);
                     }
                     else
                     {
@@ -291,16 +330,24 @@ namespace DotNetEngine.Engine.Objects
 
                     if (fromMove == 0)
                     {
-                        CurrentWhiteCastleStatus &= ~(int) CastleStatus.OOOCastle;
+                        if ((CurrentWhiteCastleStatus == 2 || CurrentWhiteCastleStatus == 3))
+                        {
+                            CurrentWhiteCastleStatus &= ~(int) CastleStatus.OOOCastle;
+                            HashKey ^= zobristHash.WhiteCanCastleOOO;
+                        }
                     }
                     if (fromMove == 7)
                     {
-                        CurrentWhiteCastleStatus &= ~(int) CastleStatus.OOCastle;
+                        if ((CurrentWhiteCastleStatus == 1 || CurrentWhiteCastleStatus == 3))
+                        {
+                            CurrentWhiteCastleStatus &= ~(int) CastleStatus.OOCastle;
+                            HashKey ^= zobristHash.WhiteCanCastleOO;
+                        }
                     }
 
                     if (capturedPiece > 0)
                     {
-                        CapturePiece(toMove, capturedPiece, fromBitboard);
+                       CapturePiece(zobristHash, toMove, capturedPiece, fromBitboard);
                     }
                     else
                     {
@@ -317,7 +364,7 @@ namespace DotNetEngine.Engine.Objects
 
                     if (capturedPiece > 0)
                     {
-                        CapturePiece(toMove, capturedPiece, fromBitboard);
+                       CapturePiece(zobristHash, toMove, capturedPiece, fromBitboard);
                     }
                     else
                     {
@@ -327,15 +374,17 @@ namespace DotNetEngine.Engine.Objects
                 }
                 case MoveUtility.BlackPawn:
                 {
+                    FiftyMoveRuleCount = 0;
                     BlackPawns ^= fromAndToBitboard;
                     BlackPieces ^= fromAndToBitboard;
 
                     BoardArray[toMove] = MoveUtility.BlackPawn;
 
-                    EnpassantTargetSquare = (MoveUtility.Ranks[fromMove] == 7 && MoveUtility.Ranks[toMove] == 5)
-                        ? fromMove - 8
-                        : 0;
-                    FiftyMoveRuleCount = 0;
+                    if (MoveUtility.Ranks[fromMove] == 7 && MoveUtility.Ranks[toMove] == 5)
+                    {
+                        EnpassantTargetSquare = fromMove - 8;
+                        HashKey ^= zobristHash.EnPassantSquares[fromMove - 8];
+                    }
 
                     if (capturedPiece > 0)
                     {
@@ -345,10 +394,12 @@ namespace DotNetEngine.Engine.Objects
                             WhitePieces ^= MoveUtility.BitStates[toMove + 8];
                             AllPieces ^= fromAndToBitboard | MoveUtility.BitStates[toMove + 8];
                             BoardArray[toMove + 8] = MoveUtility.EmptyPiece;
+                            HashKey ^= zobristHash.PieceArray[toMove + 8][MoveUtility.WhitePawn];
+
                         }
                         else
                         {
-                            CapturePiece(toMove, capturedPiece, fromBitboard);
+                           CapturePiece(zobristHash, toMove, capturedPiece, fromBitboard);
                         }
                     }
                     else
@@ -358,7 +409,7 @@ namespace DotNetEngine.Engine.Objects
 
                     if (move.IsPromotion())
                     {
-                        PromotePiece(move.GetPromotedPiece(), toMove);
+                        PromotePiece(zobristHash, move.GetPromotedPiece(), toMove);
                         BoardArray[toMove] = move.GetPromotedPiece();
                     }
                     break;
@@ -367,14 +418,19 @@ namespace DotNetEngine.Engine.Objects
                 {
                     BlackKing ^= fromAndToBitboard;
                     BlackPieces ^= fromAndToBitboard;
-
                     BoardArray[toMove] = MoveUtility.BlackKing;
+
+                    if (CurrentBlackCastleStatus == 1 || CurrentBlackCastleStatus == 3)
+                        HashKey ^= zobristHash.BlackCanCastleOO;
+
+                    if (CurrentBlackCastleStatus == 2 || CurrentBlackCastleStatus == 3)
+                        HashKey ^= zobristHash.BlackCanCastleOOO;
 
                     CurrentBlackCastleStatus = (int) CastleStatus.CannotCastle;
 
                     if (capturedPiece > 0)
                     {
-                        CapturePiece(toMove, capturedPiece, fromBitboard);
+                       CapturePiece(zobristHash, toMove, capturedPiece, fromBitboard);
                     }
                     else
                     {
@@ -390,6 +446,10 @@ namespace DotNetEngine.Engine.Objects
                             AllPieces ^= MoveUtility.BitStates[61] | MoveUtility.BitStates[63];
                             BoardArray[63] = MoveUtility.EmptyPiece;
                             BoardArray[61] = MoveUtility.BlackRook;
+
+                            HashKey ^= (zobristHash.PieceArray[61][MoveUtility.BlackRook] ^
+                                zobristHash.PieceArray[63][MoveUtility.BlackRook]);
+
                         }
                         else
                         {
@@ -398,6 +458,9 @@ namespace DotNetEngine.Engine.Objects
                             AllPieces ^= MoveUtility.BitStates[56] | MoveUtility.BitStates[59];
                             BoardArray[56] = MoveUtility.EmptyPiece;
                             BoardArray[59] = MoveUtility.BlackRook;
+
+                            HashKey ^= (zobristHash.PieceArray[56][MoveUtility.BlackRook] ^
+                               zobristHash.PieceArray[59][MoveUtility.BlackRook]);
                         }
                     }
                     break;
@@ -411,7 +474,7 @@ namespace DotNetEngine.Engine.Objects
 
                     if (capturedPiece > 0)
                     {
-                        CapturePiece(toMove, capturedPiece, fromBitboard);
+                       CapturePiece(zobristHash, toMove, capturedPiece, fromBitboard);
                     }
                     else
                     {
@@ -428,7 +491,7 @@ namespace DotNetEngine.Engine.Objects
 
                     if (capturedPiece > 0)
                     {
-                        CapturePiece(toMove, capturedPiece, fromBitboard);
+                       CapturePiece(zobristHash, toMove, capturedPiece, fromBitboard);
                     }
                     else
                     {
@@ -445,16 +508,24 @@ namespace DotNetEngine.Engine.Objects
 
                     if (fromMove == 56)
                     {
-                        CurrentBlackCastleStatus &= ~(int) CastleStatus.OOOCastle;
+                        if ((CurrentBlackCastleStatus == 2 || CurrentBlackCastleStatus == 3))
+                        {
+                            CurrentBlackCastleStatus &= ~(int)CastleStatus.OOOCastle;
+                            HashKey ^= zobristHash.BlackCanCastleOOO;
+                        }
                     }
                     if (fromMove == 63)
                     {
-                        CurrentBlackCastleStatus &= ~(int) CastleStatus.OOCastle;
+                        if ((CurrentBlackCastleStatus == 1 || CurrentBlackCastleStatus == 3))
+                        {
+                            CurrentBlackCastleStatus &= ~(int) CastleStatus.OOCastle;
+                            HashKey ^= zobristHash.BlackCanCastleOO;
+                        }
                     }
 
                     if (capturedPiece > 0)
                     {
-                        CapturePiece(toMove, capturedPiece, fromBitboard);
+                       CapturePiece(zobristHash, toMove, capturedPiece, fromBitboard);
                     }
                     else
                     {
@@ -471,7 +542,7 @@ namespace DotNetEngine.Engine.Objects
 
                     if (capturedPiece > 0)
                     {
-                        CapturePiece(toMove, capturedPiece, fromBitboard);
+                       CapturePiece(zobristHash, toMove, capturedPiece, fromBitboard);
                     }
                     else
                     {
@@ -481,6 +552,7 @@ namespace DotNetEngine.Engine.Objects
                 }
             }
             WhiteToMove = !WhiteToMove;
+            HashKey ^= zobristHash.WhiteToMove;
         }
 
         /// <summary>
@@ -815,6 +887,223 @@ namespace DotNetEngine.Engine.Objects
 
         #region Private Methods
 
+        private void LoadGameStateFromFen(string fen, ZobristHash zobristHash)
+        {
+            fen = fen.Trim(' ');
+
+            var splitFen = fen.Split(' ');
+
+            if (splitFen.Count() < 4)
+                throw new InvalidDataException(
+                    string.Format("The number of fields in the FEN string were incorrect. Expected 4, Received {0}",
+                        splitFen.Count()));
+
+            var ranks = splitFen[0].Split('/');
+
+            if (ranks.Count() != 8)
+                throw new InvalidDataException(
+                    string.Format("The number of rows in the FEN string were incorrect. Expected 8, Received {0}",
+                        splitFen.Count()));
+
+            var castleStatus = splitFen[2];
+            var whiteCastleStatus = 0;
+            var blackCastleStatus = 0;
+
+            if (castleStatus.Contains("Q"))
+                whiteCastleStatus += 2;
+            if (castleStatus.Contains("K"))
+                whiteCastleStatus += 1;
+
+            if (castleStatus.Contains("q"))
+                blackCastleStatus += 2;
+            if (castleStatus.Contains("k"))
+                blackCastleStatus += 1;
+            
+            FiftyMoveRuleCount = splitFen.Length > 4 ? int.Parse(splitFen[4]) : 0;
+            TotalMoveCount = splitFen.Length > 5 ? int.Parse(splitFen[5]) : 0;
+            WhiteToMove = splitFen[1].ToLower() == "w";
+            CurrentWhiteCastleStatus = whiteCastleStatus;
+            CurrentBlackCastleStatus = blackCastleStatus;
+            EnpassantTargetSquare = GetEnPassantSquare(splitFen[3]);
+
+            if (WhiteToMove)
+                HashKey ^= zobristHash.WhiteToMove;
+
+            if (CurrentWhiteCastleStatus == (int)CastleStatus.BothCastle || CurrentWhiteCastleStatus == (int)CastleStatus.OOCastle)
+            {
+                HashKey ^= zobristHash.WhiteCanCastleOO;
+            }
+
+            if (CurrentWhiteCastleStatus == (int)CastleStatus.BothCastle || CurrentWhiteCastleStatus == (int)CastleStatus.OOOCastle)
+            {
+                HashKey ^= zobristHash.WhiteCanCastleOOO;
+            }
+
+            if (CurrentBlackCastleStatus == (int)CastleStatus.BothCastle || CurrentBlackCastleStatus == (int)CastleStatus.OOCastle)
+            {
+                HashKey ^= zobristHash.BlackCanCastleOO;
+            }
+
+            if (CurrentBlackCastleStatus == (int)CastleStatus.BothCastle || CurrentBlackCastleStatus == (int)CastleStatus.OOOCastle)
+            {
+                HashKey ^= zobristHash.BlackCanCastleOOO;
+            }
+
+            if (EnpassantTargetSquare > 0)
+            {
+                HashKey ^= zobristHash.EnPassantSquares[EnpassantTargetSquare];
+            }
+
+            var rankNumber = 7;
+            foreach (var rank in ranks)
+            {
+                var file = 0;
+                foreach (var c in rank)
+                {
+                    //Rank is empty
+                    if (c == '8')
+                        break;
+
+                    var boardArrayPosition = (rankNumber * 8 + file);
+                    var currentPosition = MoveUtility.BitStates[boardArrayPosition];
+
+                    switch (c)
+                    {
+                        case 'p':
+                            {
+                                BoardArray[boardArrayPosition] = MoveUtility.BlackPawn;
+                                BlackPawns += currentPosition;
+                                BlackPieces += currentPosition;
+                                AllPieces += currentPosition;
+                                HashKey ^= zobristHash.PieceArray[boardArrayPosition][MoveUtility.BlackPawn];
+                                break;
+                            }
+                        case 'k':
+                            {
+                                BoardArray[boardArrayPosition] = MoveUtility.BlackKing;
+                                BlackKing += currentPosition;
+                                BlackPieces += currentPosition;
+                                AllPieces += currentPosition;
+                                HashKey ^= zobristHash.PieceArray[boardArrayPosition][MoveUtility.BlackKing];
+                                break;
+                            }
+                        case 'q':
+                            {
+                                BoardArray[boardArrayPosition] = MoveUtility.BlackQueen;
+                                BlackQueens += currentPosition;
+                                BlackPieces += currentPosition;
+                                AllPieces += currentPosition;
+                                HashKey ^= zobristHash.PieceArray[boardArrayPosition][MoveUtility.BlackQueen];
+                                break;
+                            }
+                        case 'r':
+                            {
+                                BoardArray[boardArrayPosition] = MoveUtility.BlackRook;
+                                BlackRooks += currentPosition;
+                                BlackPieces += currentPosition;
+                                AllPieces += currentPosition;
+                                HashKey ^= zobristHash.PieceArray[boardArrayPosition][MoveUtility.BlackRook];
+                                break;
+                            }
+                        case 'n':
+                            {
+                                BoardArray[boardArrayPosition] = MoveUtility.BlackKnight;
+                                BlackKnights += currentPosition;
+                                BlackPieces += currentPosition;
+                                AllPieces += currentPosition;
+                                HashKey ^= zobristHash.PieceArray[boardArrayPosition][MoveUtility.BlackKnight];
+                                break;
+                            }
+                        case 'b':
+                            {
+                                BoardArray[boardArrayPosition] = MoveUtility.BlackBishop;
+                                BlackBishops += currentPosition;
+                                BlackPieces += currentPosition;
+                                AllPieces += currentPosition;
+                                HashKey ^= zobristHash.PieceArray[boardArrayPosition][MoveUtility.BlackBishop];
+                                break;
+                            }
+
+                        case 'P':
+                            {
+                                BoardArray[boardArrayPosition] = MoveUtility.WhitePawn;
+                                WhitePawns += currentPosition;
+                                WhitePieces += currentPosition;
+                                AllPieces += currentPosition;
+                                HashKey ^= zobristHash.PieceArray[boardArrayPosition][MoveUtility.WhitePawn];
+                                break;
+                            }
+                        case 'K':
+                            {
+                                BoardArray[boardArrayPosition] = MoveUtility.WhiteKing;
+                                WhiteKing += currentPosition;
+                                WhitePieces += currentPosition;
+                                AllPieces += currentPosition;
+                                HashKey ^= zobristHash.PieceArray[boardArrayPosition][MoveUtility.WhiteKing];
+                                break;
+                            }
+                        case 'Q':
+                            {
+                                BoardArray[boardArrayPosition] = MoveUtility.WhiteQueen;
+                                WhiteQueens += currentPosition;
+                                WhitePieces += currentPosition;
+                                AllPieces += currentPosition;
+                                HashKey ^= zobristHash.PieceArray[boardArrayPosition][MoveUtility.WhiteQueen];
+                                break;
+                            }
+                        case 'R':
+                            {
+                                BoardArray[boardArrayPosition] = MoveUtility.WhiteRook;
+                                WhiteRooks += currentPosition;
+                                WhitePieces += currentPosition;
+                                AllPieces += currentPosition;
+                                HashKey ^= zobristHash.PieceArray[boardArrayPosition][MoveUtility.WhiteRook];
+
+                                break;
+                            }
+                        case 'N':
+                            {
+                                BoardArray[boardArrayPosition] = MoveUtility.WhiteKnight;
+                                WhiteKnights += currentPosition;
+                                WhitePieces += currentPosition;
+                                AllPieces += currentPosition;
+                                HashKey ^= zobristHash.PieceArray[boardArrayPosition][MoveUtility.WhiteKnight];
+                                break;
+                            }
+                        case 'B':
+                            {
+                                BoardArray[boardArrayPosition] = MoveUtility.WhiteBishop;
+                                WhiteBishops += currentPosition;
+                                WhitePieces += currentPosition;
+                                AllPieces += currentPosition;
+                                HashKey ^= zobristHash.PieceArray[boardArrayPosition][MoveUtility.WhiteBishop];
+                                break;
+                            }
+                        default:
+                            {
+                                file += int.Parse(c.ToString(CultureInfo.InvariantCulture)) - 1;
+                                break;
+                            }
+                    }
+                    file++;
+                }
+                rankNumber--;
+            }
+        }
+
+        private static uint GetEnPassantSquare(string enpassant)
+        {
+            if (enpassant == "-")
+                return 0;
+
+            var file = char.Parse(enpassant.Substring(0, 1));
+            var rank = int.Parse(enpassant.Substring(1, 1)) - 1;
+
+            var fileNumber = Array.IndexOf(_files, file);
+
+            return (uint)((rank * 8) + fileNumber);
+        }
+
         private void UnPromotePiece(uint promotedPiece, uint toMove)
         {
             var toBitBoard = MoveUtility.BitStates[toMove];
@@ -877,13 +1166,15 @@ namespace DotNetEngine.Engine.Objects
             }
         }
 
-        private void PromotePiece(uint promotedPiece, uint toMove)
+        private void PromotePiece(ZobristHash zobristHash, uint promotedPiece, uint toMove)
         {
             var toBitBoard = MoveUtility.BitStates[toMove];
 
             if (WhiteToMove)
             {
                 WhitePawns ^= toBitBoard;
+                HashKey ^= (zobristHash.PieceArray[toMove][MoveUtility.WhitePawn] ^
+                            zobristHash.PieceArray[toMove][promotedPiece]);
 
                 switch (promotedPiece)
                 {
@@ -912,6 +1203,8 @@ namespace DotNetEngine.Engine.Objects
             else
             {
                 BlackPawns ^= toBitBoard;
+                HashKey ^= (zobristHash.PieceArray[toMove][MoveUtility.BlackPawn] ^
+                            zobristHash.PieceArray[toMove][promotedPiece]);
 
                 switch (promotedPiece)
                 {
@@ -1055,9 +1348,10 @@ namespace DotNetEngine.Engine.Objects
             }
         }
 
-        private void CapturePiece(uint toMove, uint capturedPiece, ulong fromBitBoard)
+        private void CapturePiece(ZobristHash zobristHash, uint toMove, uint capturedPiece, ulong fromBitBoard)
         {
             var toBitBoard = MoveUtility.BitStates[toMove];
+            HashKey ^= zobristHash.PieceArray[toMove][capturedPiece];
 
             FiftyMoveRuleCount = 0;
             AllPieces ^= fromBitBoard;
@@ -1093,13 +1387,21 @@ namespace DotNetEngine.Engine.Objects
                     WhiteRooks ^= toBitBoard;
                     WhitePieces ^= toBitBoard;
 
-                    if (toMove == 0)
+                   if (toMove == 0)
                     {
-                        CurrentWhiteCastleStatus &= ~(int) CastleStatus.OOOCastle;
+                        if ((CurrentWhiteCastleStatus == 2 || CurrentWhiteCastleStatus == 3))
+                        {
+                            CurrentWhiteCastleStatus &= ~(int) CastleStatus.OOOCastle;
+                            HashKey ^= zobristHash.WhiteCanCastleOOO;
+                        }
                     }
                     if (toMove == 7)
                     {
-                        CurrentWhiteCastleStatus &= ~(int) CastleStatus.OOCastle;
+                        if ((CurrentWhiteCastleStatus == 1 || CurrentWhiteCastleStatus == 3))
+                        {
+                            CurrentWhiteCastleStatus &= ~(int) CastleStatus.OOCastle;
+                            HashKey ^= zobristHash.WhiteCanCastleOO;
+                        }
                     }
                     break;
                 }
@@ -1140,11 +1442,19 @@ namespace DotNetEngine.Engine.Objects
 
                     if (toMove == 56)
                     {
-                        CurrentBlackCastleStatus &= ~(int) CastleStatus.OOOCastle;
+                        if ((CurrentBlackCastleStatus == 2 || CurrentBlackCastleStatus == 3))
+                        {
+                            CurrentBlackCastleStatus &= ~(int)CastleStatus.OOOCastle;
+                            HashKey ^= zobristHash.BlackCanCastleOOO;
+                        }
                     }
                     if (toMove == 63)
                     {
-                        CurrentBlackCastleStatus &= ~(int) CastleStatus.OOCastle;
+                        if ((CurrentBlackCastleStatus == 1 || CurrentBlackCastleStatus == 3))
+                        {
+                            CurrentBlackCastleStatus &= ~(int)CastleStatus.OOCastle;
+                            HashKey ^= zobristHash.BlackCanCastleOO;
+                        }
                     }
 
                     break;
@@ -1166,7 +1476,8 @@ namespace DotNetEngine.Engine.Objects
                 CurrentWhiteCastleStatus = CurrentWhiteCastleStatus,
                 CurrentBlackCastleStatus = CurrentBlackCastleStatus,
                 EnpassantTargetSquare = EnpassantTargetSquare,
-                FiftyMoveRuleCount = FiftyMoveRuleCount
+                FiftyMoveRuleCount = FiftyMoveRuleCount,
+                HashKey = HashKey
             };
         }
 
@@ -1176,6 +1487,7 @@ namespace DotNetEngine.Engine.Objects
             CurrentBlackCastleStatus = gameStateRecord.CurrentBlackCastleStatus;
             EnpassantTargetSquare = gameStateRecord.EnpassantTargetSquare;
             FiftyMoveRuleCount = gameStateRecord.FiftyMoveRuleCount;
+            HashKey = gameStateRecord.HashKey;
         }
 
         #endregion

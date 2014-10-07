@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Linq;
 using System.Text;
 using Common.Logging;
 using DotNetEngine.Engine.Enums;
@@ -18,12 +15,6 @@ namespace DotNetEngine.Engine.Helpers
         #region Private Properties
 
         private static readonly string _divideOutput = "Move Nodes" + Environment.NewLine;
-
-        private static readonly char[] _files =
-        {
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'
-        };
-
         private static readonly ILog _logger = LogManager.GetCurrentClassLogger();
 
         #endregion
@@ -232,11 +223,12 @@ namespace DotNetEngine.Engine.Helpers
         /// </summary>
         /// <param name="gameState">The gamestate being tested</param>
         /// <param name="moveData">The moveData to use</param>
+        /// <param name="zobristHash">The zobristHash data to use</param>
         /// <param name="perftData">The perft data. This is used if collection additional information about perft</param>
         /// <param name="ply">The ply to start the search on</param>
         /// <param name="depth">The depth of perft to run</param>
         /// <returns>A count of the total number of nodes at depth 0</returns>
-        internal static ulong RunPerftRecursively(this GameState gameState, MoveData moveData, PerftData perftData,
+        internal static ulong RunPerftRecursively(this GameState gameState, MoveData moveData, ZobristHash zobristHash, PerftData perftData,
             int ply, int depth)
         {
             if (depth == 0)
@@ -253,7 +245,7 @@ namespace DotNetEngine.Engine.Helpers
 
 #if DEBUG
                 var boardArray = new uint[64];
-
+                var previousHash = gameState.HashKey;
                 for (var i = 0; i < boardArray.Length - 1; i++)
                 {
                     boardArray[i] = gameState.BoardArray[i];
@@ -273,7 +265,7 @@ namespace DotNetEngine.Engine.Helpers
                 }
 
 #endif
-                gameState.MakeMove(move);
+                gameState.MakeMove(move, zobristHash);
 
 #if DEBUG
                 if (_logger.IsTraceEnabled)
@@ -289,7 +281,7 @@ namespace DotNetEngine.Engine.Helpers
 
                 if (!gameState.IsOppositeSideKingAttacked(moveData))
                 {
-                    count += RunPerftRecursively(gameState, moveData, perftData, ply + 1, depth - 1);
+                    count += RunPerftRecursively(gameState, moveData, zobristHash, perftData, ply + 1, depth - 1);
 #if DEBUG
                     if (depth == 1)
                     {
@@ -326,6 +318,8 @@ namespace DotNetEngine.Engine.Helpers
                 {
                     Debug.Assert(boardArray[i] == gameState.BoardArray[i]);
                 }
+
+                Debug.Assert(previousHash == gameState.HashKey);
 #endif
             }
             return count;
@@ -336,10 +330,11 @@ namespace DotNetEngine.Engine.Helpers
         /// </summary>
         /// <param name="gameState">The gamestate being tested</param>
         /// <param name="moveData">The moveData to use</param>
+        /// <param name="zobristHash">The zobrist hash data to use</param>
         /// <param name="perftData">The perft data. This is used if collection additional information about perft</param>
         /// <param name="ply">The ply to start the search on</param>
         /// <param name="depth">The depth of perft to run</param>
-        internal static void CalculateDivide(this GameState gameState, MoveData moveData, PerftData perftData, int ply,
+        internal static void CalculateDivide(this GameState gameState, MoveData moveData, ZobristHash zobristHash, PerftData perftData, int ply,
             int depth)
         {
             var sb = new StringBuilder(_divideOutput);
@@ -349,11 +344,11 @@ namespace DotNetEngine.Engine.Helpers
 
             foreach (var move in gameState.Moves[ply])
             {
-                gameState.MakeMove(move);
+                gameState.MakeMove(move, zobristHash);
 
                 if (!gameState.IsOppositeSideKingAttacked(moveData))
                 {
-                    ulong moveCount = RunPerftRecursively(gameState, moveData, perftData, ply + 1, depth - 1);
+                    ulong moveCount = RunPerftRecursively(gameState, moveData, zobristHash, perftData, ply + 1, depth - 1);
                     sb.AppendFormat("{0}{1} {2}{3}", MoveUtility.RankAndFile[move.GetFromMove()],
                         MoveUtility.RankAndFile[move.GetToMove()], moveCount, Environment.NewLine);
                     count += moveCount;
@@ -364,196 +359,6 @@ namespace DotNetEngine.Engine.Helpers
             _logger.InfoFormat(sb.ToString());
 
         }
-
-        /// <summary>
-        /// Take a FEN string and converts it into a GameState object
-        /// </summary>
-        /// <param name="fen">The fen string to be loaded</param>
-        internal static GameState LoadGameStateFromFen(string fen)
-        {
-            fen = fen.Trim(' ');
-
-            var splitFen = fen.Split(' ');
-
-            if (splitFen.Count() < 4)
-                throw new InvalidDataException(
-                    string.Format("The number of fields in the FEN string were incorrect. Expected 4, Received {0}",
-                        splitFen.Count()));
-
-            var ranks = splitFen[0].Split('/');
-
-            if (ranks.Count() != 8)
-                throw new InvalidDataException(
-                    string.Format("The number of rows in the FEN string were incorrect. Expected 8, Received {0}",
-                        splitFen.Count()));
-
-            var castleStatus = splitFen[2];
-            var whiteCastleStatus = 0;
-            var blackCastleStatus = 0;
-
-            if (castleStatus.Contains("Q"))
-                whiteCastleStatus += 2;
-            if (castleStatus.Contains("K"))
-                whiteCastleStatus += 1;
-
-            if (castleStatus.Contains("q"))
-                blackCastleStatus += 2;
-            if (castleStatus.Contains("k"))
-                blackCastleStatus += 1;
-
-            var gameState = new GameState
-            {
-                FiftyMoveRuleCount = splitFen.Length > 4 ? int.Parse(splitFen[4]) : 0,
-                TotalMoveCount = splitFen.Length > 5 ? int.Parse(splitFen[5]) : 0,
-                WhiteToMove = splitFen[1].ToLower() == "w",
-                CurrentWhiteCastleStatus = whiteCastleStatus,
-                CurrentBlackCastleStatus = blackCastleStatus,
-                EnpassantTargetSquare = GetEnPassantSquare(splitFen[3])
-            };
-
-            var rankNumber = 7;
-            foreach (var rank in ranks)
-            {
-                var file = 0;
-                foreach (var c in rank)
-                {
-                    //Rank is empty
-                    if (c == '8')
-                        break;
-
-                    var boardArrayPosition = (rankNumber*8 + file);
-                    var currentPosition = MoveUtility.BitStates[boardArrayPosition];
-
-                    switch (c)
-                    {
-                        case 'p':
-                        {
-                            gameState.BoardArray[boardArrayPosition] = MoveUtility.BlackPawn;
-                            gameState.BlackPawns += currentPosition;
-                            gameState.BlackPieces += currentPosition;
-                            gameState.AllPieces += currentPosition;
-                            break;
-                        }
-                        case 'k':
-                        {
-                            gameState.BoardArray[boardArrayPosition] = MoveUtility.BlackKing;
-                            gameState.BlackKing += currentPosition;
-                            gameState.BlackPieces += currentPosition;
-                            gameState.AllPieces += currentPosition;
-                            break;
-                        }
-                        case 'q':
-                        {
-                            gameState.BoardArray[boardArrayPosition] = MoveUtility.BlackQueen;
-                            gameState.BlackQueens += currentPosition;
-                            gameState.BlackPieces += currentPosition;
-                            gameState.AllPieces += currentPosition;
-                            break;
-                        }
-                        case 'r':
-                        {
-                            gameState.BoardArray[boardArrayPosition] = MoveUtility.BlackRook;
-                            gameState.BlackRooks += currentPosition;
-                            gameState.BlackPieces += currentPosition;
-                            gameState.AllPieces += currentPosition;
-                            break;
-                        }
-                        case 'n':
-                        {
-                            gameState.BoardArray[boardArrayPosition] = MoveUtility.BlackKnight;
-                            gameState.BlackKnights += currentPosition;
-                            gameState.BlackPieces += currentPosition;
-                            gameState.AllPieces += currentPosition;
-                            break;
-                        }
-                        case 'b':
-                        {
-                            gameState.BoardArray[boardArrayPosition] = MoveUtility.BlackBishop;
-                            gameState.BlackBishops += currentPosition;
-                            gameState.BlackPieces += currentPosition;
-                            gameState.AllPieces += currentPosition;
-                            break;
-                        }
-
-                        case 'P':
-                        {
-                            gameState.BoardArray[boardArrayPosition] = MoveUtility.WhitePawn;
-                            gameState.WhitePawns += currentPosition;
-                            gameState.WhitePieces += currentPosition;
-                            gameState.AllPieces += currentPosition;
-                            break;
-                        }
-                        case 'K':
-                        {
-                            gameState.BoardArray[boardArrayPosition] = MoveUtility.WhiteKing;
-                            gameState.WhiteKing += currentPosition;
-                            gameState.WhitePieces += currentPosition;
-                            gameState.AllPieces += currentPosition;
-                            break;
-                        }
-                        case 'Q':
-                        {
-                            gameState.BoardArray[boardArrayPosition] = MoveUtility.WhiteQueen;
-                            gameState.WhiteQueens += currentPosition;
-                            gameState.WhitePieces += currentPosition;
-                            gameState.AllPieces += currentPosition;
-                            break;
-                        }
-                        case 'R':
-                        {
-                            gameState.BoardArray[boardArrayPosition] = MoveUtility.WhiteRook;
-                            gameState.WhiteRooks += currentPosition;
-                            gameState.WhitePieces += currentPosition;
-                            gameState.AllPieces += currentPosition;
-
-                            break;
-                        }
-                        case 'N':
-                        {
-                            gameState.BoardArray[boardArrayPosition] = MoveUtility.WhiteKnight;
-                            gameState.WhiteKnights += currentPosition;
-                            gameState.WhitePieces += currentPosition;
-                            gameState.AllPieces += currentPosition;
-                            break;
-                        }
-                        case 'B':
-                        {
-                            gameState.BoardArray[boardArrayPosition] = MoveUtility.WhiteBishop;
-                            gameState.WhiteBishops += currentPosition;
-                            gameState.WhitePieces += currentPosition;
-                            gameState.AllPieces += currentPosition;
-                            break;
-                        }
-                        default:
-                        {
-                            file += int.Parse(c.ToString(CultureInfo.InvariantCulture)) - 1;
-                            break;
-                        }
-                    }
-                    file++;
-                }
-                rankNumber--;
-            }
-            return gameState;
-        }
-
-        #endregion
-
-        #region Private Methods
-
-        private static uint GetEnPassantSquare(string enpassant)
-        {
-            if (enpassant == "-")
-                return 0;
-
-            var file = char.Parse(enpassant.Substring(0, 1));
-            var rank = int.Parse(enpassant.Substring(1, 1)) - 1;
-
-            var fileNumber = Array.IndexOf(_files, file);
-
-            return (uint) ((rank*8) + fileNumber);
-        }
-
         #endregion
     }
 }
