@@ -90,12 +90,23 @@ namespace DotNetEngine.Engine
             }
 
             _gameState.MakeMove(foundMove, _zobristHash);
-            _gameState.TotalMoveCount++;
+            //_gameState.TotalMoveCount++;
             _logger.InfoFormat("Other Side Move Made");
         }
 
         public void Calculate()
         {
+            //To Prevent the array from throwing an out of bounds exception. Games shouldn't last enough moves for this to occur.
+            if (_gameState.PreviousGameStateRecords.Length - _gameState.TotalMoveCount <= 50)
+            {
+                var array = _gameState.PreviousGameStateRecords;
+                Array.Resize(ref array,
+                   _gameState.PreviousGameStateRecords.Length + _gameState.TotalMoveCount);
+
+                _gameState.PreviousGameStateRecords = array;
+            }
+               
+
             var move = NegaMaxAlpaBeta(_gameState.TotalMoveCount, 6);
             _gameState.MakeMove(move, _zobristHash);
 
@@ -156,7 +167,10 @@ namespace DotNetEngine.Engine
             {
                 return _gameState.Evaluate() * (side ? -1 : 1);
             }
-            
+
+            if (_gameState.IsThreeMoveRepetition())
+                return 0;
+
             var bestValue = int.MinValue + 1;
             var movesFound = 0;
             _gameState.GenerateMoves(MoveGenerationMode.All, ply, _moveData);

@@ -23,7 +23,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void Pawn_Bitboard_Correct_After_Capture(string initialFen, uint fromMove, uint toMove, uint movingPiece, uint capturedPiece)
         {
             var gameState = new GameState(initialFen, _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+            gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord();
 
             var move = 0U;
             move = move.SetFromMove(fromMove);
@@ -52,7 +52,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void Rook_Bitboard_Correct_After_Capture(string initialFen, uint fromMove, uint toMove, uint movingPiece, uint capturedPiece)
         {
             var gameState = new GameState(initialFen, _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+            gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord();
 
             var move = 0U;
             move = move.SetFromMove(fromMove);
@@ -81,7 +81,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void Bishop_Bitboard_Correct_After_Capture(string initialFen, uint fromMove, uint toMove, uint movingPiece, uint capturedPiece)
         {
             var gameState = new GameState(initialFen, _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+            gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord();
 
             var move = 0U;
             move = move.SetFromMove(fromMove);
@@ -110,7 +110,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void Knights_Bitboard_Correct_After_Capture(string initialFen, uint fromMove, uint toMove, uint movingPiece, uint capturedPiece)
         {
             var gameState = new GameState(initialFen, _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+            gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord();
 
             var move = 0U;
             move = move.SetFromMove(fromMove);
@@ -139,7 +139,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void Queens_Bitboard_Correct_After_Capture(string initialFen, uint fromMove, uint toMove, uint movingPiece, uint capturedPiece)
         {
             var gameState = new GameState(initialFen, _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+            gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord();
 
             var move = 0U;
             move = move.SetFromMove(fromMove);
@@ -168,7 +168,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void King_Bitboard_Correct_After_Capture(string initialFen, uint fromMove, uint toMove, uint movingPiece, uint capturedPiece)
         {
             var gameState = new GameState(initialFen, _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+            gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord();
 
             var move = 0U;
             move = move.SetFromMove(fromMove);
@@ -245,7 +245,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void Color_Bitboard_Correct_After_Capture(string initialFen, uint fromMove, uint toMove, uint movingPiece, uint capturedPiece)
         {
             var gameState = new GameState(initialFen, _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+            gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord();
 
             var move = 0U;
             move = move.SetFromMove(fromMove);

@@ -13,7 +13,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void UnMakeMove_Sets_Knights_Bitboard_When_White_Knight_Moves()
         {
             var gameState = new GameState("8/8/8/8/4N3/8/8/8 b - - 0 1", _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+            gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord();
 
             var move = 0U;
             move = move.SetFromMove(11U);
@@ -29,7 +29,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void UnMakeMove_Sets_White_Bitboard_When_White_Knight_Moves()
         {
             var gameState = new GameState("8/8/8/8/4N3/8/8/8 b - - 0 1", _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+            gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord();
 
             var move = 0U;
             move = move.SetFromMove(11U);
@@ -45,7 +45,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void UnMakeMove_Sets_AllPieces_Bitboard_When_White_Knight_Moves()
         {
             var gameState = new GameState("8/8/8/8/4N3/8/8/8 b - - 0 1", _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+            gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord();
 
             var move = 0U;
             move = move.SetFromMove(11U);
@@ -61,10 +61,10 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void UnMakeMove_Sets_50_Move_Rules_When_White_Knight_Moves()
         {
             var gameState = new GameState("8/8/8/8/4N3/8/8/8 b - - 0 1", _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord
+              gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord
                 {
                     FiftyMoveRuleCount = 10
-                });
+                };
             
 
             var move = 0U;
@@ -81,10 +81,10 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void UnMakeMove_Sets_50_Move_Rules_When_White_Knight_Captures()
         {
             var gameState = new GameState("8/8/8/8/4N3/8/8/8 b - - 0 1", _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord
+              gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord
             {
                 FiftyMoveRuleCount = 10
-            });
+            };
 
             var move = 0U;
             move = move.SetFromMove(11U);
@@ -103,7 +103,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void UnMakeMove_Sets_Knights_Bitboard_When_Black_Knight_Moves()
         {
             var gameState = new GameState("8/8/8/8/4n3/8/8/8 w - - 0 1", _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+            gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord();
 
             var move = 0U;
             move = move.SetFromMove(11U);
@@ -119,7 +119,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void UnMakeMove_Sets_Black_Bitboard_When_Black_Knight_Moves()
         {
             var gameState = new GameState("8/8/8/8/4n3/8/8/8 w - - 0 1", _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+            gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord();
 
             var move = 0U;
             move = move.SetFromMove(11U);
@@ -135,7 +135,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void UnMakeMove_Sets_AllPieces_Bitboard_When_Black_Knight_Moves()
         {
             var gameState = new GameState("8/8/8/8/4n3/8/8/8 w - - 0 1", _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+            gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord();
 
             var move = 0U;
             move = move.SetFromMove(11U);
@@ -151,10 +151,10 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void UnMakeMove_Sets_50_Move_Rules_When_Black_Knight_Moves()
         {
             var gameState = new GameState("8/8/8/8/4n3/8/8/8 w - - 0 1", _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord
+              gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord
             {
                 FiftyMoveRuleCount = 10
-            });
+            };
 
 
             var move = 0U;
@@ -171,10 +171,10 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void UnMakeMove_Sets_50_Move_Rules_When_Black_Knight_Captures()
         {
             var gameState = new GameState("8/8/8/8/4n3/8/8/8 w - - 0 1", _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord
+              gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord
             {
                 FiftyMoveRuleCount = 10
-            });
+            };
 
             var move = 0U;
             move = move.SetFromMove(11U);
@@ -194,7 +194,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void MakeMove_Sets_Board_Array_From_Square(string initialFen, uint movingPiece)
         {
             var gameState = new GameState(initialFen, _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+            gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord();
 
             var move = 0U;
             move = move.SetFromMove(11U);
@@ -211,7 +211,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void MakeMove_Sets_Board_Array_To_Square(string initialFen, uint movingPiece)
         {
             var gameState = new GameState(initialFen, _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+            gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord();
 
             var move = 0U;
             move = move.SetFromMove(11U);
@@ -228,7 +228,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void UnMakeMove_Sets_Board_Array_To_Square_When_Capture(string initialFen, uint movingPiece, uint capturedPiece)
         {
             var gameState = new GameState(initialFen, _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+            gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord();
 
             var move = 0U;
             move = move.SetFromMove(11U);

@@ -144,7 +144,7 @@ namespace DotNetEngine.Engine.Objects
         /// <summary>
         /// A stack containing all of the game state records, needed to unmake a move.
         /// </summary>
-        internal Stack<GameStateRecord> PreviousGameStateRecords { get; set; }
+        internal GameStateRecord[] PreviousGameStateRecords { get; set; }
         #endregion
 
         #region Constructor
@@ -158,7 +158,7 @@ namespace DotNetEngine.Engine.Objects
             BoardArray = new uint[64];
 
             Moves = new Dictionary<int, List<uint>>();
-            PreviousGameStateRecords = new Stack<GameStateRecord>();
+            PreviousGameStateRecords = new GameStateRecord[1024];
 
             LoadGameStateFromFen(fen, zobristHash);
         }
@@ -174,12 +174,14 @@ namespace DotNetEngine.Engine.Objects
         /// <param name="zobristHash">The zobrist hash data to use</param>
         internal void MakeMove(uint move, ZobristHash zobristHash)
         {
+            TotalMoveCount++;
+
             var fromMove = move.GetFromMove();
             var toMove = move.GetToMove();
             var movingPiece = move.GetMovingPiece();
             var capturedPiece = move.GetCapturedPiece();
 
-            PreviousGameStateRecords.Push(CreateGameStateRecord(move));
+            PreviousGameStateRecords[TotalMoveCount] = CreateGameStateRecord(move);
 
             ulong fromBitboard = MoveUtility.BitStates[fromMove];
             ulong fromAndToBitboard = fromBitboard | MoveUtility.BitStates[toMove];
@@ -861,8 +863,9 @@ namespace DotNetEngine.Engine.Objects
                     break;
                 }
             }
-            UpdateGameStateWithGameStateRecord(PreviousGameStateRecords.Pop());
+            UpdateGameStateWithGameStateRecord(PreviousGameStateRecords[TotalMoveCount]);
             WhiteToMove = !WhiteToMove;
+            TotalMoveCount--;
         }
 
         /// <summary>
@@ -883,6 +886,27 @@ namespace DotNetEngine.Engine.Objects
             return this.IsBitBoardAttacked(moveData, WhiteToMove ? BlackKing : WhiteKing, WhiteToMove);
         }
 
+        /// <summary>
+        /// Determines if the current board is in a three move repetition state
+        /// </summary>
+        /// <returns></returns>
+        internal bool IsThreeMoveRepetition()
+        {
+            var searchDistance = TotalMoveCount - FiftyMoveRuleCount;
+            var repetitions = 1;
+
+            for (var i = TotalMoveCount;
+                 i >= searchDistance;
+                 i--)
+            {
+                if (HashKey == PreviousGameStateRecords[i].HashKey)
+                {
+                    repetitions++;
+                }
+
+            }
+            return repetitions >= 3;
+        }
         #endregion
 
         #region Private Methods

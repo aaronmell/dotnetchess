@@ -38,7 +38,7 @@ namespace DotNetEngine.Test.MakeMoveTests
 
             gameState.MakeMove(move, _zobristHash);
 
-            var gameStateRecord = gameState.PreviousGameStateRecords.Pop();
+            var gameStateRecord = gameState.PreviousGameStateRecords[gameState.TotalMoveCount];
 
             Assert.That(gameStateRecord.CurrentWhiteCastleStatus, Is.EqualTo(whiteCastleStatus));
         }
@@ -56,7 +56,7 @@ namespace DotNetEngine.Test.MakeMoveTests
 
             gameState.MakeMove(move, _zobristHash);
 
-            var gameStateRecord = gameState.PreviousGameStateRecords.Pop();
+            var gameStateRecord = gameState.PreviousGameStateRecords[gameState.TotalMoveCount];
 
             Assert.That(gameStateRecord.CurrentBlackCastleStatus, Is.EqualTo(blackCastleStatus));
         }
@@ -81,7 +81,7 @@ namespace DotNetEngine.Test.MakeMoveTests
 
             gameState.MakeMove(move, _zobristHash);
 
-            var gameStateRecord = gameState.PreviousGameStateRecords.Pop();
+            var gameStateRecord = gameState.PreviousGameStateRecords[gameState.TotalMoveCount];
 
             Assert.That(gameStateRecord.EnpassantTargetSquare, Is.EqualTo(enPassantSquare));
         }
@@ -99,7 +99,7 @@ namespace DotNetEngine.Test.MakeMoveTests
 
             gameState.MakeMove(move, _zobristHash);
 
-            var gameStateRecord = gameState.PreviousGameStateRecords.Pop();
+            var gameStateRecord = gameState.PreviousGameStateRecords[gameState.TotalMoveCount];
 
             Assert.That(gameStateRecord.FiftyMoveRuleCount, Is.EqualTo(fiftyMoveRule));
         }
@@ -111,7 +111,7 @@ namespace DotNetEngine.Test.MakeMoveTests
         public void SideToMoveCorrect_After_UnMake_Move(string initialFen, uint movingPiece, bool whiteToMove)
         {
             var gameState = new GameState(initialFen, _zobristHash);            
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+            gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord();
 
             gameState.UnMakeMove(0U);
 

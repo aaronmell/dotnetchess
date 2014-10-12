@@ -51,7 +51,7 @@
     <Compile Include="MakeMoveTests\KnightTests.cs" />
     <Compile Include="MakeMoveTests\MiscTests.cs" />
     <Compile Include="MakeMoveTests\PawnTests.cs" />
-    <Compile Include="GameStateUtilityTests.cs" />
+    <Compile Include="GameStateTests.cs" />
     <Compile Include="MakeMoveTests\QueenTests.cs" />
     <Compile Include="MakeMoveTests\RookTests.cs" />
     <Compile Include="MoveGenerationTests\BishopMoveGenerationTests.cs" />

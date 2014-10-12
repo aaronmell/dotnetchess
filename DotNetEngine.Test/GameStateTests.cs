@@ -5,7 +5,7 @@ using System.IO;
 
 namespace DotNetEngine.Test
 {
-	public class GameStateUtilityTests
+	public class GameStateTests
 	{
         private static readonly ZobristHash _zobristHash = new ZobristHash();
 
@@ -87,5 +87,49 @@ namespace DotNetEngine.Test
             var gameState = new GameState(input, _zobristHash);
             Assert.That(gameState.EnpassantTargetSquare, Is.EqualTo(result));
         }
+
+        [Test]
+	    public void Returns_Three_Move_Repetition()
+	    {
+	        var gameState = new GameState("8/8/2k5/8/8/8/2K5/8 w - - 0 1", _zobristHash);
+
+	        var move = 0U;
+	        move.SetMovingPiece(MoveUtility.WhiteKing);
+	        move.SetFromMove(10);
+	        move.SetToMove(18);
+
+            gameState.MakeMove(move, _zobristHash);
+
+            move = 0U;            
+            move.SetMovingPiece(MoveUtility.BlackKing);
+            move.SetFromMove(42);
+            move.SetToMove(34);
+
+            gameState.MakeMove(move, _zobristHash);
+
+            move = 0U;  
+            move.SetMovingPiece(MoveUtility.WhiteKing);
+            move.SetFromMove(18);
+            move.SetToMove(10);
+
+            gameState.MakeMove(move, _zobristHash);
+
+            move = 0U;  
+            move.SetMovingPiece(MoveUtility.BlackKing);
+            move.SetFromMove(34);
+            move.SetToMove(48);
+
+            gameState.MakeMove(move, _zobristHash);
+
+            move = 0U;  
+            move.SetMovingPiece(MoveUtility.WhiteKing);
+            move.SetFromMove(10);
+            move.SetToMove(18);
+
+            gameState.MakeMove(move, _zobristHash);
+
+            Assert.That(gameState.IsThreeMoveRepetition(), Is.True);
+
+	    }
 	}
 }

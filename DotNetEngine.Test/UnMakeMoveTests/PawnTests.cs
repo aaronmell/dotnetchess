@@ -13,7 +13,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void UnMakeMove_Sets_White_Pawn_Board_Correctly()
         {
             var gameState = new GameState("8/8/8/8/8/P7/8/8 w - - 0 1", _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+            gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord();
 
             var move = 0U;
             move = move.SetFromMove(8U);
@@ -29,7 +29,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void UnMakeMove_Sets_White_Pieces_Board_Correctly()
         {
             var gameState = new GameState("8/8/8/8/8/P7/8/8 w - - 0 1", _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+            gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord();
 
             var move = 0U;
             move = move.SetFromMove(8U);
@@ -45,7 +45,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void UnMakeMove_Sets_All_Pieces_Board_Correctly_When_White()
         {
             var gameState = new GameState("8/8/8/8/8/P7/8/8 w - - 0 1", _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+            gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord();
 
             var move = 0U;
             move = move.SetFromMove(8U);
@@ -61,7 +61,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void UnMakeMove_Sets_EnPassant_Opposite_Pawn_Board_Correctly_When_White()
         {
             var gameState = new GameState("8/8/P7/8/8/8/8/8 w - - 0 1", _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+            gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord();
 
             var move = 0U;
             move = move.SetFromMove(33U);
@@ -79,7 +79,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void UnMakeMove_Sets_White_Queen_Promotion_Piece_Correctly()
         {
             var gameState = new GameState("Q7/8/8/8/8/8/8/8 b - - 0 1", _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+            gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord();
 
             var move = 0U;
             move = move.SetFromMove(48U);
@@ -96,7 +96,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void UnMakeMove_Sets_White_Knight_Promotion_Piece_Correctly()
         {
             var gameState = new GameState("N7/8/8/8/8/8/8/8 b - - 0 1", _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+            gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord();
 
             var move = 0U;
             move = move.SetFromMove(48U);
@@ -113,7 +113,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void UnMakeMove_Sets_White_Bishop_Promotion_Piece_Correctly()
         {
             var gameState = new GameState("B7/8/8/8/8/8/8/8 b - - 0 1", _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+            gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord();
 
             var move = 0U;
             move = move.SetFromMove(48U);
@@ -130,7 +130,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void UnMakeMove_Sets_White_Rook_Promotion_Piece_Correctly()
         {
             var gameState = new GameState("R7/8/8/8/8/8/8/8 b - - 0 1", _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+            gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord();
 
             var move = 0U;
             move = move.SetFromMove(48U);
@@ -149,7 +149,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void UnMakeMove_Sets_Black_Pawn_Board_Correctly()
         {
             var gameState = new GameState("8/8/p7/8/8/8/8/8 w - - 0 1", _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+            gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord();
 
             var move = 0U;
             move = move.SetFromMove(48U);
@@ -165,7 +165,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void UnMakeMove_Sets_Black_Pieces_Board_Correctly()
         {
             var gameState = new GameState("8/8/p7/8/8/8/8/8 w - - 0 1", _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+            gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord();
 
             var move = 0U;
             move = move.SetFromMove(48U);
@@ -181,7 +181,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void UnMakeMove_Sets_All_Pieces_Board_Correctly_When_Black()
         {
             var gameState = new GameState("8/8/p7/8/8/8/8/8 w - - 0 1", _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+            gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord();
 
             var move = 0U;
             move = move.SetFromMove(48U);
@@ -197,7 +197,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void UnMakeMove_Sets_EnPassant_Opposite_Pawn_Board_Correctly_When_Black()
         {
             var gameState = new GameState("8/8/8/8/8/p7/8/8 w - - 0 1", _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+            gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord();
 
             var move = 0U;
             move = move.SetFromMove(25U);
@@ -215,7 +215,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void UnMakeMove_Sets_Black_Queen_Promotion_Piece_Correctly()
         {
             var gameState = new GameState("8/8/8/8/8/8/8/q7 w - - 0 1", _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+            gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord();
 
             var move = 0U;
             move = move.SetFromMove(8U);
@@ -232,7 +232,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void UnMakeMove_Sets_Black_Knight_Promotion_Piece_Correctly()
         {
             var gameState = new GameState("8/8/8/8/8/8/8/n7 w - - 0 1", _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+            gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord();
 
             var move = 0U;
             move = move.SetFromMove(8U);
@@ -249,7 +249,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void UnMakeMove_Sets_Black_Bishop_Promotion_Piece_Correctly()
         {
             var gameState = new GameState("8/8/8/8/8/8/8/b7 w - - 0 1", _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+            gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord();
 
             var move = 0U;
             move = move.SetFromMove(8U);
@@ -266,7 +266,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void UnMakeMove_Sets_Black_Rook_Promotion_Piece_Correctly()
         {
             var gameState = new GameState("8/8/8/8/8/8/8/r7 w - - 0 1", _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+            gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord();
 
             var move = 0U;
             move = move.SetFromMove(8U);
@@ -286,7 +286,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void UnMakeMove_Sets_Board_Array_From_Square(string initialFen, uint fromSquare, uint toSquare, uint movingPiece)
         {
             var gameState = new GameState(initialFen, _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+            gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord();
 
             var move = 0U;
             move = move.SetFromMove(fromSquare);
@@ -303,7 +303,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void UnMakeMove_Sets_Board_Array_To_Square(string initialFen, uint fromSquare, uint toSquare, uint movingPiece)
         {
             var gameState = new GameState(initialFen, _zobristHash); 
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+            gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord();
 
             var move = 0U;
             move = move.SetFromMove(fromSquare);
@@ -320,7 +320,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void UnMakeMove_Sets_Board_Array_To_Square_After_Enpassant_Capture(string initialFen, uint fromSquare, uint toSquare, uint movingPiece, uint capturedPiece)
         {
             var gameState = new GameState(initialFen, _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+            gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord();
 
             var move = 0U;
             move = move.SetFromMove(fromSquare);
@@ -338,7 +338,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void UnMakeMove_Sets_Board_Array_From_Square_After_Enpassant_Capture(string initialFen, uint fromSquare, uint toSquare, uint movingPiece, uint capturedPiece)
         {
             var gameState = new GameState(initialFen, _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+            gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord();
 
             var move = 0U;
             move = move.SetFromMove(fromSquare);
@@ -356,7 +356,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void UnMakeMove_Sets_Board_Array_Caputured_Square_After_Enpassant_Capture(string initialFen, uint fromSquare, uint toSquare, uint capturedSquare, uint movingPiece, uint capturedPiece)
         {
             var gameState = new GameState(initialFen, _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+            gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord();
 
             var move = 0U;
             move = move.SetFromMove(fromSquare);
@@ -380,7 +380,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void UnMakeMove_Sets_Board_Array_To_Square_On_Promotion(string fen, uint moveFrom, uint moveTo, uint movedPiece, uint promotedPiece)
         {
             var gameState = new GameState(fen, _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+            gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord();
 
             var move = 0U;
             move = move.SetFromMove(moveFrom);
@@ -404,7 +404,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void UnMakeMove_Sets_Board_Array_From_Square_On_Promotion(string fen, uint moveFrom, uint moveTo, uint movedPiece, uint promotedPiece)
         {
             var gameState = new GameState(fen, _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+            gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord();
            
             var move = 0U;
             move = move.SetFromMove(moveFrom);
@@ -422,7 +422,7 @@ namespace DotNetEngine.Test.UnMakeMoveTests
         public void UnMakeMove_Sets_Board_Array_To_Square_When_Capture(string initialFen, uint movingPiece, uint capturedPiece)
         {
             var gameState = new GameState(initialFen, _zobristHash);
-            gameState.PreviousGameStateRecords.Push(new GameStateRecord());
+            gameState.PreviousGameStateRecords[gameState.TotalMoveCount] = new GameStateRecord();
 
             var move = 0U;
             move = move.SetFromMove(11U);
