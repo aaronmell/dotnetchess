@@ -480,6 +480,28 @@ namespace DotNetEngine.Engine.Helpers
             return RankAndFile[moveIndex];
         }
 
+        internal static string ToPromotionString(this uint move)
+        {
+            switch (move)
+            {
+                case BlackBishop:
+                case WhiteBishop:
+                    return "b";
+                   
+                case BlackKnight:
+                case WhiteKnight:
+                    return "n";
+                case BlackQueen:
+                case WhiteQueen:
+                    return "q";
+                case BlackRook:
+                case WhiteRook:
+                    return "r";
+                default:
+                throw new InvalidOperationException("Not a Valid Promotion");
+            }
+        }
+
         /// <summary>
         /// Trys to convers a chess notation move to a move
         /// </summary>

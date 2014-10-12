@@ -18,6 +18,7 @@ namespace DotNetEngine.Engine
         private static readonly MoveData _moveData = new MoveData();
         private GameState _gameState;
 	    private static readonly ZobristHash _zobristHash = new ZobristHash();
+	    private const int CheckMateScore = 10000;
 
         public event EventHandler<BestMoveFoundEventArgs> BestMoveFound;
 
@@ -99,7 +100,7 @@ namespace DotNetEngine.Engine
 
             OnBestMoveFound(new BestMoveFoundEventArgs
             {
-                BestMove = string.Format("{0}{1}", move.GetFromMove().ToRankAndFile(), move.GetToMove().ToRankAndFile()).ToLower()
+                BestMove = string.Format("{0}{1}{2}", move.GetFromMove().ToRankAndFile(), move.GetToMove().ToRankAndFile(), move.IsPromotion() ? move.GetPromotedPiece().ToPromotionString() : string.Empty).ToLower() 
             });
         }
 
@@ -111,25 +112,39 @@ namespace DotNetEngine.Engine
 	    public uint NegaMaxAlpaBeta(int ply, int depth)
 	    {
             _gameState.GenerateMoves(MoveGenerationMode.All, ply, _moveData);
-            var bestValue = int.MinValue;
-	        var bestMove = 0U;
 
+            _gameState.Moves[ply] = _gameState.Moves[ply].OrderByDescending(x =>
+            {
+                _gameState.MakeMove(x ,_zobristHash);
+                var result = _gameState.Evaluate();
+                _gameState.UnMakeMove(x);
+                return result;
+            }).ToList();
+
+            var bestValue = int.MinValue + 1;
+	        var bestMove = 0U;
+           
             foreach (var move in _gameState.Moves[ply])
             {
                 _gameState.MakeMove(move, _zobristHash);
 
                 if (!_gameState.IsOppositeSideKingAttacked(_moveData))
                 {
-                    var value = NegaMaxAlphaBetaRecursive(ply + 1, depth - 1, int.MinValue, int.MaxValue, true) * -1;
-
+                    var value = -NegaMaxAlphaBetaRecursive(ply + 1, depth - 1, int.MinValue + 1, int.MaxValue - 1, true);
+                    _logger.InfoFormat("Move {2}{3}{4} score: {1} ", depth, value, move.GetFromMove().ToRankAndFile(), move.GetToMove().ToRankAndFile(), move.IsPromotion() ? move.GetPromotedPiece().ToPromotionString() : string.Empty);
+                    _gameState.UnMakeMove(move);
 
                     if (value > bestValue)
                     {
+                       
                         bestValue = value;
                         bestMove = move;
                     }
                 }
-                _gameState.UnMakeMove(move);
+                else
+                {
+                    _gameState.UnMakeMove(move);
+                }
             }
 	        return bestMove;
 	    }
@@ -138,11 +153,11 @@ namespace DotNetEngine.Engine
 	    {
             if (depth == 0)
             {
-                return _gameState.Evaluate() * (side ? 1 : -1);
+                return _gameState.Evaluate() * (side ? -1 : 1);
             }
 
-            var bestValue = int.MinValue;
-
+            var bestValue = int.MinValue + 1;
+            var movesFound = 0;
             _gameState.GenerateMoves(MoveGenerationMode.All, ply, _moveData);
 
             foreach (var move in _gameState.Moves[ply])
@@ -151,27 +166,33 @@ namespace DotNetEngine.Engine
 
                 if (!_gameState.IsOppositeSideKingAttacked(_moveData))
                 {
+                    movesFound++;
 
-                    var value = NegaMaxAlphaBetaRecursive(ply + 1, depth - 1, beta * -1, alpha * -1, !side) * -1;
+                    var value = -NegaMaxAlphaBetaRecursive(ply + 1, depth - 1, -beta, -alpha, !side);
                     _gameState.UnMakeMove(move);
 
-                    if (value > bestValue)
-                        bestValue = value;
+                   bestValue = Math.Max(value, bestValue);
 
-                    if (value > alpha)
-                        alpha = value;
+                   alpha = Math.Max(alpha, value);
 
-                    if (alpha >= beta)
-                    {
-                        break;
-                    }
+                   if (alpha >= beta)
+                   {
+                       break;
+                   }
                 }
                 else
                 {
                     _gameState.UnMakeMove(move);
                 }
             }
-            return bestValue;
+
+            if (movesFound != 0)
+                return bestValue;
+
+            if (_gameState.IsCurrentSideKingAttacked(_moveData))
+                return (side ? -1 : 1) * (CheckMateScore - ply + 1);
+
+            return 0;
 	    }
     }
 }
