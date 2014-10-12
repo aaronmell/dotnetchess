@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using Common.Logging;
 using DotNetEngine.Engine.Enums;
 using DotNetEngine.Engine.Helpers;
@@ -155,7 +156,7 @@ namespace DotNetEngine.Engine
             {
                 return _gameState.Evaluate() * (side ? -1 : 1);
             }
-
+            
             var bestValue = int.MinValue + 1;
             var movesFound = 0;
             _gameState.GenerateMoves(MoveGenerationMode.All, ply, _moveData);
@@ -185,6 +186,9 @@ namespace DotNetEngine.Engine
                     _gameState.UnMakeMove(move);
                 }
             }
+
+            if (_gameState.FiftyMoveRuleCount >= 100)
+                return 0;
 
             if (movesFound != 0)
                 return bestValue;
