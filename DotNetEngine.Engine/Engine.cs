@@ -105,11 +105,12 @@ namespace DotNetEngine.Engine
 
                 _gameState.PreviousGameStateRecords = array;
             }
-               
 
-            var move = NegaMaxAlpaBeta(_gameState.TotalMoveCount, 6);
-            _gameState.MakeMove(move, _zobristHash);
+            _gameState.GenerateMoves(MoveGenerationMode.All, _gameState.TotalMoveCount, _moveData);
 
+            var move = _gameState.CountLegalMovesAtCurrentPly(_moveData, _zobristHash) == 1 ? _gameState.Moves[_gameState.TotalMoveCount].First() : NegaMaxAlpaBeta(_gameState.TotalMoveCount, 6);
+
+            _gameState.MakeMove(move, _zobristHash); 
             OnBestMoveFound(new BestMoveFoundEventArgs
             {
                 BestMove = string.Format("{0}{1}{2}", move.GetFromMove().ToRankAndFile(), move.GetToMove().ToRankAndFile(), move.IsPromotion() ? move.GetPromotedPiece().ToPromotionString() : string.Empty).ToLower() 

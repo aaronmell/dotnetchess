@@ -889,7 +889,7 @@ namespace DotNetEngine.Engine.Objects
         /// <summary>
         /// Determines if the current board is in a three move repetition state
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A value indiciating if the current position results in a three move repetition draw</returns>
         internal bool IsThreeMoveRepetition()
         {
             var searchDistance = TotalMoveCount - FiftyMoveRuleCount;
@@ -906,6 +906,29 @@ namespace DotNetEngine.Engine.Objects
 
             }
             return repetitions >= 3;
+        }
+
+        /// <summary>
+        /// Counts the number of legal moves at he current position. This is useful before beginning a search if only a single move is possible from a given position.
+        /// </summary>
+        /// <param name="moveData">The movedata used to generate moves.</param>
+        /// <param name="zobristHash">The zobrist hash data to use</param>
+        /// <returns>The count of legal moves</returns>
+        internal int CountLegalMovesAtCurrentPly(MoveData moveData, ZobristHash zobristHash)
+        {
+            var count = 0;
+
+            foreach (var move in Moves[TotalMoveCount])
+            {
+                MakeMove(move, zobristHash);
+
+                if (!IsOppositeSideKingAttacked(moveData))
+                {
+                    count++;
+                }
+                UnMakeMove(move);
+            }
+            return count;
         }
         #endregion
 
