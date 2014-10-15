@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
+using System.Threading.Tasks;
 using Common.Logging;
 using DotNetEngine.Engine.Enums;
 using DotNetEngine.Engine.Helpers;
@@ -13,27 +14,76 @@ namespace DotNetEngine.Engine
 	/// The Chess Engine, This class handles actually playing the game.
 	/// </summary>
 	public class Engine
-	{
-// ReSharper disable once FieldCanBeMadeReadOnly.Local
+    {
+        #region Private Fields
+        // ReSharper disable once FieldCanBeMadeReadOnly.Local
 		private ILog _logger = LogManager.GetCurrentClassLogger();
         private static readonly MoveData _moveData = new MoveData();
         private GameState _gameState;
 	    private static readonly ZobristHash _zobristHash = new ZobristHash();
 	    private const int CheckMateScore = 10000;
+        private bool StopRaised;
+        #endregion
 
+        #region Public Properties
+        /// <summary>
+        /// If set to true, continue to calculate until stop has been issued by the program
+        /// </summary>
+        public bool InfiniteTime { get; set; }
+
+        /// <summary>
+        /// If set to a positive value, calculate the current position to this depth.
+        /// </summary>
+        public int CalculateToDepth { get; set; }
+
+        /// <summary>
+        /// If set to a positive value, this amount of time in ms is allowed to make the move
+        /// </summary>
+        public int MoveTime { get; set; }
+
+        /// <summary>
+        /// If set to a positive value, search for the mate in this number of moves. 
+        /// </summary>
+        public int MateDepth { get; set; }
+
+        /// <summary>
+        /// If set to a positive value, search a maximum of this number of nodes
+        /// </summary>
+        public int MaxNodes { get; set; }
+
+        /// <summary>
+        /// If set to a positive value, this is the amount of time in mswhite has remaining
+        /// </summary>
+        public int WhiteTime { get; set; }
+
+        /// <summary>
+        /// If set to a positive value, this is the amount of time in ms black has remaining
+        /// </summary>
+        public int BlackTime { get; set; }
+
+        /// <summary>
+        /// If set to a positive value, this is the amount of time in ms added to each white move.
+        /// </summary>
+        public int WhiteIncrementTime { get; set; }
+
+        /// <summary>
+        /// If set to a positive value, this is the amount of time in ms added to each black move
+        /// </summary>
+        public int BlackIncrementTime { get; set; }
+
+        /// <summary>
+        /// If set to a positive value, thi s is the number of moves remaining until the time controls change. 
+        /// </summary>
+        public int MovesUntilNextTimeControl { get; set; }
+        #endregion
+
+        #region Events
         public event EventHandler<BestMoveFoundEventArgs> BestMoveFound;
+       
+        #endregion
 
-	    protected virtual void OnBestMoveFound(BestMoveFoundEventArgs e)
-	    {
-	        var handler = BestMoveFound;
-
-	        if (handler != null)
-	        {
-	            handler(this, e);
-	        }
-	    }
-
-       	public void SetBoard(string initialFen)
+        #region Public Methods
+        public void SetBoard(string initialFen)
         {
             _gameState = new GameState(initialFen, _zobristHash);
         }
@@ -96,6 +146,8 @@ namespace DotNetEngine.Engine
 
         public void Calculate()
         {
+            StopRaised = false;
+
             //To Prevent the array from throwing an out of bounds exception. Games shouldn't last enough moves for this to occur.
             if (_gameState.PreviousGameStateRecords.Length - _gameState.TotalMoveCount <= 50)
             {
@@ -106,19 +158,34 @@ namespace DotNetEngine.Engine
                 _gameState.PreviousGameStateRecords = array;
             }
 
-            _gameState.GenerateMoves(MoveGenerationMode.All, _gameState.TotalMoveCount, _moveData);
-
-            var move = _gameState.CountLegalMovesAtCurrentPly(_moveData, _zobristHash) == 1 ? _gameState.Moves[_gameState.TotalMoveCount].First() : NegaMaxAlpaBeta(_gameState.TotalMoveCount, 6);
-
-            _gameState.MakeMove(move, _zobristHash); 
-            OnBestMoveFound(new BestMoveFoundEventArgs
+            Task.Factory.StartNew(() =>
             {
-                BestMove = string.Format("{0}{1}{2}", move.GetFromMove().ToRankAndFile(), move.GetToMove().ToRankAndFile(), move.IsPromotion() ? move.GetPromotedPiece().ToPromotionString() : string.Empty).ToLower() 
-            });
+                _gameState.GenerateMoves(MoveGenerationMode.All, _gameState.TotalMoveCount, _moveData);
+
+                var move = _gameState.CountLegalMovesAtCurrentPly(_moveData, _zobristHash) == 1
+                    ? _gameState.Moves[_gameState.TotalMoveCount].First()
+                    : NegaMaxAlpaBeta(_gameState.TotalMoveCount, 8);
+
+                _gameState.MakeMove(move, _zobristHash);
+                OnBestMoveFound(new BestMoveFoundEventArgs
+                {
+                    BestMove =
+                        string.Format("{0}{1}{2}", move.GetFromMove().ToRankAndFile(), move.GetToMove().ToRankAndFile(),
+                            move.IsPromotion() ? move.GetPromotedPiece().ToPromotionString() : string.Empty).ToLower()
+                });
+            }).ContinueWith((task) =>
+            {
+                Debug.Assert(task.Exception != null);
+
+                _logger.ErrorFormat("Exception Occured while caclulating. Exception: {0}", task.Exception.InnerException);
+            }, TaskContinuationOptions.OnlyOnFaulted);
+
         }
 
         public void Stop()
         {
+            _logger.InfoFormat("Attempting to Stop");
+            StopRaised = true;
             //Do nothing for now.
         }
 
@@ -139,6 +206,10 @@ namespace DotNetEngine.Engine
            
             foreach (var move in _gameState.Moves[ply])
             {
+                //Abort on Stop
+                if (bestMove != 0 && StopRaised)
+                    return bestMove;
+
                 _gameState.MakeMove(move, _zobristHash);
 
                 if (!_gameState.IsOppositeSideKingAttacked(_moveData))
@@ -161,6 +232,18 @@ namespace DotNetEngine.Engine
             }
 	        return bestMove;
 	    }
+        #endregion
+
+        #region Protected/Private Methods
+        protected virtual void OnBestMoveFound(BestMoveFoundEventArgs e)
+        {
+            var handler = BestMoveFound;
+
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
 
         private int NegaMaxAlphaBetaRecursive(int ply, int depth, int alpha, int beta, bool side)
 	    {
@@ -212,6 +295,7 @@ namespace DotNetEngine.Engine
                 return (side ? -1 : 1) * (CheckMateScore - ply + 1);
 
             return 0;
-	    }
+        }
+        #endregion
     }
 }
