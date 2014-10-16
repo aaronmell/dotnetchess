@@ -896,7 +896,7 @@ namespace DotNetEngine.Engine.Objects
             var repetitions = 1;
 
             for (var i = TotalMoveCount;
-                 i >= searchDistance;
+                 i >= searchDistance && i > 0;
                  i--)
             {
                 if (HashKey == PreviousGameStateRecords[i].HashKey)
