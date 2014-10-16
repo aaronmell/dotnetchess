@@ -117,7 +117,7 @@ namespace DotNetEngine.Engine
 
         public void TryMakeMove(string moveText)
         {   
-            _logger.InfoFormat("Making Other Side Move");
+            _logger.InfoFormat("Making Move");
             _gameState.GenerateMoves(MoveGenerationMode.All, 1, _moveData);
 
             uint move;
@@ -141,7 +141,7 @@ namespace DotNetEngine.Engine
 
             _gameState.MakeMove(foundMove, _zobristHash);
             //_gameState.TotalMoveCount++;
-            _logger.InfoFormat("Other Side Move Made");
+            _logger.InfoFormat("Move Made");
         }
 
         public void Calculate()

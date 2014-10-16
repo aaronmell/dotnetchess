@@ -115,12 +115,13 @@ namespace DotNetEngine.EngineRunner
 
                                 _engine.NewGame(fen);
                             }
-
-                            _engine.TryMakeMove(parameters[parameters.Length - 1]);
                         }
-                        else 
+
+                        var movesIndex = Array.IndexOf(parameters, "moves");
+
+                        for (int i = movesIndex + 1; i <= parameters.Length - 1; i++)
                         {
-                           _engine.TryMakeMove(parameters[parameters.Length - 1]);
+                            _engine.TryMakeMove(parameters[i]);
                         }
 
                         newGame = false;
