@@ -162,16 +162,36 @@ namespace DotNetEngine.Engine
             {
                 _gameState.GenerateMoves(MoveGenerationMode.All, _gameState.TotalMoveCount, _moveData);
 
-                var move = _gameState.CountLegalMovesAtCurrentPly(_moveData, _zobristHash) == 1
-                    ? _gameState.Moves[_gameState.TotalMoveCount].First()
-                    : NegaMaxAlpaBeta(_gameState.TotalMoveCount, 8);
+                var bestMove = 0U;
+                var legalMoves = _gameState.CountLegalMovesAtCurrentPlyAndReturnMove(_moveData, _zobristHash, out bestMove);
 
-                _gameState.MakeMove(move, _zobristHash);
+                
+                if (legalMoves > 1)
+                {
+                    var maxDepth = GetMaxDepth();
+
+                    for (var currentDepth = 1; currentDepth <= maxDepth; currentDepth++)
+                    {
+                        var tuple = NegaMaxAlpaBeta(0, currentDepth);
+                        bestMove = tuple.Item1;
+                        
+                        _logger.InfoFormat("info depth {0} cp {1}", currentDepth, tuple.Item2);
+
+                        //break out if we have a forced mate.
+                        if (tuple.Item2 > CheckMateScore - currentDepth ||
+                            tuple.Item2 < -(CheckMateScore - currentDepth))
+                            break;
+                    }
+                }
+
+                
+
+                _gameState.MakeMove(bestMove, _zobristHash);
                 OnBestMoveFound(new BestMoveFoundEventArgs
                 {
                     BestMove =
-                        string.Format("{0}{1}{2}", move.GetFromMove().ToRankAndFile(), move.GetToMove().ToRankAndFile(),
-                            move.IsPromotion() ? move.GetPromotedPiece().ToPromotionString() : string.Empty).ToLower()
+                        string.Format("{0}{1}{2}", bestMove.GetFromMove().ToRankAndFile(), bestMove.GetToMove().ToRankAndFile(),
+                            bestMove.IsPromotion() ? bestMove.GetPromotedPiece().ToPromotionString() : string.Empty).ToLower()
                 });
             }).ContinueWith((task) =>
             {
@@ -182,6 +202,17 @@ namespace DotNetEngine.Engine
 
         }
 
+        private int GetMaxDepth()
+        {
+            if (CalculateToDepth > 0)
+                return CalculateToDepth;
+
+            if (MateDepth > 0)
+                return MateDepth;
+
+            return InfiniteTime ? int.MaxValue : 8;
+        }
+
         public void Stop()
         {
             _logger.InfoFormat("Attempting to Stop");
@@ -189,49 +220,7 @@ namespace DotNetEngine.Engine
             //Do nothing for now.
         }
 
-	    public uint NegaMaxAlpaBeta(int ply, int depth)
-	    {
-            _gameState.GenerateMoves(MoveGenerationMode.All, ply, _moveData);
-
-            _gameState.Moves[ply] = _gameState.Moves[ply].OrderByDescending(x =>
-            {
-                _gameState.MakeMove(x ,_zobristHash);
-                var result = _gameState.Evaluate();
-                _gameState.UnMakeMove(x);
-                return result;
-            }).ToList();
-
-            var bestValue = int.MinValue + 1;
-	        var bestMove = 0U;
-           
-            foreach (var move in _gameState.Moves[ply])
-            {
-                //Abort on Stop
-                if (bestMove != 0 && StopRaised)
-                    return bestMove;
-
-                _gameState.MakeMove(move, _zobristHash);
-
-                if (!_gameState.IsOppositeSideKingAttacked(_moveData))
-                {
-                    var value = -NegaMaxAlphaBetaRecursive(ply + 1, depth - 1, int.MinValue + 1, int.MaxValue - 1, true);
-                    _logger.InfoFormat("Move {2}{3}{4} score: {1} ", depth, value, move.GetFromMove().ToRankAndFile(), move.GetToMove().ToRankAndFile(), move.IsPromotion() ? move.GetPromotedPiece().ToPromotionString() : string.Empty);
-                    _gameState.UnMakeMove(move);
-
-                    if (value > bestValue)
-                    {
-                       
-                        bestValue = value;
-                        bestMove = move;
-                    }
-                }
-                else
-                {
-                    _gameState.UnMakeMove(move);
-                }
-            }
-	        return bestMove;
-	    }
+	    
         #endregion
 
         #region Protected/Private Methods
@@ -243,6 +232,51 @@ namespace DotNetEngine.Engine
             {
                 handler(this, e);
             }
+        }
+       
+
+        private Tuple<uint, int> NegaMaxAlpaBeta(int ply, int depth)
+        {
+            _gameState.GenerateMoves(MoveGenerationMode.All, ply, _moveData);
+
+            _gameState.Moves[ply] = _gameState.Moves[ply].OrderByDescending(x =>
+            {
+                _gameState.MakeMove(x, _zobristHash);
+                var result = _gameState.Evaluate();
+                _gameState.UnMakeMove(x);
+                return result;
+            }).ToList();
+
+            var bestValue = int.MinValue + 1;
+            var bestMove = 0U;
+
+            foreach (var move in _gameState.Moves[ply])
+            {
+                //Abort on Stop
+                if (bestMove != 0 && StopRaised)
+                    break;
+
+                _gameState.MakeMove(move, _zobristHash);
+
+                if (!_gameState.IsOppositeSideKingAttacked(_moveData))
+                {
+                    var value = -NegaMaxAlphaBetaRecursive(ply + 1, depth - 1, int.MinValue + 1, int.MaxValue - 1, true);
+                    //_logger.InfoFormat("Move {2}{3}{4} score: {1} ", depth, value, move.GetFromMove().ToRankAndFile(), move.GetToMove().ToRankAndFile(), move.IsPromotion() ? move.GetPromotedPiece().ToPromotionString() : string.Empty);
+                    _gameState.UnMakeMove(move);
+
+                    if (value > bestValue)
+                    {
+
+                        bestValue = value;
+                        bestMove = move;
+                    }
+                }
+                else
+                {
+                    _gameState.UnMakeMove(move);
+                }
+            }
+            return new Tuple<uint, int>(bestMove, bestValue);
         }
 
         private int NegaMaxAlphaBetaRecursive(int ply, int depth, int alpha, int beta, bool side)

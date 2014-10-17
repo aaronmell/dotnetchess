@@ -913,20 +913,23 @@ namespace DotNetEngine.Engine.Objects
         /// </summary>
         /// <param name="moveData">The movedata used to generate moves.</param>
         /// <param name="zobristHash">The zobrist hash data to use</param>
+        /// <param name="move">The last legal move found</param>
         /// <returns>The count of legal moves</returns>
-        internal int CountLegalMovesAtCurrentPly(MoveData moveData, ZobristHash zobristHash)
+        internal int CountLegalMovesAtCurrentPlyAndReturnMove(MoveData moveData, ZobristHash zobristHash, out uint move)
         {
+            move = 0U;
             var count = 0;
 
-            foreach (var move in Moves[TotalMoveCount])
+            foreach (var moveToTest in Moves[TotalMoveCount])
             {
-                MakeMove(move, zobristHash);
+                MakeMove(moveToTest, zobristHash);
 
                 if (!IsOppositeSideKingAttacked(moveData))
                 {
+                    move = moveToTest;
                     count++;
                 }
-                UnMakeMove(move);
+                UnMakeMove(moveToTest);
             }
             return count;
         }
