@@ -22,7 +22,11 @@ namespace DotNetEngine.Engine
         private GameState _gameState;
 	    private static readonly ZobristHash _zobristHash = new ZobristHash();
 	    private const int CheckMateScore = 10000;
-        private bool StopRaised;
+        private bool _stopRaised;
+	    private int _timeToMove;
+        private static readonly Stopwatch _stopwatch = new Stopwatch();
+	    private int _nodeCount;
+	    private int _checkTimeInterval;
         #endregion
 
         #region Public Properties
@@ -140,13 +144,15 @@ namespace DotNetEngine.Engine
             }
 
             _gameState.MakeMove(foundMove, _zobristHash);
-            //_gameState.TotalMoveCount++;
             _logger.InfoFormat("Move Made");
         }
 
         public void Calculate()
         {
-            StopRaised = false;
+            _stopRaised = false;
+            _stopwatch.Restart();
+            _nodeCount = 0;
+            _checkTimeInterval = 100000;
 
             //To Prevent the array from throwing an out of bounds exception. Games shouldn't last enough moves for this to occur.
             if (_gameState.PreviousGameStateRecords.Length - _gameState.TotalMoveCount <= 50)
@@ -164,27 +170,38 @@ namespace DotNetEngine.Engine
 
                 var bestMove = 0U;
                 var legalMoves = _gameState.CountLegalMovesAtCurrentPlyAndReturnMove(_moveData, _zobristHash, out bestMove);
-
                 
                 if (legalMoves > 1)
                 {
                     var maxDepth = GetMaxDepth();
+                    SetTimeToMove();
 
                     for (var currentDepth = 1; currentDepth <= maxDepth; currentDepth++)
                     {
                         var tuple = NegaMaxAlpaBeta(0, currentDepth);
-                        bestMove = tuple.Item1;
-                        
-                        _logger.InfoFormat("info depth {0} cp {1}", currentDepth, tuple.Item2);
+                       
+
+                        _logger.InfoFormat("info depth {0} cp {1} nps {2}", currentDepth, tuple.Item2, GetNodePerSecond());
 
                         //break out if we have a forced mate.
                         if (tuple.Item2 > CheckMateScore - currentDepth ||
                             tuple.Item2 < -(CheckMateScore - currentDepth))
+                        {
+                            bestMove = tuple.Item1;
                             break;
+                        }
+
+                        if (IsTimeUp() || IsNodeCountExceeded())
+                        {
+                            if (bestMove == 0)
+                                bestMove = tuple.Item1;
+
+                            break;
+                        }
+
+                        bestMove = tuple.Item1;
                     }
                 }
-
-                
 
                 _gameState.MakeMove(bestMove, _zobristHash);
                 OnBestMoveFound(new BestMoveFoundEventArgs
@@ -193,34 +210,35 @@ namespace DotNetEngine.Engine
                         string.Format("{0}{1}{2}", bestMove.GetFromMove().ToRankAndFile(), bestMove.GetToMove().ToRankAndFile(),
                             bestMove.IsPromotion() ? bestMove.GetPromotedPiece().ToPromotionString() : string.Empty).ToLower()
                 });
+
+                _stopwatch.Stop();
+
             }).ContinueWith((task) =>
             {
                 Debug.Assert(task.Exception != null);
 
                 _logger.ErrorFormat("Exception Occured while caclulating. Exception: {0}", task.Exception.InnerException);
+
+                _stopwatch.Stop();
             }, TaskContinuationOptions.OnlyOnFaulted);
 
         }
 
-        private int GetMaxDepth()
+        private long GetNodePerSecond()
         {
-            if (CalculateToDepth > 0)
-                return CalculateToDepth;
+            if (_stopwatch.ElapsedMilliseconds == 0)
+                return _nodeCount;
 
-            if (MateDepth > 0)
-                return MateDepth;
-
-            return InfiniteTime ? int.MaxValue : 8;
+            return _nodeCount/(_stopwatch.ElapsedMilliseconds) * 100;
         }
 
-        public void Stop()
+        private bool IsNodeCountExceeded()
         {
-            _logger.InfoFormat("Attempting to Stop");
-            StopRaised = true;
-            //Do nothing for now.
-        }
+            if (MaxNodes > 0)
+                return _nodeCount > MaxNodes;
 
-	    
+            return false;
+        }
         #endregion
 
         #region Protected/Private Methods
@@ -234,7 +252,6 @@ namespace DotNetEngine.Engine
             }
         }
        
-
         private Tuple<uint, int> NegaMaxAlpaBeta(int ply, int depth)
         {
             _gameState.GenerateMoves(MoveGenerationMode.All, ply, _moveData);
@@ -253,7 +270,7 @@ namespace DotNetEngine.Engine
             foreach (var move in _gameState.Moves[ply])
             {
                 //Abort on Stop
-                if (bestMove != 0 && StopRaised)
+                if (bestMove != 0 && _stopRaised)
                     break;
 
                 _gameState.MakeMove(move, _zobristHash);
@@ -283,6 +300,7 @@ namespace DotNetEngine.Engine
 	    {
             if (depth == 0)
             {
+                _nodeCount ++;
                 return _gameState.Evaluate() * (side ? -1 : 1);
             }
 
@@ -303,6 +321,9 @@ namespace DotNetEngine.Engine
 
                     var value = -NegaMaxAlphaBetaRecursive(ply + 1, depth - 1, -beta, -alpha, !side);
                     _gameState.UnMakeMove(move);
+
+                    if (--_checkTimeInterval < 0 && IsTimeUp())
+                        return 0;
 
                    bestValue = Math.Max(value, bestValue);
 
@@ -329,6 +350,58 @@ namespace DotNetEngine.Engine
                 return (side ? -1 : 1) * (CheckMateScore - ply + 1);
 
             return 0;
+        }
+
+        private int GetMaxDepth()
+        {
+            if (CalculateToDepth > 0)
+                return CalculateToDepth;
+
+            if (MateDepth > 0)
+                return MateDepth;
+
+            return InfiniteTime ? int.MaxValue : 16;
+        }
+
+        private void SetTimeToMove()
+        {
+            if (InfiniteTime || MaxNodes > 0 || MateDepth > 0 || CalculateToDepth > 0)
+            {
+                _timeToMove = int.MaxValue;
+                return;
+            }
+
+            if (MoveTime > 0)
+            {
+                _timeToMove = MoveTime;
+                return;
+            }
+
+            var remainingMoves = 80 - _gameState.TotalMoveCount;
+
+            if (remainingMoves < 20)
+                remainingMoves = 20;
+
+            var remainingTime = _gameState.WhiteToMove ? WhiteTime + WhiteIncrementTime : BlackTime + BlackIncrementTime;
+
+            _timeToMove = remainingTime / remainingMoves;
+        }
+
+        private bool IsTimeUp()
+        {
+            if (_stopwatch.ElapsedMilliseconds > _timeToMove)
+            {
+                return true;
+            }
+            
+            _checkTimeInterval = 100000;
+            return false;
+        }
+
+        public void Stop()
+        {
+            _logger.InfoFormat("Attempting to Stop");
+            _stopRaised = true;
         }
         #endregion
     }
