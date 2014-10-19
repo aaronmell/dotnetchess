@@ -16,7 +16,7 @@ namespace DotNetEngine.Engine
     {
         #region Private Fields
         // ReSharper disable once FieldCanBeMadeReadOnly.Local
-		private ILog _logger = LogManager.GetCurrentClassLogger();
+		private ILog _logger;
         private static readonly MoveData _moveData = new MoveData();
         private GameState _gameState;
 	    private static readonly ZobristHash _zobristHash = new ZobristHash();
@@ -86,6 +86,18 @@ namespace DotNetEngine.Engine
         #endregion
 
         #region Internal Methods
+
+        internal Engine() :
+            this(LogManager.GetCurrentClassLogger())
+        {
+            
+        }
+
+        internal Engine(ILog logger)
+        {
+            _logger = logger;
+        }
+        
         internal void SetBoard(string initialFen)
         {
             _gameState = new GameState(initialFen, _zobristHash);
@@ -133,8 +145,8 @@ namespace DotNetEngine.Engine
 
             var foundMove = _gameState.Moves[1].FirstOrDefault(
                 x =>
-                    x.GetFromMove() == move.GetFromMove() && x.GetToMove() == move.GetToMove() &&
-                    x.GetPromotedPiece() == move.GetPromotedPiece());
+                    x.GetFromMove() == move.GetFromMove() && x.GetToMove() == move.GetToMove() && (move.GetPromotedPiece() == 0 ||
+                    x.GetPromotedPiece() == move.GetPromotedPiece()));
 
             if (foundMove == uint.MinValue)
             {

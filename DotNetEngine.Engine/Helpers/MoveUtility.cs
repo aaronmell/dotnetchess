@@ -522,7 +522,7 @@ namespace DotNetEngine.Engine.Helpers
             //Promotions
             if (moveText.Length == 5)
             {
-                switch (moveText.Substring(3, 1).ToUpper())
+                switch (moveText.Substring(4, 1).ToUpper())
                 {
                     case "Q":
                     {
@@ -547,10 +547,10 @@ namespace DotNetEngine.Engine.Helpers
                 }
 
             }
+
             move = move.SetToMove((uint) toMove);
             move = move.SetFromMove((uint) fromMove);
             move = move.SetPromotionPiece(promotion);
-
             return true;
         }
 
