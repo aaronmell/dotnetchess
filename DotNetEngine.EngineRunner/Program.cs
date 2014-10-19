@@ -9,7 +9,7 @@ namespace DotNetEngine.EngineRunner
 
 		private static void Main()
 		{
-		    var runner = new Runner(null);
+		    var runner = new Runner();
 
 			while (true)
 			{

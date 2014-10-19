@@ -23,16 +23,26 @@ namespace DotNetEngine.Engine
 
         private static ILog _logger;
       
-        public Runner([CanBeNull] ILog logger)
+        internal Runner([NotNull] ILog logger)
         {
             _engine = new Engine();
             _engine.BestMoveFound += _engine_BestMoveFound;
 
             _engine.NewGame();
 
-            _logger = logger ?? LogManager.GetCurrentClassLogger();
+            _logger = logger;
         }
-        
+
+        public Runner()
+        {
+            _engine = new Engine();
+            _engine.BestMoveFound += _engine_BestMoveFound;
+
+            _engine.NewGame();
+            
+            _logger = LogManager.GetCurrentClassLogger();
+        }
+
         public void ProcessCommand(string command, string[] commandArguments)
         {
             switch (command.ToUpper())
@@ -45,20 +55,18 @@ namespace DotNetEngine.Engine
                         }
                         catch (Exception)
                         {
-                             _logger.ErrorFormat("Unable to Load FEN. FEN is not valid");
+                             _logger.Error("Unable to Load FEN. FEN is not valid");
                         }
                         break;
                     }
                 case "PERFT":
                     {
-
-
                         byte depth;
-                        var canParse = byte.TryParse(commandArguments.First(), out depth);
+                        var canParse = byte.TryParse(commandArguments.FirstOrDefault(), out depth);
 
                         if (!canParse)
                         {
-                            _logger.ErrorFormat("Depth is not a valid value");
+                            _logger.Error("Depth is not a valid value");
                             break;
                         }
                         _engine.Perft(depth);
@@ -67,11 +75,12 @@ namespace DotNetEngine.Engine
                 case "DIVIDE":
                     {
                         byte depth;
-                        var canParse = byte.TryParse(commandArguments.First(), out depth);
+                        var canParse = byte.TryParse(commandArguments.FirstOrDefault(), out depth);
 
                         if (!canParse)
                         {
-                            _logger.ErrorFormat("Depth is not a valid value");
+                            _logger.Error("Depth is not a valid value");
+                            break;
                         }
 
                         _engine.Divide(depth);
@@ -81,13 +90,13 @@ namespace DotNetEngine.Engine
                 {
                     _logger.InfoFormat(EngineId, _version);
                     _logger.InfoFormat(AuthorId);
-                    _logger.InfoFormat("uciok");
+                    _logger.Info("uciok");
                    
                     break;
                 }
                 case "ISREADY":
                 {
-                    _logger.InfoFormat("readyok");
+                    _logger.Info("readyok");
                     break;
                 }
                 case "POSITION":

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
 using System.Threading.Tasks;
 using Common.Logging;
 using DotNetEngine.Engine.Enums;
@@ -10,7 +9,7 @@ using DotNetEngine.Engine.Objects;
 
 namespace DotNetEngine.Engine
 {
-	/// <summary>
+    /// <summary>
 	/// The Chess Engine, This class handles actually playing the game.
 	/// </summary>
 	internal class Engine
@@ -168,7 +167,7 @@ namespace DotNetEngine.Engine
             {
                 _gameState.GenerateMoves(MoveGenerationMode.All, _gameState.TotalMoveCount, _moveData);
 
-                var bestMove = 0U;
+                uint bestMove;
                 var legalMoves = _gameState.CountLegalMovesAtCurrentPlyAndReturnMove(_moveData, _zobristHash, out bestMove);
                 
                 if (legalMoves > 1)
@@ -213,7 +212,7 @@ namespace DotNetEngine.Engine
 
                 _stopwatch.Stop();
 
-            }).ContinueWith((task) =>
+            }).ContinueWith(task =>
             {
                 Debug.Assert(task.Exception != null);
 
