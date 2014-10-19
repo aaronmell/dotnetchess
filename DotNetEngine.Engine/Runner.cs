@@ -6,6 +6,9 @@ using JetBrains.Annotations;
 
 namespace DotNetEngine.Engine
 {
+    /// <summary>
+    /// The Runner Class, a shim between the engine and the Engine Runner.
+    /// </summary>
     public class Runner
     {
         private const string EngineId = "id name DotNetEngine {0}";
@@ -18,8 +21,8 @@ namespace DotNetEngine.Engine
 
         private static Engine _engine;
 
-        internal static ILog Logger { get; private set; }
-
+        private static ILog _logger;
+      
         public Runner([CanBeNull] ILog logger)
         {
             _engine = new Engine();
@@ -27,9 +30,9 @@ namespace DotNetEngine.Engine
 
             _engine.NewGame();
 
-            Logger = logger ?? LogManager.GetCurrentClassLogger();
+            _logger = logger ?? LogManager.GetCurrentClassLogger();
         }
-
+        
         public void ProcessCommand(string command, string[] commandArguments)
         {
             switch (command.ToUpper())
@@ -42,7 +45,7 @@ namespace DotNetEngine.Engine
                         }
                         catch (Exception)
                         {
-                             Logger.ErrorFormat("Unable to Load FEN. FEN is not valid");
+                             _logger.ErrorFormat("Unable to Load FEN. FEN is not valid");
                         }
                         break;
                     }
@@ -55,7 +58,7 @@ namespace DotNetEngine.Engine
 
                         if (!canParse)
                         {
-                            Logger.ErrorFormat("Depth is not a valid value");
+                            _logger.ErrorFormat("Depth is not a valid value");
                             break;
                         }
                         _engine.Perft(depth);
@@ -68,7 +71,7 @@ namespace DotNetEngine.Engine
 
                         if (!canParse)
                         {
-                            Logger.ErrorFormat("Depth is not a valid value");
+                            _logger.ErrorFormat("Depth is not a valid value");
                         }
 
                         _engine.Divide(depth);
@@ -76,15 +79,15 @@ namespace DotNetEngine.Engine
                     }
                 case "UCI":
                 {
-                    Logger.InfoFormat(EngineId, _version);
-                    Logger.InfoFormat(AuthorId);
-                    Logger.InfoFormat("uciok");
+                    _logger.InfoFormat(EngineId, _version);
+                    _logger.InfoFormat(AuthorId);
+                    _logger.InfoFormat("uciok");
                    
                     break;
                 }
                 case "ISREADY":
                 {
-                    Logger.InfoFormat("readyok");
+                    _logger.InfoFormat("readyok");
                     break;
                 }
                 case "POSITION":
@@ -137,12 +140,12 @@ namespace DotNetEngine.Engine
                     }
                 default:
                     {
-                        Logger.ErrorFormat("Invalid Command Entered");
+                        _logger.ErrorFormat("Invalid Command Entered");
                         break;
                     }
             }
         }
-
+      
         private static void SetEngineMoveParameters(string[] commandArguments)
         {
             _engine.InfiniteTime = false;
@@ -227,7 +230,7 @@ namespace DotNetEngine.Engine
 
         static void _engine_BestMoveFound(object sender, BestMoveFoundEventArgs e)
         {
-            Logger.InfoFormat("bestmove {0}", e.BestMove);
+            _logger.InfoFormat("bestmove {0}", e.BestMove);
         }
     }
 }

@@ -13,7 +13,7 @@ namespace DotNetEngine.Engine
 	/// <summary>
 	/// The Chess Engine, This class handles actually playing the game.
 	/// </summary>
-	public class Engine
+	internal class Engine
     {
         #region Private Fields
         // ReSharper disable once FieldCanBeMadeReadOnly.Local
@@ -29,70 +29,70 @@ namespace DotNetEngine.Engine
 	    private int _checkTimeInterval;
         #endregion
 
-        #region Public Properties
+        #region Internal Properties
         /// <summary>
         /// If set to true, continue to calculate until stop has been issued by the program
         /// </summary>
-        public bool InfiniteTime { get; set; }
+        internal bool InfiniteTime { get; set; }
 
         /// <summary>
         /// If set to a positive value, calculate the current position to this depth.
         /// </summary>
-        public int CalculateToDepth { get; set; }
+        internal int CalculateToDepth { get; set; }
 
         /// <summary>
         /// If set to a positive value, this amount of time in ms is allowed to make the move
         /// </summary>
-        public int MoveTime { get; set; }
+        internal int MoveTime { get; set; }
 
         /// <summary>
         /// If set to a positive value, search for the mate in this number of moves. 
         /// </summary>
-        public int MateDepth { get; set; }
+        internal int MateDepth { get; set; }
 
         /// <summary>
         /// If set to a positive value, search a maximum of this number of nodes
         /// </summary>
-        public int MaxNodes { get; set; }
+        internal int MaxNodes { get; set; }
 
         /// <summary>
         /// If set to a positive value, this is the amount of time in mswhite has remaining
         /// </summary>
-        public int WhiteTime { get; set; }
+        internal int WhiteTime { get; set; }
 
         /// <summary>
         /// If set to a positive value, this is the amount of time in ms black has remaining
         /// </summary>
-        public int BlackTime { get; set; }
+        internal int BlackTime { get; set; }
 
         /// <summary>
         /// If set to a positive value, this is the amount of time in ms added to each white move.
         /// </summary>
-        public int WhiteIncrementTime { get; set; }
+        internal int WhiteIncrementTime { get; set; }
 
         /// <summary>
         /// If set to a positive value, this is the amount of time in ms added to each black move
         /// </summary>
-        public int BlackIncrementTime { get; set; }
+        internal int BlackIncrementTime { get; set; }
 
         /// <summary>
         /// If set to a positive value, thi s is the number of moves remaining until the time controls change. 
         /// </summary>
-        public int MovesUntilNextTimeControl { get; set; }
+        internal int MovesUntilNextTimeControl { get; set; }
         #endregion
 
         #region Events
-        public event EventHandler<BestMoveFoundEventArgs> BestMoveFound;
+        internal event EventHandler<BestMoveFoundEventArgs> BestMoveFound;
        
         #endregion
 
-        #region Public Methods
-        public void SetBoard(string initialFen)
+        #region Internal Methods
+        internal void SetBoard(string initialFen)
         {
             _gameState = new GameState(initialFen, _zobristHash);
         }
 
-        public void Perft(int depth)
+        internal void Perft(int depth)
         {
 	        var perftData = new PerftData();
 			var stopwatch = new Stopwatch();
@@ -104,22 +104,22 @@ namespace DotNetEngine.Engine
 			_logger.DebugFormat("Total Nodes: {0} Total Captures {1} Total Checks {2} Total EnPassants {3} Total OO Castles {4} Total OOO Castles {5} Total Promotions {6}", count, perftData.TotalCaptures, perftData.TotalChecks, perftData.TotalEnpassants, perftData.TotalOOCastles, perftData.TotalOOOCastles, perftData.TotalPromotions);
         }
 
-        public void Divide(int depth)
+        internal void Divide(int depth)
         {
             _gameState.CalculateDivide(_moveData, _zobristHash, new PerftData(), 1, depth);
         }
 
-        public void NewGame(string fen)
+        internal void NewGame(string fen)
         {
             _gameState = new GameState(fen, _zobristHash);
         }
 
-	    public void NewGame() 
+	    internal void NewGame() 
 	    {
             _gameState = new GameState(_zobristHash);
 	    }
 
-        public void TryMakeMove(string moveText)
+        internal void TryMakeMove(string moveText)
         {   
             _logger.InfoFormat("Making Move");
             _gameState.GenerateMoves(MoveGenerationMode.All, 1, _moveData);
@@ -147,7 +147,7 @@ namespace DotNetEngine.Engine
             _logger.InfoFormat("Move Made");
         }
 
-        public void Calculate()
+        internal void Calculate()
         {
             _stopRaised = false;
             _stopwatch.Restart();
@@ -398,7 +398,7 @@ namespace DotNetEngine.Engine
             return false;
         }
 
-        public void Stop()
+        internal void Stop()
         {
             _logger.InfoFormat("Attempting to Stop");
             _stopRaised = true;
