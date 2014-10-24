@@ -203,7 +203,7 @@ namespace DotNetEngine.Test
             runner.ProcessCommand("ucinewgame", null);
 
             runner.ProcessCommand("position", new[] { "fen", "8/8/8/8/8/8/1Kpk4/8", "w", "-", "-", "8", "4", "moves", "b2a2" });
-            runner.ProcessCommand("go", new[] { "wtime", "200000", "btime", "200000", "winc", "0", "binc", "0", "movestogo", "40" });
+            runner.ProcessCommand("go", new[] { "wtime", "2000000", "btime", "2000000", "winc", "0", "binc", "0", "movestogo", "40" });
 
             WaitOnMove(20, 1000, ref lastMessage);
 
@@ -216,7 +216,7 @@ namespace DotNetEngine.Test
             runner.ProcessCommand("position", new[] { "fen", "8/8/8/8/8/8/1Kpk4/8", "w", "-", "-", "8", "4", "moves", "b2a2", "d2c3", "a2a3" });
             runner.ProcessCommand("go", new[] { "wtime", "200000", "btime", "200000", "winc", "0", "binc", "0", "movestogo", "40" });
 
-           
+
             WaitOnMove(20, 1000, ref lastMessage);
 
             VerifyNoErrorsOutput(mockLogger);
