@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,12 +21,17 @@ namespace DotNetEngine.Engine
         private static readonly MoveData _moveData = new MoveData();
         private GameState _gameState;
 	    private static readonly ZobristHash _zobristHash = new ZobristHash();
-	    private const int CheckMateScore = 10000;
+	    private const int CheckMateScore = 10001;
         private bool _stopRaised;
 	    private int _timeToMove;
         private static readonly Stopwatch _stopwatch = new Stopwatch();
 	    private int _nodeCount;
 	    private int _checkTimeInterval;
+        /// <summary>
+        /// Item1 = Depth Item2 = Flag Item3 = Move Item4 = Score
+        /// </summary>
+        private Dictionary<ulong, Tuple<int, int, uint, int>> _transpositionTable;
+        
         #endregion
 
         #region Internal Properties
@@ -84,7 +90,6 @@ namespace DotNetEngine.Engine
         internal event EventHandler<BestMoveFoundEventArgs> BestMoveFound;
        
         #endregion
-
         #region Internal Methods
 
         internal Engine() :
@@ -96,6 +101,7 @@ namespace DotNetEngine.Engine
         internal Engine(ILog logger)
         {
             _logger = logger;
+            _transpositionTable = new Dictionary<ulong, Tuple<int, int, uint, int>>();
         }
         
         internal void SetBoard(string initialFen)
@@ -178,7 +184,6 @@ namespace DotNetEngine.Engine
             Task.Factory.StartNew(() =>
             {
                 _gameState.GenerateMoves(MoveGenerationMode.All, _gameState.TotalMoveCount, _moveData);
-
                 uint bestMove;
                 var legalMoves = _gameState.CountLegalMovesAtCurrentPlyAndReturnMove(_moveData, _zobristHash, out bestMove);
                 
@@ -189,9 +194,10 @@ namespace DotNetEngine.Engine
 
                     for (var currentDepth = 1; currentDepth <= maxDepth; currentDepth++)
                     {
+                        _transpositionTable = new Dictionary<ulong, Tuple<int, int, uint, int>>();
                         var tuple = NegaMaxAlphaBetaRecursive(0, currentDepth, int.MinValue + 1, int.MaxValue - 1, true);
 
-                        _logger.InfoFormat("info depth {0} cp {1} nps {2}", currentDepth, tuple.Item2, GetNodePerSecond());
+                        _logger.InfoFormat("info depth {0} cp {1} nps {2}, pv {3} time {4}", currentDepth, tuple.Item2, GetNodePerSecond(), tuple.Item1.ToMoveString(), _stopwatch.ElapsedMilliseconds);
 
                         //break out if we have a forced mate.
                         if (tuple.Item2 > CheckMateScore - currentDepth ||
@@ -216,9 +222,7 @@ namespace DotNetEngine.Engine
                 _gameState.MakeMove(bestMove, _zobristHash);
                 OnBestMoveFound(new BestMoveFoundEventArgs
                 {
-                    BestMove =
-                        string.Format("{0}{1}{2}", bestMove.GetFromMove().ToRankAndFile(), bestMove.GetToMove().ToRankAndFile(),
-                            bestMove.IsPromotion() ? bestMove.GetPromotedPiece().ToPromotionString() : string.Empty).ToLower()
+                    BestMove = bestMove.ToMoveString()
                 });
 
                 _stopwatch.Stop();
@@ -264,6 +268,40 @@ namespace DotNetEngine.Engine
 
         private Tuple<uint, int> NegaMaxAlphaBetaRecursive(int ply, int depth, int alpha, int beta, bool side)
         {
+            if (_transpositionTable.ContainsKey(_gameState.HashKey))
+            {
+                var value = _transpositionTable[_gameState.HashKey];
+
+                if (value.Item1 >= depth)
+                {
+                    switch (value.Item2)
+                    {
+                        case 0:
+                        {
+                             if (value.Item4 > 9900||
+                                value.Item4 < -9900)
+                             {
+                                 return new Tuple<uint, int>(value.Item3, value.Item4 + (depth * (side ? 1 : -1)));
+                             }
+
+                            return new Tuple<uint, int>(value.Item3, value.Item4);
+                        }
+                        case 1:
+                        {
+                            alpha = Math.Max(alpha, value.Item4);
+                            break;
+                        }
+                        case 2:
+                        {
+                            beta = Math.Min(beta, value.Item4);
+                            break;
+                        }
+                    }
+                    if (alpha >= beta)
+                         return new Tuple<uint, int>(value.Item3, value.Item4);
+                }
+            }
+
             if (depth <= 0)
             {
                 _nodeCount++;
@@ -275,14 +313,14 @@ namespace DotNetEngine.Engine
 
             var bestValue = int.MinValue + 1;
             var bestMove = 0U;
-
+            var alphaOriginal = alpha;
             var movesFound = 0;
             _gameState.GenerateMoves(MoveGenerationMode.All, ply, _moveData);
 
             foreach (var move in _gameState.Moves[ply])
             {
                 _gameState.MakeMove(move, _zobristHash);
-
+                
                 if (!_gameState.IsOppositeSideKingAttacked(_moveData))
                 {
                     movesFound++;
@@ -296,7 +334,6 @@ namespace DotNetEngine.Engine
 
                     if (value > bestValue)
                     {
-
                         bestValue = value;
                         bestMove = move;
                     }
@@ -314,16 +351,43 @@ namespace DotNetEngine.Engine
                 }
             }
 
+            
             if (_gameState.FiftyMoveRuleCount >= 100)
-                return new Tuple<uint, int>(0U, 0);
+            {
+                bestValue = 0;
+                bestMove = 0;
+            }    
+            else if (movesFound != 0)
+            {
+                
+            }
+            else if (_gameState.IsCurrentSideKingAttacked(_moveData))
+            {
+                return new Tuple<uint, int>(0U, (side ? 1 : -1)*(CheckMateScore - ply));
+            }
+            else
+            {
+                bestValue = 0;
+                bestMove = 0;
+            }
 
-            if (movesFound != 0)
-                return new Tuple<uint, int>(bestMove, bestValue); ;
+            var flag = 0;
+            if (bestValue <= alphaOriginal)
+            {
+                flag = 2;
+            }
+            else if (bestValue >= beta)
+            {
+                flag = 1;
+            }
 
-            if (_gameState.IsCurrentSideKingAttacked(_moveData))
-                return new Tuple<uint, int>(0U, (side ? 1 : -1) * (CheckMateScore - ply + 1));
+            var tuple = new Tuple<int, int, uint, int>(depth, flag, bestMove, bestValue);
 
-            return new Tuple<uint, int>(0U, 0); ;
+            if (_transpositionTable.ContainsKey(_gameState.HashKey))
+                _transpositionTable[_gameState.HashKey] = tuple;
+            else _transpositionTable.Add(_gameState.HashKey, tuple);
+
+            return new Tuple<uint, int>(bestMove, bestValue); ;
         }
 
         private int GetMaxDepth()

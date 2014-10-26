@@ -554,6 +554,11 @@ namespace DotNetEngine.Engine.Helpers
             return true;
         }
 
+        internal static string ToMoveString(this uint move)
+        {
+            return string.Format("{0}{1}{2}", move.GetFromMove().ToRankAndFile(), move.GetToMove().ToRankAndFile(),
+                move.IsPromotion() ? move.GetPromotedPiece().ToPromotionString() : string.Empty).ToLower();
+        }
         #endregion
     }
 }
