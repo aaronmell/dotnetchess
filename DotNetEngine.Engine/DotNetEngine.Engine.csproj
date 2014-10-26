@@ -63,6 +63,7 @@
     <Compile Include="Objects\MoveData.cs" />
     <Compile Include="Helpers\MoveUtility.cs" />
     <Compile Include="Objects\PerfData.cs" />
+    <Compile Include="Objects\SearchResult.cs" />
     <Compile Include="Objects\ZobristHash.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Runner.cs" />

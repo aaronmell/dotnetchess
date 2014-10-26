@@ -195,27 +195,28 @@ namespace DotNetEngine.Engine
                     for (var currentDepth = 1; currentDepth <= maxDepth; currentDepth++)
                     {
                         _transpositionTable = new Dictionary<ulong, Tuple<int, int, uint, int>>();
-                        var tuple = NegaMaxAlphaBetaRecursive(0, currentDepth, int.MinValue + 1, int.MaxValue - 1, true);
+                        var searchResult = new SearchResult();
 
-                        _logger.InfoFormat("info depth {0} cp {1} nps {2}, pv {3} time {4}", currentDepth, tuple.Item2, GetNodePerSecond(), tuple.Item1.ToMoveString(), _stopwatch.ElapsedMilliseconds);
+                        NegaMaxAlphaBetaRecursive(searchResult, 0, currentDepth, int.MinValue + 1, int.MaxValue - 1, true);
+
+                        _logger.InfoFormat("info depth {0} cp {1} nps {2}, pv {3} time {4}", currentDepth, searchResult.Score, GetNodePerSecond(), searchResult.Move.ToMoveString(), _stopwatch.ElapsedMilliseconds);
 
                         //break out if we have a forced mate.
-                        if (tuple.Item2 > CheckMateScore - currentDepth ||
-                            tuple.Item2 < -(CheckMateScore - currentDepth))
+                        if (searchResult.Score > CheckMateScore - currentDepth ||
+                            searchResult.Score < -(CheckMateScore - currentDepth))
                         {
-                            bestMove = tuple.Item1;
+                            bestMove = searchResult.Move;
                             break;
                         }
 
                         if (_stopRaised || IsTimeUp() || IsNodeCountExceeded())
                         {
                             if (bestMove == 0)
-                                bestMove = tuple.Item1;
+                                bestMove = searchResult.Move;
 
                             break;
                         }
-
-                        bestMove = tuple.Item1;
+                        bestMove = searchResult.Move;
                     }
                 }
 
@@ -266,7 +267,7 @@ namespace DotNetEngine.Engine
             }
         }
 
-        private Tuple<uint, int> NegaMaxAlphaBetaRecursive(int ply, int depth, int alpha, int beta, bool side)
+        private void NegaMaxAlphaBetaRecursive(SearchResult searchResult, int ply, int depth, int alpha, int beta, bool side)
         {
             if (_transpositionTable.ContainsKey(_gameState.HashKey))
             {
@@ -278,13 +279,16 @@ namespace DotNetEngine.Engine
                     {
                         case 0:
                         {
+                            searchResult.Move = value.Item3;
+
                              if (value.Item4 > 9900||
                                 value.Item4 < -9900)
                              {
-                                 return new Tuple<uint, int>(value.Item3, value.Item4 + (depth * (side ? 1 : -1)));
+                                 searchResult.Score = value.Item4 + (depth*(side ? 1 : -1));
+                                 return;
                              }
-
-                            return new Tuple<uint, int>(value.Item3, value.Item4);
+                            searchResult.Score = value.Item4;
+                            return;
                         }
                         case 1:
                         {
@@ -298,18 +302,26 @@ namespace DotNetEngine.Engine
                         }
                     }
                     if (alpha >= beta)
-                         return new Tuple<uint, int>(value.Item3, value.Item4);
+                    {
+                        searchResult.Move = value.Item3;
+                        searchResult.Score = value.Item4;
+                        return;
+                    }
                 }
             }
 
             if (depth <= 0)
             {
                 _nodeCount++;
-                return new Tuple<uint, int>(0U, _gameState.Evaluate() * (side ? 1 : -1));
+                searchResult.Score = _gameState.Evaluate()*(side ? 1 : -1);
+                return;
             }
 
             if (_gameState.IsThreeMoveRepetition())
-                return new Tuple<uint, int>(0U, 0);
+            {
+                searchResult.Score = 0;
+                return;
+            }
 
             var bestValue = int.MinValue + 1;
             var bestMove = 0U;
@@ -325,12 +337,16 @@ namespace DotNetEngine.Engine
                 {
                     movesFound++;
 
-                    var value = -(NegaMaxAlphaBetaRecursive(ply + 1, depth - 1, -beta, -alpha, !side).Item2);
+                    NegaMaxAlphaBetaRecursive(searchResult, ply + 1, depth - 1, -beta, -alpha, !side);
+                    var value = -(searchResult.Score);
 
                     _gameState.UnMakeMove(move);
 
                     if (--_checkTimeInterval < 0 && IsTimeUp())
-                        return new Tuple<uint, int>(0U, 0); ;
+                    {
+                        searchResult.Score = 0;
+                        return;
+                    }
 
                     if (value > bestValue)
                     {
@@ -363,7 +379,8 @@ namespace DotNetEngine.Engine
             }
             else if (_gameState.IsCurrentSideKingAttacked(_moveData))
             {
-                return new Tuple<uint, int>(0U, (side ? 1 : -1)*(CheckMateScore - ply));
+                searchResult.Score = (side ? 1 : -1)*(CheckMateScore - ply);
+                return;
             }
             else
             {
@@ -387,7 +404,8 @@ namespace DotNetEngine.Engine
                 _transpositionTable[_gameState.HashKey] = tuple;
             else _transpositionTable.Add(_gameState.HashKey, tuple);
 
-            return new Tuple<uint, int>(bestMove, bestValue); ;
+            searchResult.Move = bestMove;
+            searchResult.Score = bestValue;
         }
 
         private int GetMaxDepth()
