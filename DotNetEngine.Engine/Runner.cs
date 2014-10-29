@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
 using Common.Logging;
 using DotNetEngine.Engine.Objects;
 using JetBrains.Annotations;
@@ -51,7 +53,15 @@ namespace DotNetEngine.Engine
                     {
                         try
                         {
-                            _engine.SetBoard(commandArguments.First());
+                            var sb = new StringBuilder();
+
+                            foreach (var argument in commandArguments)
+                            {
+                                sb.Append(argument);
+                                sb.Append(" ");
+                            }
+
+                            _engine.SetBoard(sb.ToString());
                         }
                         catch (Exception)
                         {
