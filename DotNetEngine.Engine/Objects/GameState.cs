@@ -920,7 +920,7 @@ namespace DotNetEngine.Engine.Objects
             move = 0U;
             var count = 0;
 
-            foreach (var moveToTest in Moves[TotalMoveCount])
+            foreach (var moveToTest in Moves[0])
             {
                 MakeMove(moveToTest, zobristHash);
 

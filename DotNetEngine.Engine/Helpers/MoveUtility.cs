@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Text;
 
 namespace DotNetEngine.Engine.Helpers
 {
@@ -558,6 +559,19 @@ namespace DotNetEngine.Engine.Helpers
         {
             return string.Format("{0}{1}{2}", move.GetFromMove().ToRankAndFile(), move.GetToMove().ToRankAndFile(),
                 move.IsPromotion() ? move.GetPromotedPiece().ToPromotionString() : string.Empty).ToLower();
+        }
+
+        internal static string ToMoveListString(this uint[] moves, int depth)
+        {
+            var sb = new StringBuilder();
+            
+            for (var i = 0; i < depth; i++)          
+            {
+                sb.Append(moves[i] == 0 ? "*" : moves[i].ToMoveString());
+                sb.Append(" ");
+            }
+
+            return sb.ToString();
         }
         #endregion
     }
